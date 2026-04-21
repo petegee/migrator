@@ -223,6 +223,41 @@ value_bytes = struct.pack('<h', value_int16)  # little-endian signed
 
 ---
 
+### WASM Emulator Testing — Structural Pass Not Sufficient
+
+**Problem:** Model passes round-trip test (status=PASS, diffCount=0) but fails when loaded in full WASM emulator or control inputs don't produce expected responses.
+
+**Symptom:**
+- test-model.js reports PASS
+- Emulator boots with "Sentinel" or "Invalid data" errors
+- Stick inputs don't trigger expected trim changes
+- Switches don't respond as configured
+
+**Root Cause:** The round-trip harness validates parsing but doesn't exercise full firmware logic (input processing, mixes, trims, logical switches). Sentinel errors triggered during full firmware initialization are not caught by the minimal test.
+
+**Solution:** Use functional smoke test with stick inputs after structural validation passes:
+```bash
+# See skills/functional-testing-guide.md for complete emulator test template
+node test-functional.js attempt-N.bin
+# Drive inputs, observe trim/switch callbacks, verify output matches input
+```
+
+**Example Test:**
+```javascript
+M.setTrimsValue = (ptr, count) => {
+  const trims = new Int16Array(M.HEAP16.buffer, ptr, count);
+  console.log('Trims:', Array.from(trims)); // Should match expected values
+};
+
+M._setAnalogPosition(0, 4095); // Aileron full right
+M._setAnalogPosition(1, 4095); // Elevator full up
+// Wait for callback to fire and verify trim values
+```
+
+**Status:** ✓ Verified (BAMF2 Std: PASS test but sentinel error on full boot)
+
+---
+
 ### Inactive Channel Entry Padding — Extra 0x00 Separator
 
 **Problem:** When writing the 5 inactive channel slots after the first named one, each entry gets a spurious leading `0x00` byte.
