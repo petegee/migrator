@@ -264,6 +264,38 @@ content.extend(rf_module_bytes)
 
 ---
 
+---
+
+### Mix Section — Missing Count Header Causes Model to Not Appear in List
+
+**Problem:** Model with multiple mixes generates a PASS on the harness but doesn't appear in the model selection list in the WASM emulator.
+
+**Symptom:** Harness PASS with 0 byte changes, but model is invisible in the emulator model list (not even selectable to get an "invalid data" error).
+
+**Root Cause:** The mix section requires a 9-byte header immediately before the mix entries:
+```
+80 80 [count] 00 05 00 00 00 01
+```
+Where `count` = number of mix entries (uint8). Without this header, the firmware cannot locate or count the mix entries. With only 1 mix and no header, the firmware may accidentally stumble on the first entry, but with multiple mixes it fails silently.
+
+**Solution:**
+```python
+# REQUIRED before mix entries:
+content.extend(bytes([0x80, 0x80, mix_count, 0x00,
+                      0x05, 0x00, 0x00, 0x00, 0x01]))
+# Then mix entries follow
+for name in mix_names:
+    content.extend(encode_name(name))
+    content.extend(b'\xff\xff\xff\xff')  # switch NONE
+    content.extend(mix_data_placeholder)
+```
+
+**Evidence:** Verified in 1chnl.bin (count=1) and test.bin/BAMF2 Strng (count=4). Missing from all generate_minimal.py versions, causing the BAMF2 Std model to not appear in the selection list.
+
+**Status:** ✓ Verified (BAMF2 Std attempt 1 — adding header made model visible in emulator list)
+
+---
+
 ## Format: Adding New Entries
 
 When you discover a new lesson:
