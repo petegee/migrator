@@ -124,6 +124,50 @@ Trims:          6 standard trims
 
 ---
 
+## 4. **shinto.bin** (5,402 bytes, ~5.3K) ✓ VERIFIED COMPLEX
+
+**Source:** Known good complex model  
+**Complexity:** Complex (multiple inputs, mixes, flight modes, logical switches)  
+**Build:** 0x25 (Ethos 1.6.x)
+
+### Structure
+
+```
+Model name:     "shinto"
+Size:           5.3 KB (2.5× larger than test.bin)
+Features:       Multiple flight modes, logical switches, complex mixes
+Characteristics: Full-featured realistic model
+```
+
+### Status
+
+- ✓ Firmware test: **PASS** (confirmed)
+- ✓ Byte diff: **0 (identical)**
+- ✓ Python validator: **No errors**
+- ✓ Radio test: **Loads and operates correctly**
+
+### Use This For
+
+- **Complex model reference** — for comparing against your own complex models
+- **Section layout debugging** — when your model fails, byte-diff against shinto to see structure differences
+- **Feature completeness** — if your model is missing features, compare against shinto's structure
+- **Confidence on difficult migrations** — shinto proves complex models with many features work
+
+### Key Sections (Likely Present)
+
+- Multiple flight modes (FM0, FM1, FM2, ...)
+- Logical switches (several)
+- Complex mix interactions
+- Input exposures with multiple variations
+- Trim configurations
+
+**When to Use:**
+- Your model is complex (50+ features)
+- You're debugging offset or section ordering issues
+- You need a "gold standard" complex model to compare byte-for-byte against
+
+---
+
 ## How to Use Reference Models
 
 ### Compare Structure

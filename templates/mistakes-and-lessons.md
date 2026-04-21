@@ -6,6 +6,28 @@ This document is **auto-updated** as you test models and provide feedback. It ca
 - Build-specific gotchas
 - Patterns to replicate
 
+## Using Reference Models for Debugging
+
+When your model fails, use byte-for-byte diff against reference models to understand the issue:
+
+```bash
+# Compare your failing model against shinto.bin (complex reference)
+python3 -c "
+a = open('models/shinto.bin', 'rb').read()
+b = open('models/<your-model>/attempt-N.bin', 'rb').read()
+diffs = [(i, f'{a[i]:02x}', f'{b[i]:02x}') for i in range(min(len(a), len(b))) if a[i] != b[i]]
+for off, before, after in diffs[:20]:
+    print(f'0x{off:04x}: {before} → {after}')
+"
+```
+
+Look for patterns:
+- If diffs cluster in a specific offset range (e.g., 0x100–0x150), that section is misaligned
+- If diffs match shinto's section structure, you're on the right path
+- If diffs are random/scattered, likely a CRC or field value issue
+
+---
+
 ## Format
 
 Each entry follows this structure:

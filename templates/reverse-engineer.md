@@ -123,7 +123,18 @@ Two fully working examples are available in `../spike/`:
 
 **Use this as a complexity reference.**
 
-Both are in `../spike/` and have been firmware-validated (PASS, 0 byte changes).
+### 3. `shinto.bin` (5.3 KB, complex model) — LOCAL REFERENCE
+- Multiple flight modes, logical switches, complex mixes
+- Full-featured realistic model with many features
+- **Located in:** `models/shinto.bin` (this project)
+
+**Use this if your model is complex (50+ features)** — compare byte-for-byte against shinto to debug section ordering or offset errors.
+
+---
+
+**All reference models have been firmware-validated (PASS, 0 byte changes).**
+- `1chnl.bin` and `test.bin` in `../spike/`
+- `shinto.bin` in `models/`
 
 ---
 

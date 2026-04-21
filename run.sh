@@ -43,7 +43,8 @@ mkdir -p "$WORK_DIR"
 # Calculate attempt number
 ATTEMPT=1
 if [ -d "$WORK_DIR" ]; then
-  ATTEMPT=$(($(ls -d "$WORK_DIR"/attempt-* 2>/dev/null | wc -l) + 1))
+  # Count existing attempt-*.bin files and increment
+  ATTEMPT=$(($(ls "$WORK_DIR"/attempt-*.bin 2>/dev/null | wc -l) + 1))
 fi
 
 echo "[migrator] Attempt: $ATTEMPT"

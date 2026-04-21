@@ -126,16 +126,15 @@ def main():
     # Separator before RF block
     content.extend(b'\x00')
 
-    # --- RF module blocks (identical to generate_minimal.py) ---
-    content.extend(b'\x0c\x00\x00\x00\x00\x00\x00\x00')
-    content.extend(b'\x10\x00kVkVbDfH'
-                   b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-                   b'\x00\x00\x00\x00\x00\x01\x00\x02\x00\x00\x00\x00\x00')
-
-    content.extend(b'\x00\x0a\x00\x00\x00\x00\x00\x00')
-    content.extend(b'\x10\x00kVkVbDfH'
-                   b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-                   b'\x00\x00\x00\x00\x00\x01\x00\x0a\x00\x00\x0a\x00\x00\x01\x00\x00\x00\x00\x00')
+    # --- RF module blocks (byte-exact match to test.bin) ---
+    content.extend(bytes.fromhex(
+        '0c0000000000000010006b566b56624466480000000000000000000000000000'
+        '000000000000000000000001000200000000000200000100'
+    ))  # RF1: 56 bytes
+    content.extend(bytes.fromhex(
+        '0a0000000000000010006b566b56624466480000000000000000000000000000'
+        '000000000000000000000001000a00000a0000010000000000'
+    ))  # RF2: 57 bytes
 
     # --- Mix section header (required — firmware uses this to locate/count mixes) ---
     # Format: 80 80 [count] 00 05 00 00 00 01
@@ -147,7 +146,9 @@ def main():
     # Placeholder data identical to the working mix in the current binary
     MIX_DATA = b'\x01\x00\x00\x00\x00\x00\x00\x01\x01\x11\x00\x00\x00\x01\x00\x01\x00\x00\x00\x81\x64\x01\x80\x01\x00\x00\x00\x00\x00\x00'
 
-    for mx_name in unique_mix_names:
+    for i, mx_name in enumerate(unique_mix_names):
+        if i > 0:
+            content.append(0x01)  # separator between entries
         content.extend(encode_name(mx_name))
         content.extend(b'\xff\xff\xff\xff')  # switch NONE
         content.extend(MIX_DATA)
@@ -185,7 +186,20 @@ def main():
 
         content.extend(b'\x00' * 6)  # padding
 
-    # --- Footer (identical to generate_minimal.py / 1chnl.bin) ---
+    # --- Post-inputs block (logical switches, special functions, GVars, telemetry placeholders) ---
+    # Identical 126-byte block verified across 1chnl.bin and test.bin (both have empty sections).
+    # Required by firmware — without it the model parser cannot find the footer.
+    POST_INPUTS = bytes.fromhex(
+        '03000000000000000000000000000000'
+        '00000000000000000000000000000000'
+        '00000000000000000000000000000000'
+        '00000000000000000000000000000000'
+        '0100000000000000000004000100000000000000000002000000000000'
+        '001500000001020000000000000015000100010200000000000000150002000100'
+    )
+    content.extend(POST_INPUTS)
+
+    # --- Footer (identical to 1chnl.bin) ---
     content.extend(b'\x55\x55\x55\x55')
     content.extend(b'\x01\x01\x00\x00\x00\x04\x00\x00\x00\x00\xa1\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00')
 

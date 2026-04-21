@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-04-21T09:10:10.194Z",
-  "modelFile": "BAMF2_Std_attempt_1.bin",
-  "modelSize": 1491,
-  "elapsedMs": 5364,
+  "timestamp": "2026-04-21T09:36:43.012Z",
+  "modelFile": "/home/pete/source/ethos/migrator/models/20231128_BAMF2 Std/BAMF2_Std_attempt_1.bin",
+  "modelSize": 1654,
+  "elapsedMs": 5378,
   "status": "PASS",
   "reason": "model read successfully",
   "firmwareLogsCount": 34,
@@ -10,8 +10,8 @@
   "filesProcessed": 1,
   "diffs": {
     "model00.bin": {
-      "inputLen": 1491,
-      "outputLen": 1491,
+      "inputLen": 1654,
+      "outputLen": 1654,
       "diffCount": 0,
       "diffs": []
     }
