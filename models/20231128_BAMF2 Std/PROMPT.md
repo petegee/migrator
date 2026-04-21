@@ -229,7 +229,10 @@ Use this to verify your model before claiming success:
 - [ ] Byte diff count = 0 (identical)
 - [ ] Python validator passes (no errors)
 - [ ] No sentinel errors in logs
+- [ ] **Model loads in the actual WASM emulator without "invalid data" error** ← required
 - [ ] Can describe each major section in the binary
+
+> ⚠ **Harness PASS is not sufficient.** The round-trip harness only tests binary parsing. The WASM emulator's model-selector runs a stricter validation that catches layout errors the parser tolerates. Always confirm in the emulator.
 
 ---
 
@@ -243,6 +246,7 @@ Use this to verify your model before claiming success:
 6. **Build number mismatch** — Use 0x25 (build 37); 0x1C/0x1F won't work with this WASM binary
 7. **Trim block count** — Build 37 = 6 channels (R/E/A/T/T5/T6); build 31 = 4 channels
 8. **Missing footer** — File must end with `55 55 55 55` + 20–30 trailing bytes
+9. **Inactive channel entries** — No separator between them; only one `0x00` byte goes before the RF block, not between channel entries. Each inactive slot is purely `0x01` fill.
 
 Check `templates/mistakes-and-lessons.md` for solutions.
 
@@ -267,6 +271,7 @@ You're done when:
 ✓ Firmware test status = `PASS`
 ✓ Byte diff count = 0
 ✓ No validation errors
+✓ **Model loads in WASM emulator without errors** (do not skip this)
 ✓ You can explain the binary structure to someone else
 ✓ You've documented any new lessons learned
 
