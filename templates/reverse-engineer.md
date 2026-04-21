@@ -46,7 +46,9 @@ Map these EdgeTX features to Ethos binary structure:
 
 ---
 
-## Reference: Ethos Binary Format
+## Reference Documentation
+
+### Binary Format Reference
 
 All details are in `skills/ethos-bin-format.md`. Key sections:
 
@@ -73,6 +75,32 @@ All details are in `skills/ethos-bin-format.md`. Key sections:
 - **Trim values**: μs (microseconds) — int16 LE, ±100 typical
 - **CRC16-CCITT**: polynomial 0x1021, non-reflected, init=0, no final XOR
 - **Names**: Length-prefixed ASCII (1 byte length + N bytes, not null-terminated)
+
+### WASM Radio Emulator Reference
+
+See `skills/wasm-radio-emulator.md` for detailed emulator API and testing strategies. Key points:
+
+**Layer 1: Structural Validation (round-trip test)**
+```bash
+! node ../spike/test-model.js attempt-N.bin
+```
+- Confirms firmware parses the model without assertion failures
+- Byte-for-byte round-trip (0 changes = valid structure)
+- **This is your primary validation gate**
+
+**Layer 2: Functional Smoke Test** (optional, advanced)
+The emulator can drive stick/switch inputs and observe trim/switch callbacks:
+```javascript
+M._setAnalogPosition(0, 4095); // Aileron full right
+M._setAnalogPosition(1, 4095); // Elevator full up
+M._setSwitchPosition(0, 2);    // SA down
+// Firmware calls setTrimsValue, setSwitchesPosition callbacks
+```
+
+**Layer 3: Log Analysis** (optional)
+Grep firmware logs for channel/mixer output messages.
+
+**Most migration work uses Layer 1 only** — the round-trip test is sufficient. Use Layer 2/3 if you need detailed functional verification.
 
 ---
 
@@ -220,19 +248,29 @@ Once firmware test passes, report:
 
 ## Testing Checklist
 
-Use this to verify your model before claiming success:
+**Minimum (Layer 1 — Structural Validation):**
 
-- [ ] Binary file written to `{MODEL}_attempt_{ATTEMPT}.bin`
+- [ ] Binary file written to `attempt_{ATTEMPT}.bin`
 - [ ] File size > 100 bytes (sanity check)
-- [ ] Firmware test runs without crashing
-- [ ] Test status = `PASS`
+- [ ] Run: `! node ../spike/test-model.js attempt_{ATTEMPT}.bin`
+- [ ] Test report status = `PASS`
 - [ ] Byte diff count = 0 (identical)
 - [ ] Python validator passes (no errors)
 - [ ] No sentinel errors in logs
-- [ ] **Model loads in the actual WASM emulator without "invalid data" error** ← required
-- [ ] Can describe each major section in the binary
 
-> ⚠ **Harness PASS is not sufficient.** The round-trip harness only tests binary parsing. The WASM emulator's model-selector runs a stricter validation that catches layout errors the parser tolerates. Always confirm in the emulator.
+**Optional (Layer 2 — Functional Smoke Test):**
+
+- [ ] Emulator drives sticks/switches without crashing
+- [ ] Trim and switch callbacks fire as expected
+- [ ] No sentinel errors during input test
+
+**For Full Confidence:**
+
+- [ ] Model loads on actual radio as active model (user must test)
+- [ ] All control surfaces respond correctly
+- [ ] No UI errors or warnings
+
+> **Note:** The round-trip harness (`test-model.js`) is your primary gate. See `skills/wasm-radio-emulator.md` for optional functional testing with stick inputs and callbacks.
 
 ---
 
