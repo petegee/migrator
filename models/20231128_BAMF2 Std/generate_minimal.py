@@ -99,13 +99,14 @@ def main():
     content.extend(b'\x00\x00\x00')  # padding
     content.extend(b'\x80\x80\x82\xe8\x03\x82\x18\xfc\x80\x01\x00\x00\x00\x00\x00\x00')  # default data
 
-    # Channel entry (just first one, rest are inactive like 1chnl)
+    # Channel entries (6 total, all using default name "Out1" then inactive)
+    # First channel
     content.extend(b'\x04Out1')  # name
-    content.extend(b'\x01' * 18)  # flags + data (all 0x01 = inactive)
+    content.extend(b'\x01' * 18)  # flags + data
 
-    # Rest of channels (5 more, all inactive)
+    # Rest of channels (5 more, all inactive - just 19 bytes of 0x01)
     for _ in range(5):
-        content.extend(b'\x00' + b'\x01' * 19)
+        content.extend(b'\x01' * 19)
 
     # Separator before RF block
     content.extend(b'\x00')

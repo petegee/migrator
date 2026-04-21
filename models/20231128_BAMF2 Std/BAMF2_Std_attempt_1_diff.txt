@@ -1,5 +1,5 @@
 Byte-for-byte diff: model00.bin
-Input length: 591, Output length: 591
+Input length: 586, Output length: 586
 Changed bytes: 0
 
 IDENTICAL — firmware made no changes

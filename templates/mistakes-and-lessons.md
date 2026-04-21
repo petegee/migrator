@@ -223,6 +223,47 @@ value_bytes = struct.pack('<h', value_int16)  # little-endian signed
 
 ---
 
+### Inactive Channel Entry Padding — Extra 0x00 Separator
+
+**Problem:** When writing the 5 inactive channel slots after the first named one, each entry gets a spurious leading `0x00` byte.
+
+**Symptom:** Firmware test harness says PASS (0 byte changes), but model produces "read header failed: Invalid data" in the WASM emulator.
+
+**Root Cause:** The inactive channel entries are purely `0x01`-fill bytes — there is NO separator between entries. The separator `0x00` appears only once, immediately before the RF module block, not between channel entries.
+
+**Solution:**
+```python
+# WRONG — inserts a 0x00 between entries:
+for _ in range(5):
+    content.extend(b'\x00' + b'\x01' * 19)
+
+# CORRECT — inactive entries are just 0x01 fill:
+for _ in range(5):
+    content.extend(b'\x01' * 19)
+
+# Then one 0x00 separator BEFORE the RF block:
+content.extend(b'\x00')
+content.extend(rf_module_bytes)
+```
+
+**Status:** ✓ Verified (BAMF2 Std attempt 1)
+
+---
+
+### Test Harness ≠ Emulator Load Test
+
+**Problem:** `node test-model.js` reports PASS with 0 byte changes, but the actual WASM emulator says "read header failed: Invalid data".
+
+**Symptom:** False confidence — the round-trip test passes structural parsing but doesn't catch semantic/layout errors that the UI-level model loader rejects.
+
+**Root Cause:** The test harness only exercises the firmware's binary parser (read → write). The emulator's model-selector UI runs a stricter validation pass that catches malformed sections the parser tolerates.
+
+**Solution:** Always verify in the actual WASM emulator after a harness PASS. Don't claim success until the model loads in the emulator without errors.
+
+**Status:** ✓ Verified (BAMF2 Std attempt 1 — harness PASS, emulator "invalid data" until channel entries fixed)
+
+---
+
 ## Format: Adding New Entries
 
 When you discover a new lesson:
