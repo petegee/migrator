@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-04-21T07:25:29.029Z",
+  "modelFile": "/home/pete/source/ethos/migrator/models/20231128_BAMF2 Std/BAMF2_Std_attempt_1.bin",
+  "modelSize": 1535,
+  "elapsedMs": 5340,
+  "status": "PASS",
+  "reason": "model read successfully",
+  "firmwareLogsCount": 33,
+  "errorCount": 0,
+  "filesProcessed": 1,
+  "diffs": {
+    "model00.bin": {
+      "inputLen": 1535,
+      "outputLen": 1535,
+      "diffCount": 0,
+      "diffs": []
+    }
+  },
+  "validation": {},
+  "summary": {
+    "identical": 1,
+    "modified": 0,
+    "failed": 0
+  }
+}

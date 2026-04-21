@@ -1,0 +1,1 @@
+../spike/skills/ethos-bin-format.md
