@@ -180,6 +180,15 @@ sed \
 mkdir -p "$ATTEMPT_DIR"
 cp "$PROMPT_FILE" "$ATTEMPT_DIR/PROMPT.md"
 
+# Write CLAUDE.md so Claude reads and starts the task automatically on session open.
+# This avoids piping via stdin, which prevents session resumption.
+cat > "$ATTEMPT_DIR/CLAUDE.md" << 'CLAUDEMD'
+# Migrator Session
+
+Read `PROMPT.md` in this directory immediately and begin the reverse-engineering task.
+Do not wait for further input — start at Step 1 of the process described in PROMPT.md.
+CLAUDEMD
+
 echo "[migrator] Prompt ready: $ATTEMPT_DIR/PROMPT.md"
 echo ""
 echo "=== STARTING CLAUDE CODE SESSION ==="
@@ -196,6 +205,9 @@ echo "  2. Copy attempt-${ATTEMPT}.bin to your radio"
 echo "  3. Test the model"
 echo "  4. Run: $0 $CONTAINER $MODEL --feedback"
 echo ""
+echo "If you need to resume an interrupted session:"
+echo "  cd \"$ATTEMPT_DIR\" && claude --resume <session-id>"
+echo ""
 echo "Press ENTER to continue, or Ctrl+C to cancel..."
 read -r
 
@@ -203,7 +215,7 @@ echo "[migrator] Launching Claude Code in: $ATTEMPT_DIR"
 echo ""
 
 cd "$ATTEMPT_DIR"
-cat "$PROMPT_FILE" | claude code \
+claude \
   --dangerously-skip-permissions \
   --add-dir "$DIR"
 
@@ -213,6 +225,9 @@ echo ""
 echo "Check results:"
 echo "  Test report: $ATTEMPT_DIR/attempt-${ATTEMPT}_test_report.json"
 echo "  Binary file: $ATTEMPT_DIR/attempt-${ATTEMPT}.bin"
+echo ""
+echo "To resume this session if needed:"
+echo "  cd \"$ATTEMPT_DIR\" && claude --resume <session-id>"
 echo ""
 echo "Next: Download the .bin file, test on radio, then:"
 echo "  $0 $CONTAINER $MODEL --feedback"
