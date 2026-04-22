@@ -1,0 +1,25 @@
+{
+  "timestamp": "2026-04-22T02:53:20.983Z",
+  "modelFile": "attempt-1.bin",
+  "modelSize": 2046,
+  "elapsedMs": 5330,
+  "status": "PASS",
+  "reason": "model read successfully",
+  "firmwareLogsCount": 34,
+  "errorCount": 0,
+  "filesProcessed": 1,
+  "diffs": {
+    "model00.bin": {
+      "inputLen": 2046,
+      "outputLen": 2046,
+      "diffCount": 0,
+      "diffs": []
+    }
+  },
+  "validation": {},
+  "summary": {
+    "identical": 1,
+    "modified": 0,
+    "failed": 0
+  }
+}
