@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-04-22T01:01:21.535Z",
-  "modelFile": "shinto.bin",
+  "timestamp": "2026-04-22T04:45:12.618Z",
+  "modelFile": "reference-models/shinto.bin",
   "modelSize": 5418,
-  "elapsedMs": 5311,
+  "elapsedMs": 5339,
   "status": "PASS",
   "reason": "model read successfully",
   "firmwareLogsCount": 45,

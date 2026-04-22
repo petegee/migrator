@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-04-22T01:01:33.278Z",
-  "modelFile": "1chnl.bin",
+  "timestamp": "2026-04-22T05:22:23.799Z",
+  "modelFile": "reference-models/1chnl.bin",
   "modelSize": 543,
-  "elapsedMs": 5335,
+  "elapsedMs": 5343,
   "status": "PASS",
   "reason": "model read successfully",
   "firmwareLogsCount": 39,

@@ -353,41 +353,48 @@ for name in mix_names:
 
 ---
 
-### FreeMix Sentinel — Suppressed by Unique Per-Channel Mix Data
+### Mix Entry 30-Byte Data Format — Spec Document Is WRONG (Build 37)
 
-**Problem:** `Sentinel(FreeMix) check failed` appears in firmware logs when multiple mix entries have identical data bytes.
+**Problem:** The `skills/ethos-bin-format.md` spec says ch/sec are at data[5]/data[6]. This is incorrect for build 37.
 
-**Symptom:** Harness PASS with 0 diff, but sentinel warning in firmware log. With 25 identical entries, fires consistently.
+**Symptom:** Using the spec's positions for ch/sec causes "Collection size is 65398 (max is 20)" or "Collection cannot create item" errors.
 
-**Root Cause:** The firmware's FreeMix pool validator requires each entry to be unique. With all 25 mixes having identical placeholder bytes (`01 00 00 00 00 00 00 01 01...`), the pool detects duplicates and fires the sentinel.
+**Root Cause:** The actual 30-byte mix data format for build 37 (verified from 1chnl.bin hex dump) is:
+```
+[0-3]:  01 00 00 00  — constant
+[4-7]:  00 00 00 01  — FIXED constant (MUST NOT vary across entries)
+[8]:    ch_byte      — dest channel, 1-indexed
+[9]:    sec_byte     — globally unique secondary code (start at 1, NOT 0)
+[10-16]: 00 00 00 01 00 01 00
+[17]:   mix_index    — unique per-entry (used as pool key discriminator)
+[18-29]: 00 81 64 01 80 01 00 00 00 00 00 00
+```
+Total = 30 bytes. Pool key = LE uint32 from data[17-20].
 
-**Solution:** Encode unique bytes 4-7 per mix entry using destination channel and rank within that channel group:
-
+**Solution:**
 ```python
-SECONDARY_SEQ = [0x08, 0x0e, 0x11, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+MIX_FIXED_HEAD = bytes([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01])  # [0-7]
+MIX_TAIL_PREFIX = bytes([0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00])        # [10-16]
+MIX_TAIL_SUFFIX = bytes([0x00, 0x81, 0x64, 0x01, 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])  # [18-29]
 
-def make_mix_data(dest_ch: int, rank_in_group: int) -> bytes:
-    sec_byte = SECONDARY_SEQ[rank_in_group % len(SECONDARY_SEQ)]
-    ch_byte = dest_ch + 1  # 1-indexed
-    prefix = bytes([0x01, 0x00, 0x00, 0x00,  # constant header
-                    0x01,                      # mix type
-                    ch_byte,                   # dest channel (1-indexed)
-                    sec_byte,                  # rank within channel group
-                    0x00])                     # padding
-    suffix = bytes([0x00, 0x00, 0x00, 0x01, 0x00, 0x01,
-                    0x00, 0x00, 0x00, 0x81, 0x64, 0x01,
-                    0x80, 0x01, 0x00, 0x00, 0x00, 0x00,
-                    0x00, 0x00, 0x00, 0x00])  # 22 bytes
-    return prefix + suffix  # 30 bytes
+for i, (name, dest_ch) in enumerate(mixes):
+    if i > 0:
+        c += b'\x01'  # separator BETWEEN entries
+    ch_byte = dest_ch + 1
+    sec_byte = i + 1  # globally unique, MUST start at 1 (not 0)
+    c += encode_name(name)
+    c += b'\xFF\xFF\xFF\xFF'  # switch = NONE
+    c += MIX_FIXED_HEAD + bytes([ch_byte, sec_byte]) + MIX_TAIL_PREFIX + bytes([i]) + MIX_TAIL_SUFFIX
 ```
 
-Track channel rank by grouping mixes by dest channel, incrementing rank per entry in the group.
+**Critical rules:**
+1. data[4-7] MUST be `00 00 00 01` for ALL entries — varying these triggers Sentinel(FreeMix)
+2. sec_byte (data[9]) must be globally unique across all mixes AND must start at ≥1 (sec=0 causes firmware to misparse collection size as 25729)
+3. data[17] (pool key byte) must be unique per entry — use global mix index
 
-**Evidence:** BAMF2 Std v4 (25 mixes across 9 dest channels): PASS, 0 errors, 0 sentinel in firmware log.
+**Evidence:** 1chnl.bin mix entry "Mix1": `01 00 00 00 00 00 00 01 01 11 00 00 00 01 00 01 00 00 00 81 64 01 80 01 00 00 00 00 00 00`. ch_byte=0x01, sec_byte=0x11. BAMF2 Std (35 mixes): PASS, 0 diffs, 0 errors.
 
-**Note:** Bytes 0-3 (`01 00 00 00`) and 8-29 are still placeholders. Only bytes 4-7 need to be unique — the pool validator only checks those fields for uniqueness/validity.
-
-**Status:** ✓ Verified (BAMF2 Std, 25 mixes, build 37)
+**Status:** ✓ Verified (build 37, BAMF2 Std attempt 1)
 
 ---
 

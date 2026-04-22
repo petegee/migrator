@@ -441,45 +441,43 @@ for i, name in enumerate(mix_names):
     content.extend(mix_data_30_bytes)
 ```
 
-### 30-Byte Mix Data Block
+### 30-Byte Mix Data Block (Build 37 — Verified from 1chnl.bin)
+
+> ⚠ **NOTE:** Earlier versions of this spec had ch/sec at bytes 5/6. That is WRONG for build 37.
+> The correct layout (verified by hex-dumping 1chnl.bin) is:
 
 ```
-Bytes 0–3:  01 00 00 00       — constant header
-Byte 4:     0x01              — mix type (FreeMix = 0x01)
-Byte 5:     dest_ch + 1       — destination channel, 1-indexed
-Byte 6:     secondary code    — rank within channel group (see below)
-Byte 7:     0x00              — padding
-Bytes 8–29: [22 bytes]        — source, weight, FM mask, curve (not yet fully decoded)
+Bytes 0–3:  01 00 00 00       — constant
+Bytes 4–7:  00 00 00 01       — FIXED constant; MUST NOT vary across entries
+                                (varying these triggers Sentinel(FreeMix) check failed)
+Byte 8:     dest_ch + 1       — destination channel, 1-indexed
+Byte 9:     sec_byte          — globally unique secondary code across ALL mixes
+                                MUST start at 1 or higher (sec=0 causes collection misparse)
+Bytes 10–16: 00 00 00 01 00 01 00
+Byte 17:    mix_index         — global mix index (makes pool key unique per entry)
+Bytes 18–29: 00 81 64 01 80 01 00 00 00 00 00 00
 ```
 
-**Bytes 4–7 are the FreeMix pool identity fields.** The firmware requires each entry to be unique in these bytes. If all entries are identical the firmware logs `Sentinel(FreeMix) check failed`.
+**Pool key** = LE uint32 from data[17–20]. Byte 17 (global mix index) ensures uniqueness.
 
-**Secondary code (byte 6) by rank within a dest channel group:**
+**Working Python (build 37, verified PASS, 0 diffs, 35-mix model):**
 ```python
-SECONDARY_SEQ = [0x08, 0x0e, 0x11, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
-# rank 0 → 0x08, rank 1 → 0x0e, rank 2 → 0x11, rank 3 → 0x00, ...
+MIX_FIXED_HEAD = bytes([0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01])  # [0-7]
+MIX_TAIL_PREFIX = bytes([0x00, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00])        # [10-16]
+MIX_TAIL_SUFFIX = bytes([0x00, 0x81, 0x64, 0x01, 0x80, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])  # [18-29]
+
+for i, (name, dest_ch) in enumerate(mixes):
+    if i > 0:
+        c += b'\x01'  # separator BETWEEN entries
+    ch_byte = dest_ch + 1
+    sec_byte = i + 1  # globally unique, 1-indexed (NEVER 0)
+    c += encode_name(name)
+    c += b'\xFF\xFF\xFF\xFF'  # switch = NONE
+    c += MIX_FIXED_HEAD + bytes([ch_byte, sec_byte]) + MIX_TAIL_PREFIX + bytes([i]) + MIX_TAIL_SUFFIX
 ```
 
-**Working placeholder for bytes 8–29** (verified with build 37, 25-mix model):
-```python
-suffix = bytes([0x00, 0x00, 0x00, 0x01, 0x00, 0x01,
-                0x00, 0x00, 0x00, 0x81, 0x64, 0x01,
-                0x80, 0x01, 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00])
-```
-
-**Example — 3 mixes all targeting dest channel 0 (Elev):**
-```python
-# rank 0: 01 00 00 00  01 01 08 00  [suffix]
-# rank 1: 01 00 00 00  01 01 0e 00  [suffix]
-# rank 2: 01 00 00 00  01 01 11 00  [suffix]
-```
-
-**Example (test.bin, "Ailerons" mix):**
-```
-08 41 69 6C 65 72 6F 6E 73  FF FF FF FF  01 00 00 00 00 00 00 04 01 05 06 07  81 64 00 ...
-↑len  └──── "Ailerons" ────┘  └── NONE ──┘  └──────────── 30-byte mix data ──────────────┘
-```
+**Evidence:** 1chnl.bin mix "Mix1" hex: `01 00 00 00 00 00 00 01 01 11 00 00 00 01 00 01 00 00 00 81 64 01 80 01 00 00 00 00 00 00`
+→ ch_byte=0x01, sec_byte=0x11
 
 ---
 
