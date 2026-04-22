@@ -52,7 +52,7 @@ A complete **automated reverse-engineering workflow** for converting EdgeTX mode
 |------|---------|
 | `templates/reverse-engineer.md` | Main prompt template (filled per-model with structure) |
 | `templates/mistakes-and-lessons.md` | Common pitfalls & solutions (auto-updated from feedback) |
-| `templates/reference-models.md` | Catalog of working examples (1chnl.bin, test.bin, etc.) |
+| `templates/reference-models.md` | Catalog of working examples (1chnl.bin, etc.) |
 
 ### Skills (Symlinked from spike)
 
@@ -119,14 +119,13 @@ cp ~/path/to/model.etx models/model/
 
 ## Integration with Spike Project
 
-The migrator reuses:
-- **`skills/`** — Symlinked to spike/skills/ (ethos-bin-format.md, edgetx-ethos-migration.md)
-- **`test-model.js`** — Firmware testing harness at ../spike/test-model.js
-- **`X18RS_FCC.wasm`** — Firmware binary at ../spike/X18RS_FCC.wasm
-- **`wasm_radio.bin`** — Reference radio settings at ../spike/wasm_radio.bin
-- **Reference models** — 1chnl.bin, test.bin, etc. at ../spike/
-
-All skills and tools are auto-updated if you modify the spike project.
+The migrator contains self-contained copies and references spike for JS tooling:
+- **`lib/X18RS_FCC.wasm`** — Firmware binary (local self-contained copy, 23 MB)
+- **`lib/out.wat`** — Decompiled WASM source (local, 143 MB) — human-readable firmware internals
+- **`test-model.js`** — Firmware testing harness at lib/test-model.js
+- **`X18RS_FCC_patched.js`** — WASM JS wrapper at lib/X18RS_FCC_patched.js
+- **`wasm_radio.bin`** — Reference radio settings at lib/wasm_radio.bin
+- **Reference models** — 1chnl.bin in `reference-models/`
 
 ---
 
@@ -181,7 +180,7 @@ User: ./run.sh bamf2
        └─ Start Claude Code session
            │
            ├─ Claude generates attempt-1.bin
-           ├─ Tests: ! node ../spike/test-model.js
+           ├─ Tests: ! node lib/test-model.js
            ├─ Result: PASS (or fix + retry)
            └─ Saves: attempt-1_test_report.json
                      attempt-1_diff.txt
@@ -257,8 +256,6 @@ After radio testing:
 
 Working examples available:
 - `1chnl.bin` — minimal (527 bytes)
-- `test.bin` — moderate (693 bytes)
-- `bamf2_4mix_2Bnames.bin` — real model (865 bytes)
 
 **Benefit:** You can compare and debug against known-good files.
 

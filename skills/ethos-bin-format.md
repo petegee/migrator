@@ -535,7 +535,6 @@ When checking a .bin file is valid:
 | File             | Build | Name       | Content (bytes) | Notes                    |
 |------------------|-------|------------|-----------------|--------------------------|
 | 1chnl.bin        | 37    | "1Chnl"    | 527             | Firmware-generated; 1 input, 1 var, 1 mix — primary reference for build-37 structure |
-| test.bin         | 37    | "TEST"     | 693             | Simple 6-input, 3-mix    |
 | wasm_out_radio.bin | 37  | (radio)    | 236             | Firmware-generated radio |
 | Blaster.bin      | 31    | "Blaster"  | 5763            | Complex glider           |
 | Geronimo.bin     | 31    | "Geronimo" | 2725            | FPV wing                 |
@@ -559,11 +558,14 @@ is well-formed.
 
 ### Prerequisites
 
-All files must be present in `/home/pete/source/ethos/spike/`:
-- `X18RS_FCC.wasm` — firmware binary
+In `migrator/lib/`:
+- `X18RS_FCC.wasm` — firmware binary (self-contained local copy, 23 MB)
+- `out.wat` — decompiled WebAssembly text (143 MB) — human-readable firmware source, useful for understanding internal field names and struct layouts
+
+In `migrator/lib/`:
 - `X18RS_FCC_patched.js` — patched Emscripten wrapper (exposes `_writeDefaultSettingsAndModel`, `_start`)
-- `skills/test-model.js` — parameterised harness (see below)
-- `skills/inspect-ethos-bin.py` — Python validator
+- `test-model.js` — parameterised harness (see below)
+- `wasm_radio.bin` — required radio settings file
 
 Node.js must be available. It is **not** on the default Claude Code PATH; the user must
 invoke it manually (e.g. via `! node skills/test-model.js mymodel.bin` in the terminal).

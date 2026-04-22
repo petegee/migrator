@@ -2,28 +2,24 @@
 
 ## What You Need
 
-This project depends on files and tools from the spike project at `~/source/ethos/spike/`.
+This project is **self-contained** — all firmware, tooling, and reference files are in the `migrator/` directory. You only need Node.js, Python 3, and Claude Code CLI installed on your system.
 
 ### Directory Structure
 
 ```
-~/source/ethos/
-├── spike/                          # Parent project (required)
-│   ├── skills/                     # Skills documentation
-│   ├── X18RS_FCC.wasm              # Firmware binary
-│   ├── X18RS_FCC_patched.js        # WASM wrapper
-│   ├── test-model.js               # Testing harness
-│   ├── wasm_radio.bin              # Reference radio settings
-│   ├── 1chnl.bin                   # Reference models
-│   ├── test.bin
-│   └── ...
-│
-└── migrator/                       # This project (you are here)
-    ├── skills/                     # Symlinked from spike
-    ├── run.sh
-    ├── lib/
-    ├── templates/
-    └── models/
+migrator/
+├── lib/
+│   ├── X18RS_FCC.wasm          # Firmware binary (23 MB)
+│   ├── X18RS_FCC_patched.js    # Emscripten WASM wrapper
+│   ├── test-model.js           # WASM testing harness
+│   ├── wasm_radio.bin          # Radio settings (required by firmware)
+│   ├── out.wat                 # Decompiled WASM source (143 MB, optional)
+│   └── etx-parser.py           # EdgeTX .etx parser
+├── reference-models/
+│   ├── 1chnl.bin               # Minimal validated model
+├── skills/                     # Format documentation
+├── templates/                  # Prompt templates
+└── models/                     # Your working models
 ```
 
 ## Setup Steps
@@ -31,11 +27,8 @@ This project depends on files and tools from the spike project at `~/source/etho
 ### 1. Verify Spike Project Exists
 
 ```bash
-ls -d ~/source/ethos/spike/
-# Should show: spike/
-
-ls ~/source/ethos/spike/{X18RS_FCC.wasm,X18RS_FCC_patched.js,test-model.js}
-# Should list 3 files
+ls lib/X18RS_FCC.wasm lib/test-model.js lib/X18RS_FCC_patched.js lib/wasm_radio.bin
+# Should list 4 files
 ```
 
 ### 2. Verify Python 3 and YAML Support
@@ -71,11 +64,11 @@ Used to start new sessions for each model.
 
 | Dependency | Location | Used For | Why? |
 |------------|----------|----------|------|
-| X18RS_FCC.wasm | `../spike/` | WASM firmware | Required by test harness |
-| X18RS_FCC_patched.js | `../spike/` | WASM wrapper | Exposes firmware API |
-| test-model.js | `../spike/` | Testing harness | Validates generated .bin files |
-| wasm_radio.bin | `../spike/` | Firmware input | Pre-captured valid radio settings |
-| skills/ | `../spike/skills/` | Documentation | Binary format reference + patterns |
+| X18RS_FCC.wasm | `lib/` | WASM firmware | Self-contained local copy |
+| out.wat | `lib/` | Decompiled firmware source | Human-readable WAT for debugging |
+| X18RS_FCC_patched.js | `lib/` | WASM wrapper | Exposes firmware API |
+| test-model.js | `lib/` | Testing harness | Validates generated .bin files |
+| wasm_radio.bin | `lib/` | Firmware input | Pre-captured valid radio settings |
 | Python 3 | system | Model parsing (etx-parser.py) | Parse EdgeTX YAML files |
 | PyYAML | pip | YAML parsing | Read .etx files |
 | Node.js | system | WASM harness | Run test-model.js |
@@ -91,8 +84,9 @@ echo "Checking dependencies..."
 
 # Spike project
 [ -d ../spike ] && echo "✓ Spike project found" || echo "✗ Spike project missing"
-[ -f ../spike/X18RS_FCC.wasm ] && echo "✓ WASM firmware found" || echo "✗ WASM firmware missing"
-[ -f ../spike/test-model.js ] && echo "✓ Test harness found" || echo "✗ Test harness missing"
+[ -f lib/X18RS_FCC.wasm ] && echo "✓ WASM firmware found (local)" || echo "✗ WASM firmware missing (lib/X18RS_FCC.wasm)"
+[ -f lib/out.wat ] && echo "✓ Decompiled WAT found (local)" || echo "⊘ out.wat not found (optional)"
+[ -f lib/test-model.js ] && echo "✓ Test harness found" || echo "✗ Test harness missing"
 
 # Python and YAML
 python3 --version 2>&1 | head -1 && echo "✓ Python 3 found" || echo "✗ Python 3 missing"
@@ -123,13 +117,9 @@ chmod +x check-setup.sh
 
 ## Troubleshooting Setup
 
-### "Spike project not found"
+### "lib/ files missing"
 
-Make sure you've built the spike project first:
-```bash
-cd ~/source/ethos/spike
-# (populate with X18RS_FCC.wasm, etc.)
-```
+The `lib/` directory should contain all runtime files. If any are missing, check git history or restore from the original spike project at `~/source/ethos/spike/`.
 
 ### "PyYAML missing"
 
@@ -152,18 +142,11 @@ Install Claude Code (it's the CLI tool for this system):
 
 ### "Test harness fails: 'wasm_radio.bin not found'"
 
-The `test-model.js` script expects `wasm_radio.bin` in the spike directory. If missing:
+The `test-model.js` script looks for `wasm_radio.bin` in the same directory as itself (`lib/`). It should already be there. If it's missing:
 
 ```bash
-# Generate it (run once)
-cd ~/source/ethos/spike
-node run-patched.js
-# This will create wasm_radio.bin
-```
-
-Or copy a known-good one:
-```bash
-cp ~/source/ethos/spike/wasm_radio.bin ~/source/ethos/migrator/
+ls lib/wasm_radio.bin
+# If missing, it needs to be restored from spike or regenerated
 ```
 
 ## One-Time Setup

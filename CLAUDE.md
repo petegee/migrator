@@ -18,12 +18,18 @@ This project automates the reverse-engineering of EdgeTX model files (.etx, YAML
 migrator/
 ├── run.sh                    # Entry point: ./run.sh <model-name> [--feedback]
 ├── CLAUDE.md                 # This file
-├── skills/                   # Symlink to ../spike/skills/
+├── skills/                   # Local copies of format documentation
 │   ├── ethos-bin-format.md         # Ethos binary format reference
 │   └── edgetx-ethos-migration.md   # EdgeTX → Ethos concepts
-├── lib/
+├── lib/                      # Self-contained runtime files
 │   ├── etx-parser.py         # Parse .etx YAML → structured data
-│   └── feedback-collector.py # Gather and store feedback
+│   ├── test-model.js         # WASM testing harness
+│   ├── X18RS_FCC.wasm        # Firmware binary (23 MB)
+│   ├── X18RS_FCC_patched.js  # Emscripten WASM wrapper
+│   ├── wasm_radio.bin        # Radio settings required by firmware
+│   └── out.wat               # Decompiled WASM source (143 MB, optional)
+├── reference-models/         # Validated .bin files for comparison
+│   ├── 1chnl.bin             # Minimal model (527 bytes)
 ├── templates/
 │   ├── reverse-engineer.md   # Main prompt template (per-model)
 │   ├── mistakes-and-lessons.md # Common pitfalls and solutions
@@ -164,7 +170,7 @@ cat models/<model>/attempt-*_test_report.json
 cat templates/mistakes-and-lessons.md
 
 # Manual test (don't use run.sh)
-node ../spike/test-model.js models/<model>/attempt-N.bin
+node lib/test-model.js models/<model>/attempt-N.bin
 ```
 
 ---
@@ -179,7 +185,7 @@ node ../spike/test-model.js models/<model>/attempt-N.bin
 - Verify Claude Code CLI is installed: `which claude-code`
 
 **Test harness fails with "wasm_radio.bin not found"**
-- Copy from spike: `cp ../spike/wasm_radio.bin .`
+- Copy from spike: `cp lib/wasm_radio.bin .`
 
 **Firmware test shows "FAIL — sentinel error detected"**
 - Check the Python validator output in `attempt-N_validation.txt`

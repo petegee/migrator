@@ -80,7 +80,7 @@ Fill prompt template           │
      │ │ Claude Code Session (Fresh context)      │ │
      │ │ - Analyze source structure               │ │
      │ │ - Generate attempt-1.bin                 │ │
-     │ │ - Test: ! node ../spike/test-model.js   │ │
+     │ │ - Test: ! node lib/test-model.js   │ │
      │ │ - Review: PASS/FAIL + byte diffs         │ │
      │ │ - Fix issues if needed                   │ │
      │ └──────────────────────────────────────────┘ │
@@ -154,12 +154,19 @@ migrator/
 ├── run.sh                        # Main entry point
 ├── check-setup.sh               # Dependency checker (run this first)
 │
-├── skills/                       # Symlinked to ../spike/skills/
+├── skills/                       # Format documentation (local copies)
 │   ├── ethos-bin-format.md      # Binary format reference
 │   └── edgetx-ethos-migration.md # EdgeTX → Ethos mapping
 │
-├── lib/                          # Utilities
-│   └── etx-parser.py            # Parse EdgeTX YAML → structure
+├── lib/                          # Self-contained runtime files
+│   ├── etx-parser.py            # Parse EdgeTX YAML → structure
+│   ├── test-model.js            # WASM testing harness
+│   ├── X18RS_FCC.wasm           # Firmware binary (23 MB)
+│   ├── X18RS_FCC_patched.js     # Emscripten wrapper
+│   └── wasm_radio.bin           # Radio settings
+│
+├── reference-models/             # Validated .bin files
+│   ├── 1chnl.bin                # Minimal reference
 │
 ├── templates/                    # Prompt and reference docs
 │   ├── reverse-engineer.md      # Main prompt (filled per-model)
@@ -187,7 +194,7 @@ migrator/
 ✓ **Fresh context per attempt** — Each session starts clean but with accumulated lessons  
 ✓ **Automated testing** — Firmware round-trip validation (PASS/FAIL + byte diffs)  
 ✓ **Structured feedback** — Lessons auto-update templates and docs  
-✓ **Reference models** — Compare against working examples (1chnl.bin, test.bin, bamf2)  
+✓ **Reference models** — Compare against working examples (1chnl.bin, shinto.bin)  
 ✓ **Full documentation** — Binary format, EdgeTX mapping, common pitfalls  
 ✓ **Iterative improvement** — Each attempt learns from the last  
 
@@ -210,7 +217,7 @@ cat models/<model>/attempt-N_test_report.json
 hexdump -C models/<model>/attempt-1.bin | head -30
 
 # Re-test an old attempt
-node ../spike/test-model.js models/<model>/attempt-3.bin
+node lib/test-model.js models/<model>/attempt-3.bin
 ```
 
 ## Expected Timeline

@@ -41,26 +41,16 @@ check "templates/" "[ -d templates ]"
 check "models/" "[ -d models ]"
 
 echo ""
-echo "External Dependencies:"
+echo "lib/ (runtime files):"
+check "WASM firmware" "[ -f lib/X18RS_FCC.wasm ]"
+check "WASM JS wrapper" "[ -f lib/X18RS_FCC_patched.js ]"
+check "Test harness" "[ -f lib/test-model.js ]"
+check "Radio settings" "[ -f lib/wasm_radio.bin ]"
+check "Decompiled WAT" "[ -f lib/out.wat ]" 0  # optional, 143 MB
 
-# Spike project
-if [ -d ../spike ]; then
-  echo "  ✓ Spike project"
-  ((PASSED++))
-else
-  echo "  ✗ Spike project (REQUIRED at ../spike/)"
-  ((FAILED++))
-fi
-
-# Firmware files
-check "WASM firmware" "[ -f ../spike/X18RS_FCC.wasm ]"
-check "WASM wrapper" "[ -f ../spike/X18RS_FCC_patched.js ]"
-check "Test harness" "[ -f ../spike/test-model.js ]"
-check "Radio settings" "[ -f ../spike/wasm_radio.bin ]" 0  # optional, can be generated
-
-# Reference models
-check "Reference: 1chnl.bin" "[ -f ../spike/1chnl.bin ]" 0
-check "Reference: test.bin" "[ -f ../spike/test.bin ]" 0
+echo ""
+echo "reference-models/ (known good .bin files):"
+check "Reference: 1chnl.bin" "[ -f reference-models/1chnl.bin ]" 0
 
 echo ""
 echo "System Tools:"

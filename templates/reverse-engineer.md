@@ -1,5 +1,18 @@
 # Reverse Engineer {MODEL} from EdgeTX to Ethos — Attempt {ATTEMPT}
 
+## Before You Begin: Load Reference Documentation
+
+Read these files **now**, before doing anything else — they contain the full format specification:
+
+1. `{DIR}/skills/ethos-bin-format.md` — complete binary format reference (required)
+2. `{DIR}/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos concept mapping (required)
+3. `{DIR}/skills/wasm-radio-emulator.md` — WASM emulator testing API (required)
+4. `{DIR}/templates/mistakes-and-lessons.md` — prior lessons and known pitfalls (required)
+
+Do not proceed to Step 1 until you have read all four files.
+
+---
+
 ## Your Mission
 
 You are reverse-engineering a model from an EdgeTX container (.etx format, a ZIP file) into the Ethos binary format (.bin). 
@@ -82,7 +95,7 @@ See `skills/wasm-radio-emulator.md` for detailed emulator API and testing strate
 
 **Layer 1: Structural Validation (round-trip test)**
 ```bash
-! node ../spike/test-model.js attempt-N.bin
+! node {DIR}/lib/test-model.js attempt-N.bin
 ```
 - Confirms firmware parses the model without assertion failures
 - Byte-for-byte round-trip (0 changes = valid structure)
@@ -106,9 +119,9 @@ Grep firmware logs for channel/mixer output messages.
 
 ## Reference Models
 
-Two fully working examples are available in `../spike/`:
+Three fully working examples are in `{DIR}/reference-models/`:
 
-### 1. `1chnl.bin` (527 bytes, minimal model)
+### 1. `reference-models/1chnl.bin` (527 bytes, minimal model)
 - 1 input: "Inp1"
 - 1 var: "LineName" (100% rate)
 - 1 mix: "Ailerons"
@@ -116,25 +129,17 @@ Two fully working examples are available in `../spike/`:
 
 **Use this to understand the minimal structure.**
 
-### 2. `test.bin` (693 bytes, moderate complexity)
-- 6 inputs with multiple vars
-- 3 mixes
-- More realistic model
-
-**Use this as a complexity reference.**
-
-### 3. `shinto.bin` (5.3 KB, complex model) — LOCAL REFERENCE
+### 2. `reference-models/shinto.bin` (5.3 KB, complex model)
 - Multiple flight modes, logical switches, complex mixes
 - Full-featured realistic model with many features
-- **Located in:** `models/shinto.bin` (this project)
 
 **Use this if your model is complex (50+ features)** — compare byte-for-byte against shinto to debug section ordering or offset errors.
 
 ---
 
 **All reference models have been firmware-validated (PASS, 0 byte changes).**
-- `1chnl.bin` and `test.bin` in `../spike/`
-- `shinto.bin` in `models/`
+- `{DIR}/reference-models/1chnl.bin` — minimal, verified
+- `{DIR}/reference-models/shinto.bin` — complex, verified
 
 ---
 
@@ -189,7 +194,7 @@ Once you have a .bin file, validate it:
 
 ```bash
 # Test against WASM firmware (automatically runs Python validator)
-! node ../spike/test-model.js {MODEL}_attempt_{ATTEMPT}.bin
+! node {DIR}/lib/test-model.js {MODEL}_attempt_{ATTEMPT}.bin
 ```
 
 This will:
@@ -233,7 +238,7 @@ If the test failed:
 3. Compare against reference models (use hex dump to see structure)
 4. Fix the issue in your code
 5. Regenerate the .bin file
-6. Test again: `! node ../spike/test-model.js`
+6. Test again: `! node {DIR}/lib/test-model.js`
 
 Repeat until status = `PASS` and diffCount = 0.
 
@@ -263,7 +268,7 @@ Once firmware test passes, report:
 
 - [ ] Binary file written to `attempt_{ATTEMPT}.bin`
 - [ ] File size > 100 bytes (sanity check)
-- [ ] Run: `! node ../spike/test-model.js attempt_{ATTEMPT}.bin`
+- [ ] Run: `! node {DIR}/lib/test-model.js attempt_{ATTEMPT}.bin`
 - [ ] Test report status = `PASS`
 - [ ] Byte diff count = 0 (identical)
 - [ ] Python validator passes (no errors)
@@ -303,12 +308,12 @@ Check `templates/mistakes-and-lessons.md` for solutions.
 
 ## Files You Have Access To
 
-- `../spike/skills/ethos-bin-format.md` — Complete reference
-- `../spike/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos mapping
-- `../spike/1chnl.bin` — Minimal reference model (527 bytes)
-- `../spike/test.bin` — Moderate reference model (693 bytes)
-- `../spike/test-model.js` — WASM harness testing script
-- `../spike/X18RS_FCC.wasm` — Firmware binary (needed for test harness)
+- `{DIR}/skills/ethos-bin-format.md` — Complete reference
+- `{DIR}/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos mapping
+- `{DIR}/reference-models/1chnl.bin` — Minimal reference model (527 bytes)
+- `{DIR}/lib/test-model.js` — WASM harness testing script
+- `{DIR}/lib/X18RS_FCC.wasm` — Firmware binary (self-contained local copy)
+- `{DIR}/lib/out.wat` — Decompiled WASM source (143 MB) — searchable firmware internals
 - `templates/mistakes-and-lessons.md` — Prior attempt insights
 
 ---

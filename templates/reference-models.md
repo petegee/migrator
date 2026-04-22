@@ -2,7 +2,7 @@
 
 This document catalogs working Ethos .bin files that can serve as templates or comparison points during reverse-engineering.
 
-All reference models are located in `../spike/` and have been **validated** (firmware round-trip test, status=PASS, 0 byte changes).
+All reference models are located in `reference-models/` and have been **validated** (firmware round-trip test, status=PASS, 0 byte changes).
 
 ---
 
@@ -52,79 +52,7 @@ EOF–4         Footer (55 55 55 55) + padding
 
 ---
 
-## 2. **test.bin** (693 bytes)
-
-**Source:** Created from firmware output  
-**Complexity:** Simple (moderate data, no special features)  
-**Build:** 0x25 (Ethos 1.6.x)
-
-### Structure
-
-```
-Model name:     "TEST"
-Inputs:         6 named inputs
-Mixes:          3 ("Ailerons", "Elevator", "Throttle")
-Output channel: 1 ("Out1")
-Flight modes:   Default only
-Trims:          6 standard trims
-RF module:      Present (SR10, R9MINI-O)
-```
-
-### Use This For
-
-- **Multiple inputs and mixes** — more realistic model
-- **RF module structure** — section header and identifier
-- **Mix data encoding** — lines, weights, offsets
-- **Complexity scaling** — still simple, no special functions
-
-### Comparison
-
-Compared to 1chnl.bin:
-- 5 extra inputs → +~150 bytes
-- 2 extra mixes → +~50 bytes
-- Both have RF module (same ~40 bytes)
-
----
-
-## 3. **bamf2_4mix_2Bnames.bin** (865 bytes) ✓ VERIFIED
-
-**Source:** C# migration from EdgeTX  
-**Complexity:** Moderate  
-**Build:** 0x25 (Ethos 1.6.x)
-
-### Structure
-
-```
-Model name:     "bamf2"
-Inputs:         Multiple
-Mixes:          4 named mixes
-Output channels: Multiple
-Flight modes:   Present
-Trims:          6 standard trims
-```
-
-### Status
-
-- ✓ Firmware test: **PASS**
-- ✓ Byte diff: **0 (identical)**
-- ✓ Python validator: **No errors**
-- ✓ Radio test: **Loads successfully**
-
-### Use This For
-
-- **Real-world model example** — generated from C# migration
-- **Proof that generated models work on hardware**
-- **Confidence builder** — this is what we're aiming for
-
-### Lessons from bamf2
-
-- Proper mix naming and data structure
-- Correct input/var encoding
-- Working output channel configuration
-
----
-
-## 4. **shinto.bin** (5,402 bytes, ~5.3K) ✓ VERIFIED COMPLEX
+## 2. **shinto.bin** (5,402 bytes, ~5.3K) ✓ VERIFIED COMPLEX
 
 **Source:** Known good complex model  
 **Complexity:** Complex (multiple inputs, mixes, flight modes, logical switches)  
@@ -174,19 +102,19 @@ Characteristics: Full-featured realistic model
 
 ```bash
 # Hex dump a reference to see byte layout
-hexdump -C ../spike/1chnl.bin | head -30
+hexdump -C reference-models/1chnl.bin | head -30
 
 # Compare your generated model against reference
 hexdump -C your-model.bin > /tmp/yours.hex
-hexdump -C ../spike/test.bin > /tmp/test.hex
-diff /tmp/yours.hex /tmp/test.hex | head -20
+hexdump -C reference-models/1chnl.bin > /tmp/ref.hex
+diff /tmp/yours.hex /tmp/ref.hex | head -20
 ```
 
 ### Validate Against Reference
 
 ```bash
 # Test your model
-! node ../spike/test-model.js your-model.bin
+! node {DIR}/lib/test-model.js your-model.bin
 
 # Check diffs (should be 0 like reference models)
 cat your-model_diff.txt
@@ -196,14 +124,14 @@ cat your-model_diff.txt
 
 If you're stuck:
 1. Start with 1chnl.bin structure (preamble, name, bitmap, config)
-2. Expand to test.bin complexity (inputs, mixes, RF module)
+2. Scale up complexity toward shinto.bin (inputs, mixes, RF module)
 3. Compare byte-for-byte against reference at each step
 
 ### Extract Sections
 
 ```python
 # Read a reference model and extract sections
-with open('../spike/1chnl.bin', 'rb') as f:
+with open('reference-models/1chnl.bin', 'rb') as f:
     data = f.read()
 
 # Header
@@ -231,7 +159,7 @@ When you successfully reverse-engineer a new model:
 
 2. Run tests to confirm:
    ```bash
-   ! node ../spike/test-model.js reference-<model>.bin
+   ! node {DIR}/lib/test-model.js reference-<model>.bin
    ```
 
 3. Add an entry to this document:
@@ -252,9 +180,9 @@ This builds a library that future reverse-engineering attempts can learn from.
 
 ## Troubleshooting with References
 
-**"My model is 300 bytes, but test.bin is 693. What's missing?"**
+**"My model is too small — what's missing?"**
 - Likely missing: inputs, mixes, or sections
-- Compare your generated file hex dump against test.bin
+- Compare your generated file hex dump against 1chnl.bin or shinto.bin
 - Check for footer (55 55 55 55)
 
 **"Firmware test FAIL. Where's the error?"**
@@ -271,16 +199,12 @@ This builds a library that future reverse-engineering attempts can learn from.
 
 ## Files Available
 
-All files in `../spike/` can be analyzed:
+All reference models are in `reference-models/`:
 
 ```bash
-ls -lh ../spike/*.bin
+ls -lh reference-models/*.bin
 ```
 
 Key ones:
-- `1chnl.bin` — minimal, firmware-generated
-- `test.bin` — moderate, working
-- `bamf2_4mix_2Bnames.bin` — real model, radio-verified
-- `wasm_out_*.bin` — firmware round-tripped (identical to input if valid)
-
-Older variants in `models/bamf2/*.bin` show iteration history.
+- `reference-models/1chnl.bin` — minimal, firmware-generated ✓ verified
+- `reference-models/shinto.bin` — complex model (5.3 KB), multiple flight modes and switches ✓ verified

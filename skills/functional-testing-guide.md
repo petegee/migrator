@@ -31,7 +31,7 @@ This guide covers Layers 2 and 3 in the context of model migration.
 
 ```bash
 cd models/{MODEL}/
-node ../../spike/test-model.js attempt-N.bin
+node ../../lib/test-model.js attempt-N.bin
 # Ensures structural validation passes first
 ```
 
@@ -180,10 +180,12 @@ Add entries like:
 const fs   = require('fs');
 const path = require('path');
 
-const SPIKE_DIR  = '/home/pete/source/ethos/spike';
-const PATCHED_JS = path.join(SPIKE_DIR, 'X18RS_FCC_patched.js');
-const RADIO_BIN  = path.join(SPIKE_DIR, 'wasm_radio.bin');
-const MODEL_BIN  = process.argv[2];
+const MIGRATOR_DIR = '/home/pete/source/ethos/migrator';
+const LIB_DIR      = path.join(MIGRATOR_DIR, 'lib');
+const PATCHED_JS   = path.join(LIB_DIR, 'X18RS_FCC_patched.js');
+const RADIO_BIN    = path.join(LIB_DIR, 'wasm_radio.bin');
+const WASM_BIN     = path.join(LIB_DIR, 'X18RS_FCC.wasm');
+const MODEL_BIN    = process.argv[2];
 
 // Browser shims (see wasm-radio-emulator.md)
 global.document = {
@@ -192,16 +194,16 @@ global.document = {
   body: { appendChild:()=>{} }, head: { appendChild:()=>{} }
 };
 global.window   = global; global.self = global;
-global.location = { href:`file://${SPIKE_DIR}/`, origin:'file://' };
+global.location = { href:`file://${LIB_DIR}/`, origin:'file://' };
 global.performance = { now: () => Date.now() };
 global.navigator   = { userAgent:'Node.js', hardwareConcurrency:1 };
 
 const firmwareCode = fs.readFileSync(PATCHED_JS, 'utf8');
 const X18RS_FCC = new Function('require','module','exports','__dirname','__filename',
   firmwareCode+'\nreturn X18RS_FCC;'
-)(require,module,exports,SPIKE_DIR,PATCHED_JS);
+)(require,module,exports,LIB_DIR,PATCHED_JS);
 
-const wasmBinary = fs.readFileSync(path.join(SPIKE_DIR,'X18RS_FCC.wasm'));
+const wasmBinary = fs.readFileSync(WASM_BIN);
 const modelData  = fs.readFileSync(MODEL_BIN);
 const logs = [];
 let testPassed = false;

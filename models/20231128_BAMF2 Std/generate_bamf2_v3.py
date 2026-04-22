@@ -99,25 +99,25 @@ def main():
     # --- Bitmap (16 bytes, empty) ---
     content.extend(b'\x00' * 16)
 
-    # --- Config block (same as generate_minimal.py) ---
+    # --- Config block ---
     content.extend(b'\xff\xff\x30\x31\x00\x00\x00\x01\x00\x00\x00\x00\x00')
     content.append(6)  # 6 trim channels for build 37
-    # Trim blocks: Rudder with FM0 trim value from YAML (-28µs), rest zero
-    content.extend(b'\x02\x19\x00\x02\x01\xe4\xff')  # Rudder: -28µs
-    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # Elevator
-    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # Aileron
-    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # Throttle
-    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # T5
-    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # T6
+    # Trim blocks: all zeros (default Easy mode, no offset) — per-FM trim values encoded in FM blocks (future)
+    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # Rudder:   0µs
+    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # Elevator: 0µs
+    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # Aileron:  0µs
+    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # Throttle: 0µs
+    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # T5:       0µs
+    content.extend(b'\x02\x19\x00\x02\x01\x00\x00')  # T6:       0µs
 
-    # --- Channel slots (exactly as in generate_minimal.py which passes emulator) ---
+    # --- Channel slots ---
     content.extend(b'\x00\x00\x06')                   # separator + count
     content.extend(b'\x00\x01\x02\x03\x04\x05')       # source assignments
     content.extend(b'\x00\x00\x00')                   # padding
     content.extend(b'\x80\x80\x82\xe8\x03\x82\x18\xfc\x80\x01\x00\x00\x00\x00\x00\x00')  # default data
 
-    # First named channel entry (slot 0 = Elev, the primary output)
-    content.extend(b'\x04Out1')   # name "Out1" (matches 1chnl.bin pattern)
+    # First named channel entry (slot 0 = Elev, from source model limitData[0].name)
+    content.extend(b'\x04Elev')   # name "Elev" (first output channel from source model)
     content.extend(b'\x01' * 18)  # flags + data: 18 bytes (total first entry = 23)
 
     # Inactive fill: total channel entry region = 69 bytes; first entry = 23; inactive = 46

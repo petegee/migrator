@@ -13,7 +13,7 @@ When your model fails, use byte-for-byte diff against reference models to unders
 ```bash
 # Compare your failing model against shinto.bin (complex reference)
 python3 -c "
-a = open('models/shinto.bin', 'rb').read()
+a = open('reference-models/shinto.bin', 'rb').read()
 b = open('models/<your-model>/attempt-N.bin', 'rb').read()
 diffs = [(i, f'{a[i]:02x}', f'{b[i]:02x}') for i in range(min(len(a), len(b))) if a[i] != b[i]]
 for off, before, after in diffs[:20]:
@@ -181,7 +181,7 @@ bitmap_bytes = bitmap_str.encode('ascii')[:15]
 bitmap_field = (bitmap_bytes + b'\0' * 16)[:16]  # always 16 bytes
 ```
 
-**Status:** ✓ Verified (Blaster.bin, Weasel.bin, test.bin)
+**Status:** ✓ Verified (Blaster.bin, Weasel.bin)
 
 ---
 
@@ -347,9 +347,68 @@ for name in mix_names:
     content.extend(mix_data_placeholder)
 ```
 
-**Evidence:** Verified in 1chnl.bin (count=1) and test.bin/BAMF2 Strng (count=4). Missing from all generate_minimal.py versions, causing the BAMF2 Std model to not appear in the selection list.
+**Evidence:** Verified in 1chnl.bin (count=1). Missing from all generate_minimal.py versions, causing the BAMF2 Std model to not appear in the selection list.
 
 **Status:** ✓ Verified (BAMF2 Std attempt 1 — adding header made model visible in emulator list)
+
+---
+
+### FreeMix Sentinel — Expected Warning for Placeholder Multi-Mix Models
+
+**Problem:** `Sentinel(FreeMix) check failed` appears in firmware logs when a model has multiple mixes using placeholder/generic data bytes.
+
+**Symptom:** Harness still reports PASS with 0 byte diff; model is structurally valid. Warning logged during firmware model initialization.
+
+**Root Cause:** The firmware's FreeMix pool validator checks that mix destination/source fields point to valid channel assignments. Placeholder mix data (all identical bytes like `01 00 00...`) encodes invalid channel references, triggering the sentinel. With 1 mix (1chnl.bin), the firmware may tolerate it; with 4+ mixes the sentinel consistently fires.
+
+**Solution:** This is NOT a blocker for structural validation. The warning indicates the mix data needs real encoding (destination channel, source, weight) but doesn't prevent firmware parsing. 
+- Accept it for Attempt 1 (structural skeleton)
+- Fix in Attempt 2 by decoding the 30-byte mix data format from `shinto.bin`
+
+**Evidence:** `BAMF2_Std_attempt_1.bin` (25 mixes) passes with 0 diff despite the sentinel.
+
+**Status:** ✓ Verified (non-blocking; known behavior for placeholder mixes)
+
+---
+
+### First Channel Name — Use Source Model's limitData[0].name
+
+**Problem:** First named channel entry in channel slots defaults to "Out1" (firmware internal name) instead of the actual channel name from the source model.
+
+**Symptom:** Harness PASS, but channel appears with wrong name in emulator/radio UI.
+
+**Root Cause:** The channel slots section has exactly one named channel entry (slot 0). Its name should come from the source model's `limitData[0].name` field in the EdgeTX YAML, not from firmware defaults.
+
+**Solution:**
+```python
+# WRONG — uses firmware internal default:
+content.extend(b'\x04Out1')
+
+# CORRECT — use actual channel name from source model:
+first_ch_name = model['limitData'][0].get('name', 'Ch1')
+content.extend(encode_name(first_ch_name))
+```
+
+For BAMF2 Std: `limitData[0].name = 'Elev'` → 4 bytes → `b'\x04Elev'`
+
+**Status:** ✓ Verified (BAMF2 Std attempt 1)
+
+---
+
+### Trim Values — Use 0µs for Attempt 1 (FM0 Values Need Unit Verification)
+
+**Problem:** Using FM-specific trim values from YAML `flightModeData` without verified unit conversion causes incorrect trim encoding.
+
+**Symptom:** Binary has wrong trim bytes; trims behave unexpectedly on radio.
+
+**Root Cause:** EdgeTX stores trim values as integer units (1 unit ≈ 0.5µs or 1µs depending on firmware). Direct use without conversion produces wrong µs values. FM4 elevator trim (-28) was incorrectly applied to Rudder slot.
+
+**Solution:** Use 0µs for all trims in early attempts (safe neutral default, consistent with `1chnl.bin`). Investigate unit conversion before encoding real trim values:
+```python
+b'\x02\x19\x00\x02\x01\x00\x00'  # 0µs, × 6 trims
+```
+
+**Status:** ✓ Verified (0µs default is safe; real trim encoding TBD for Attempt 2+)
 
 ---
 

@@ -115,6 +115,7 @@ sed \
   -e "s|{CONTAINER}|$CONTAINER|g" \
   -e "s|{MODEL}|$MODEL|g" \
   -e "s|{ATTEMPT}|$ATTEMPT|g" \
+  -e "s|{DIR}|$DIR|g" \
   < "$DIR/templates/reverse-engineer.md" > "$PROMPT_FILE"
 
 # Append ETX structure to prompt

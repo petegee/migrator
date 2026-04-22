@@ -7,6 +7,64 @@ For migration from EdgeTX/OpenTX to Ethos, refer to the dedicated migration skil
 
 ---
 
+## 0. Key Primitive Differences and Migration Patterns
+
+### What to Convert vs. Skip
+
+**Convert these:**
+- Inputs (expoData) → Vars (1:1)
+- Mixes (mixData) → Free Mixes
+- Logical switches → Logical switches
+- Curves → Curves
+- Special functions → Special functions
+
+**Skip these entirely — do not attempt conversion:**
+- Timers
+- Telemetry
+- Lua scripts
+- RF settings
+- Checklists
+- Trainer settings
+
+---
+
+### Inputs → Vars
+
+Each EdgeTX input (`expoData` entry) maps 1:1 to an Ethos **Var**. A Var represents a normalized input signal (stick, switch, pot, etc.) and acts as the input-layer abstraction.
+
+Input rates (dual rates, expo) are expressed inside the Var by adding an **action** that sets the rate value conditionally based on a switch or logical switch. There is no separate "rate" concept in Ethos — it lives inside the Var definition.
+
+OpenTX/EdgeTX trims are applied **upstream** (input stage). Ethos applies trims **at the output stage**. Therefore, input-stage trims from EdgeTX must be converted into **Var-level offsets** to preserve functional behavior.
+
+---
+
+### Mixes → Free Mixes
+
+**Critical rule: use only Free Mixes. Never use Ethos built-in specialized mixers (CCPM, vtail, elevon, etc.).**
+
+| EdgeTX | Ethos |
+|---|---|
+| Mix line targets a single `destCh` | Free Mix can target N output channels |
+| Multiple stacked mix lines per channel (ADD/MULT/REPL) | Multiple Free Mixes piped to one output channel (same stacking semantics) |
+| Mix = source + weight + offset + switch + curve | Free Mix = same primitives, same evaluation order |
+
+The stacking of mix lines in EdgeTX (where lines for the same `destCh` accumulate via ADD/MULT/REPL) is replicated in Ethos by having multiple Free Mixes feed the same output channel in sequence.
+
+---
+
+### Overall Conversion Strategy
+
+The conversion produces a **complete Ethos Free Mix network** using only Vars and Free Mixes:
+
+1. **Flatten** all mixer structures into a canonical weighted signal graph before emission.
+2. **Compile** conditional logic and switches into Var-dependent weighting functions.
+3. **Preserve functional behavior** (signal values, switch logic, rates) — not structural similarity to the source model.
+4. Each output channel is defined as a deterministic combination of Vars and intermediate signals.
+
+The result: every channel's output value is a function of Vars (inputs) and Free Mix weights, with no dependency on Ethos-specific built-in mixer types.
+
+---
+
 ## 1. EdgeTX Model File Format
 
 An `.etx` file is a **ZIP archive** containing:

@@ -36,7 +36,7 @@ The script will:
 In the Claude session, Claude will:
 1. Analyze the source structure
 2. Write Python/C# code to generate the .bin file
-3. Test it: `! node ../spike/test-model.js bamf2_attempt_1.bin`
+3. Test it: `! node lib/test-model.js bamf2_attempt_1.bin`
 4. Review the test report (JSON + diff + validation)
 5. Fix issues if needed
 6. Report results
@@ -122,7 +122,7 @@ What happens:
    ```
 4. **Test** immediately:
    ```bash
-   ! node ../spike/test-model.js <model>_attempt_1.bin
+   ! node lib/test-model.js <model>_attempt_1.bin
    ```
 5. **Analyze** the test report:
    - Check `*_test_report.json` → status field
@@ -308,7 +308,7 @@ grep -h "Loaded\|errors\|working" models/<model>/attempt-*_feedback.txt
 ### Re-test an Old Attempt
 
 ```bash
-node ../spike/test-model.js models/<model>/attempt-3.bin
+node lib/test-model.js models/<model>/attempt-3.bin
 ```
 
 ---
@@ -329,8 +329,7 @@ node ../spike/test-model.js models/<model>/attempt-3.bin
    - `templates/mistakes-and-lessons.md` — known pitfalls
 
 4. Use reference models for comparison:
-   - `../spike/1chnl.bin` — minimal structure
-   - `../spike/test.bin` — moderate complexity
+   - `reference-models/1chnl.bin` — minimal structure
 
 ### "Test harness says FAIL"
 
@@ -352,7 +351,7 @@ node ../spike/test-model.js models/<model>/attempt-3.bin
    python3 -c "
    import sys
    a = open('models/<model>/attempt-N.bin', 'rb').read()
-   b = open('../spike/1chnl.bin', 'rb').read()
+   b = open('reference-models/1chnl.bin', 'rb').read()
    for i in range(min(len(a), len(b))):
        if a[i] != b[i]:
            print(f'Diff at 0x{i:04x}: {a[i]:02x} vs {b[i]:02x}')
@@ -390,7 +389,7 @@ For now, each attempt is manual:
 
 ## Best Practices
 
-1. **Use reference models** — Keep 1chnl.bin and test.bin nearby
+1. **Use reference models** — Keep 1chnl.bin and shinto.bin nearby
 2. **Document findings** — Use feedback to improve the prompt
 3. **Test early and often** — Don't wait until the end to validate
 4. **Compare against references** — Byte-for-byte comparisons reveal structure

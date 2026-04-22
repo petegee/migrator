@@ -1,5 +1,18 @@
 # Reverse Engineer BAMF2 Std from EdgeTX to Ethos — Attempt 1
 
+## Before You Begin: Load Reference Documentation
+
+Read these files **now**, before doing anything else — they contain the full format specification:
+
+1. `/home/pete/source/ethos/migrator/skills/ethos-bin-format.md` — complete binary format reference (required)
+2. `/home/pete/source/ethos/migrator/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos concept mapping (required)
+3. `/home/pete/source/ethos/migrator/skills/wasm-radio-emulator.md` — WASM emulator testing API (required)
+4. `/home/pete/source/ethos/migrator/templates/mistakes-and-lessons.md` — prior lessons and known pitfalls (required)
+
+Do not proceed to Step 1 until you have read all four files.
+
+---
+
 ## Your Mission
 
 You are reverse-engineering a model from an EdgeTX container (.etx format, a ZIP file) into the Ethos binary format (.bin). 
@@ -46,7 +59,9 @@ Map these EdgeTX features to Ethos binary structure:
 
 ---
 
-## Reference: Ethos Binary Format
+## Reference Documentation
+
+### Binary Format Reference
 
 All details are in `skills/ethos-bin-format.md`. Key sections:
 
@@ -74,13 +89,39 @@ All details are in `skills/ethos-bin-format.md`. Key sections:
 - **CRC16-CCITT**: polynomial 0x1021, non-reflected, init=0, no final XOR
 - **Names**: Length-prefixed ASCII (1 byte length + N bytes, not null-terminated)
 
+### WASM Radio Emulator Reference
+
+See `skills/wasm-radio-emulator.md` for detailed emulator API and testing strategies. Key points:
+
+**Layer 1: Structural Validation (round-trip test)**
+```bash
+! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-N.bin
+```
+- Confirms firmware parses the model without assertion failures
+- Byte-for-byte round-trip (0 changes = valid structure)
+- **This is your primary validation gate**
+
+**Layer 2: Functional Smoke Test** (optional, advanced)
+The emulator can drive stick/switch inputs and observe trim/switch callbacks:
+```javascript
+M._setAnalogPosition(0, 4095); // Aileron full right
+M._setAnalogPosition(1, 4095); // Elevator full up
+M._setSwitchPosition(0, 2);    // SA down
+// Firmware calls setTrimsValue, setSwitchesPosition callbacks
+```
+
+**Layer 3: Log Analysis** (optional)
+Grep firmware logs for channel/mixer output messages.
+
+**Most migration work uses Layer 1 only** — the round-trip test is sufficient. Use Layer 2/3 if you need detailed functional verification.
+
 ---
 
 ## Reference Models
 
-Two fully working examples are available in `../spike/`:
+Three fully working examples are in `/home/pete/source/ethos/migrator/reference-models/`:
 
-### 1. `1chnl.bin` (527 bytes, minimal model)
+### 1. `reference-models/1chnl.bin` (527 bytes, minimal model)
 - 1 input: "Inp1"
 - 1 var: "LineName" (100% rate)
 - 1 mix: "Ailerons"
@@ -88,14 +129,17 @@ Two fully working examples are available in `../spike/`:
 
 **Use this to understand the minimal structure.**
 
-### 2. `test.bin` (693 bytes, moderate complexity)
-- 6 inputs with multiple vars
-- 3 mixes
-- More realistic model
+### 2. `reference-models/shinto.bin` (5.3 KB, complex model)
+- Multiple flight modes, logical switches, complex mixes
+- Full-featured realistic model with many features
 
-**Use this as a complexity reference.**
+**Use this if your model is complex (50+ features)** — compare byte-for-byte against shinto to debug section ordering or offset errors.
 
-Both are in `../spike/` and have been firmware-validated (PASS, 0 byte changes).
+---
+
+**All reference models have been firmware-validated (PASS, 0 byte changes).**
+- `/home/pete/source/ethos/migrator/reference-models/1chnl.bin` — minimal, verified
+- `/home/pete/source/ethos/migrator/reference-models/shinto.bin` — complex, verified
 
 ---
 
@@ -150,7 +194,7 @@ Once you have a .bin file, validate it:
 
 ```bash
 # Test against WASM firmware (automatically runs Python validator)
-! node ../spike/test-model.js BAMF2 Std_attempt_1.bin
+! node /home/pete/source/ethos/migrator/lib/test-model.js BAMF2 Std_attempt_1.bin
 ```
 
 This will:
@@ -194,7 +238,7 @@ If the test failed:
 3. Compare against reference models (use hex dump to see structure)
 4. Fix the issue in your code
 5. Regenerate the .bin file
-6. Test again: `! node ../spike/test-model.js`
+6. Test again: `! node /home/pete/source/ethos/migrator/lib/test-model.js`
 
 Repeat until status = `PASS` and diffCount = 0.
 
@@ -220,19 +264,29 @@ Once firmware test passes, report:
 
 ## Testing Checklist
 
-Use this to verify your model before claiming success:
+**Minimum (Layer 1 — Structural Validation):**
 
-- [ ] Binary file written to `BAMF2 Std_attempt_1.bin`
+- [ ] Binary file written to `attempt_1.bin`
 - [ ] File size > 100 bytes (sanity check)
-- [ ] Firmware test runs without crashing
-- [ ] Test status = `PASS`
+- [ ] Run: `! node /home/pete/source/ethos/migrator/lib/test-model.js attempt_1.bin`
+- [ ] Test report status = `PASS`
 - [ ] Byte diff count = 0 (identical)
 - [ ] Python validator passes (no errors)
 - [ ] No sentinel errors in logs
-- [ ] **Model loads in the actual WASM emulator without "invalid data" error** ← required
-- [ ] Can describe each major section in the binary
 
-> ⚠ **Harness PASS is not sufficient.** The round-trip harness only tests binary parsing. The WASM emulator's model-selector runs a stricter validation that catches layout errors the parser tolerates. Always confirm in the emulator.
+**Optional (Layer 2 — Functional Smoke Test):**
+
+- [ ] Emulator drives sticks/switches without crashing
+- [ ] Trim and switch callbacks fire as expected
+- [ ] No sentinel errors during input test
+
+**For Full Confidence:**
+
+- [ ] Model loads on actual radio as active model (user must test)
+- [ ] All control surfaces respond correctly
+- [ ] No UI errors or warnings
+
+> **Note:** The round-trip harness (`test-model.js`) is your primary gate. See `skills/wasm-radio-emulator.md` for optional functional testing with stick inputs and callbacks.
 
 ---
 
@@ -254,12 +308,12 @@ Check `templates/mistakes-and-lessons.md` for solutions.
 
 ## Files You Have Access To
 
-- `../spike/skills/ethos-bin-format.md` — Complete reference
-- `../spike/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos mapping
-- `../spike/1chnl.bin` — Minimal reference model (527 bytes)
-- `../spike/test.bin` — Moderate reference model (693 bytes)
-- `../spike/test-model.js` — WASM harness testing script
-- `../spike/X18RS_FCC.wasm` — Firmware binary (needed for test harness)
+- `/home/pete/source/ethos/migrator/skills/ethos-bin-format.md` — Complete reference
+- `/home/pete/source/ethos/migrator/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos mapping
+- `/home/pete/source/ethos/migrator/reference-models/1chnl.bin` — Minimal reference model (527 bytes)
+- `/home/pete/source/ethos/migrator/lib/test-model.js` — WASM harness testing script
+- `/home/pete/source/ethos/migrator/lib/X18RS_FCC.wasm` — Firmware binary (self-contained local copy)
+- `/home/pete/source/ethos/migrator/lib/out.wat` — Decompiled WASM source (143 MB) — searchable firmware internals
 - `templates/mistakes-and-lessons.md` — Prior attempt insights
 
 ---
