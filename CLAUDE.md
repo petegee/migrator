@@ -26,8 +26,7 @@ migrator/
 │   ├── test-model.js         # WASM testing harness
 │   ├── X18RS_FCC.wasm        # Firmware binary (23 MB)
 │   ├── X18RS_FCC_patched.js  # Emscripten WASM wrapper
-│   ├── wasm_radio.bin        # Radio settings required by firmware
-│   └── out.wat               # Decompiled WASM source (143 MB, optional)
+│   └── wasm_radio.bin        # Radio settings required by firmware
 ├── reference-models/         # Validated .bin files for comparison
 │   ├── 1chnl.bin             # Minimal model (527 bytes)
 ├── templates/

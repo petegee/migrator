@@ -25,6 +25,9 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 ETX_FILE="$DIR/$CONTAINER"
 WORK_DIR="$DIR/models/$(basename "$CONTAINER" .etx)_$MODEL"
 
+# Sanitised model name for directory/file naming (spaces → underscores)
+MODEL_SAFE="${MODEL// /_}"
+
 # Verify .etx file exists
 if [ ! -f "$ETX_FILE" ]; then
   echo "ERROR: Container file not found: $ETX_FILE"
@@ -33,26 +36,35 @@ if [ ! -f "$ETX_FILE" ]; then
   exit 1
 fi
 
-echo "[migrator] Container: $CONTAINER"
-echo "[migrator] Model: $MODEL"
-echo "[migrator] Working directory: $WORK_DIR"
-
 # Create work directory
 mkdir -p "$WORK_DIR"
 
-# Calculate attempt number
-ATTEMPT=1
-if [ -d "$WORK_DIR" ]; then
-  # Count existing attempt-*.bin files and increment
-  ATTEMPT=$(($(ls "$WORK_DIR"/attempt-*.bin 2>/dev/null | wc -l) + 1))
-fi
+# Calculate attempt number by counting existing attempt directories
+ATTEMPT=$(($(ls -d "$WORK_DIR/${MODEL_SAFE}_attempt_"* 2>/dev/null | wc -l) + 1))
 
+ATTEMPT_DIR="$WORK_DIR/${MODEL_SAFE}_attempt_${ATTEMPT}"
+
+echo "[migrator] Container: $CONTAINER"
+echo "[migrator] Model: $MODEL"
 echo "[migrator] Attempt: $ATTEMPT"
+echo "[migrator] Attempt directory: $ATTEMPT_DIR"
 
 if [ "$FEEDBACK_MODE" = "--feedback" ]; then
   # Feedback mode: collect feedback from previous attempt
+  PREV=$((ATTEMPT-1))
+  if [ "$PREV" -lt 1 ]; then
+    echo "ERROR: No previous attempt found to give feedback on."
+    exit 1
+  fi
+
+  PREV_DIR="$WORK_DIR/${MODEL_SAFE}_attempt_${PREV}"
+  if [ ! -d "$PREV_DIR" ]; then
+    echo "ERROR: Previous attempt directory not found: $PREV_DIR"
+    exit 1
+  fi
+
   echo ""
-  echo "=== FEEDBACK COLLECTION ==="
+  echo "=== FEEDBACK COLLECTION FOR ATTEMPT $PREV ==="
   echo ""
   echo "Did the model load on the radio? (yes/no)"
   read -r LOADED
@@ -69,9 +81,9 @@ if [ "$FEEDBACK_MODE" = "--feedback" ]; then
   echo "What should we fix? (brief notes)"
   read -r FIXES
 
-  FEEDBACK_FILE="$WORK_DIR/attempt-$((ATTEMPT-1))_feedback.txt"
+  FEEDBACK_FILE="$PREV_DIR/attempt-${PREV}_feedback.txt"
   {
-    echo "=== Feedback for Attempt $((ATTEMPT-1)) ==="
+    echo "=== Feedback for Attempt $PREV ==="
     echo "Date: $(date)"
     echo ""
     echo "Loaded on radio: $LOADED"
@@ -108,9 +120,8 @@ ETX_STRUCTURE="$PARSE_OUTPUT"
 
 # Fill in prompt template
 echo "[migrator] Preparing prompt template..."
-PROMPT_FILE="/tmp/${MODEL}-attempt-${ATTEMPT}-prompt.md"
+PROMPT_FILE="/tmp/${MODEL_SAFE}-attempt-${ATTEMPT}-prompt.md"
 
-# Read template and perform substitutions
 sed \
   -e "s|{CONTAINER}|$CONTAINER|g" \
   -e "s|{MODEL}|$MODEL|g" \
@@ -128,61 +139,33 @@ sed \
   echo '```'
 } >> "$PROMPT_FILE"
 
-echo "[migrator] Prompt ready: $PROMPT_FILE"
+# Create attempt directory and copy prompt into it
+mkdir -p "$ATTEMPT_DIR"
+cp "$PROMPT_FILE" "$ATTEMPT_DIR/PROMPT.md"
+
+echo "[migrator] Prompt ready: $ATTEMPT_DIR/PROMPT.md"
 echo ""
 echo "=== STARTING CLAUDE CODE SESSION ==="
 echo ""
 echo "Session will:"
-echo "  1. Extract model YAML from $CONTAINER"
-echo "  2. Analyze the $MODEL model structure"
-echo "  3. Generate attempt-$ATTEMPT.bin"
-echo "  4. Test with WASM harness"
-echo "  5. Report results"
+echo "  1. Analyze the $MODEL model structure"
+echo "  2. Generate attempt-${ATTEMPT}.bin in $ATTEMPT_DIR"
+echo "  3. Test with WASM harness"
+echo "  4. Report results"
 echo ""
 echo "After Claude finishes:"
-echo "  1. Review the test report in the session output"
-echo "  2. Copy attempt-$ATTEMPT.bin to your radio"
+echo "  1. Review the test report in $ATTEMPT_DIR"
+echo "  2. Copy attempt-${ATTEMPT}.bin to your radio"
 echo "  3. Test the model"
 echo "  4. Run: $0 $CONTAINER $MODEL --feedback"
-echo ""
-echo "Working directory: $WORK_DIR"
 echo ""
 echo "Press ENTER to continue, or Ctrl+C to cancel..."
 read -r
 
-# Start Claude Code session
-# The session will have:
-# - CLAUDE.md as context
-# - The templated prompt
-# - Access to skills/
-# - Working directory set to model dir
-cd "$WORK_DIR"
-
-echo "[migrator] Launching Claude Code..."
+echo "[migrator] Launching Claude Code in: $ATTEMPT_DIR"
 echo ""
 
-# Show the prompt file for reference
-echo "=== PROMPT FOR CLAUDE ==="
-echo ""
-head -30 "$PROMPT_FILE"
-echo ""
-echo "... (see full prompt at $PROMPT_FILE)"
-echo ""
-echo "=== END PROMPT ==="
-echo ""
-
-# Launch claude code with the prompt
-# Copy prompt to working directory so it's accessible
-cp "$PROMPT_FILE" "$WORK_DIR/PROMPT.md"
-
-echo "[migrator] Starting Claude Code session..."
-echo ""
-echo "Prompt copied to: $WORK_DIR/PROMPT.md"
-echo ""
-
-# Start Claude Code in the working directory
-# Pass the prompt via stdin so Claude receives it as the initial message
-cd "$WORK_DIR"
+cd "$ATTEMPT_DIR"
 cat "$PROMPT_FILE" | claude code \
   --dangerously-skip-permissions \
   --add-dir "$DIR"
@@ -191,8 +174,8 @@ echo ""
 echo "[migrator] Claude session complete."
 echo ""
 echo "Check results:"
-echo "  Test report: cat $WORK_DIR/attempt-$ATTEMPT"_test_report.json
-echo "  Binary file: $WORK_DIR/attempt-$ATTEMPT.bin"
+echo "  Test report: $ATTEMPT_DIR/attempt-${ATTEMPT}_test_report.json"
+echo "  Binary file: $ATTEMPT_DIR/attempt-${ATTEMPT}.bin"
 echo ""
 echo "Next: Download the .bin file, test on radio, then:"
 echo "  $0 $CONTAINER $MODEL --feedback"

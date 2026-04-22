@@ -18,7 +18,8 @@ Do not proceed to Step 1 until you have read all four files.
 You are reverse-engineering a model from an EdgeTX container (.etx format, a ZIP file) into the Ethos binary format (.bin). 
 
 **Container:** models/20231128.etx  
-**Model name:** BAMF2 Std
+**Model name:** BAMF2 Std  
+**Output filename:** `attempt-1.bin` ← you MUST use exactly this name
 
 Your goal is to generate a valid Ethos model file that:
 
@@ -27,7 +28,7 @@ Your goal is to generate a valid Ethos model file that:
 3. **Loads on the radio** as an active model without errors
 4. **Produces zero byte changes** after firmware round-trip (firmware should not modify it)
 
-This is **Attempt 1** — you have access to lessons learned from prior attempts (if any) in `templates/mistakes-and-lessons.md`.
+This is **Attempt 1** — you have access to lessons learned from prior attempts (if any) in `/home/pete/source/ethos/migrator/templates/mistakes-and-lessons.md`.
 
 ---
 
@@ -95,7 +96,7 @@ See `skills/wasm-radio-emulator.md` for detailed emulator API and testing strate
 
 **Layer 1: Structural Validation (round-trip test)**
 ```bash
-! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-N.bin
+! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-1.bin
 ```
 - Confirms firmware parses the model without assertion failures
 - Byte-for-byte round-trip (0 changes = valid structure)
@@ -194,7 +195,7 @@ Once you have a .bin file, validate it:
 
 ```bash
 # Test against WASM firmware (automatically runs Python validator)
-! node /home/pete/source/ethos/migrator/lib/test-model.js BAMF2 Std_attempt_1.bin
+! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-1.bin
 ```
 
 This will:
@@ -204,9 +205,9 @@ This will:
 4. Generate JSON report + diff file + validation report
 
 **Check the output:**
-- `BAMF2 Std_attempt_1_test_report.json` — status (PASS/FAIL), diffs
-- `BAMF2 Std_attempt_1_diff.txt` — byte changes
-- `BAMF2 Std_attempt_1_validation.txt` — structure analysis
+- `attempt-1_test_report.json` — status (PASS/FAIL), diffs
+- `attempt-1_diff.txt` — byte changes
+- `attempt-1_validation.txt` — structure analysis
 
 ### Step 5: Interpret Results
 
@@ -266,9 +267,9 @@ Once firmware test passes, report:
 
 **Minimum (Layer 1 — Structural Validation):**
 
-- [ ] Binary file written to `attempt_1.bin`
+- [ ] Binary file written to `attempt-1.bin`
 - [ ] File size > 100 bytes (sanity check)
-- [ ] Run: `! node /home/pete/source/ethos/migrator/lib/test-model.js attempt_1.bin`
+- [ ] Run: `! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-1.bin`
 - [ ] Test report status = `PASS`
 - [ ] Byte diff count = 0 (identical)
 - [ ] Python validator passes (no errors)
@@ -313,7 +314,6 @@ Check `templates/mistakes-and-lessons.md` for solutions.
 - `/home/pete/source/ethos/migrator/reference-models/1chnl.bin` — Minimal reference model (527 bytes)
 - `/home/pete/source/ethos/migrator/lib/test-model.js` — WASM harness testing script
 - `/home/pete/source/ethos/migrator/lib/X18RS_FCC.wasm` — Firmware binary (self-contained local copy)
-- `/home/pete/source/ethos/migrator/lib/out.wat` — Decompiled WASM source (143 MB) — searchable firmware internals
 - `templates/mistakes-and-lessons.md` — Prior attempt insights
 
 ---

@@ -1,0 +1,211 @@
+{
+  "timestamp": "2026-04-22T01:01:21.535Z",
+  "modelFile": "shinto.bin",
+  "modelSize": 5418,
+  "elapsedMs": 5311,
+  "status": "PASS",
+  "reason": "model read successfully",
+  "firmwareLogsCount": 45,
+  "errorCount": 0,
+  "filesProcessed": 1,
+  "diffs": {
+    "model00.bin": {
+      "inputLen": 5418,
+      "outputLen": 5310,
+      "diffCount": 37,
+      "diffs": [
+        {
+          "offset": "0x0008",
+          "before": "0x1a",
+          "after": "0xae"
+        },
+        {
+          "offset": "0x0009",
+          "before": "0x15",
+          "after": "0x14"
+        },
+        {
+          "offset": "0x000e",
+          "before": "0x1f",
+          "after": "0xfa"
+        },
+        {
+          "offset": "0x000f",
+          "before": "0x90",
+          "after": "0x8c"
+        },
+        {
+          "offset": "0x0f45",
+          "before": "0xee",
+          "after": "0x20"
+        },
+        {
+          "offset": "0x0f46",
+          "before": "0x02",
+          "after": "0x03"
+        },
+        {
+          "offset": "0x0fc6",
+          "before": "0x26",
+          "after": "0x58"
+        },
+        {
+          "offset": "0x138e",
+          "before": "0x01",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x13d6",
+          "before": "0x01",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x1414",
+          "before": "0x01",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x1498",
+          "before": "0x64",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x1499",
+          "before": "0x65",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x149a",
+          "before": "0x76",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x149b",
+          "before": "0x6d",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x149c",
+          "before": "0x6f",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x149d",
+          "before": "0x6e",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x149e",
+          "before": "0x31",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14a0",
+          "before": "0x6c",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14a2",
+          "before": "0x02",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14a3",
+          "before": "0x07",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14a5",
+          "before": "0x00",
+          "after": "0x50"
+        },
+        {
+          "offset": "0x14a6",
+          "before": "0x00",
+          "after": "0x55"
+        },
+        {
+          "offset": "0x14a7",
+          "before": "0x02",
+          "after": "0x01"
+        },
+        {
+          "offset": "0x14a8",
+          "before": "0xff",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14a9",
+          "before": "0xff",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14aa",
+          "before": "0xff",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14ab",
+          "before": "0xff",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14ac",
+          "before": "0x02",
+          "after": "0x04"
+        },
+        {
+          "offset": "0x14ad",
+          "before": "0x08",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14b1",
+          "before": "0x02",
+          "after": "0xa1"
+        },
+        {
+          "offset": "0x14b2",
+          "before": "0x01",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14b4",
+          "before": "0x00",
+          "after": "0x04"
+        },
+        {
+          "offset": "0x14b6",
+          "before": "0x02",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14b7",
+          "before": "0x04",
+          "after": "0x00"
+        },
+        {
+          "offset": "0x14ba",
+          "before": "0x00",
+          "after": "0x1d"
+        },
+        {
+          "offset": "0x14bb",
+          "before": "0x02",
+          "after": "0x04"
+        },
+        {
+          "offset": "0x14bc",
+          "before": "0x01",
+          "after": "0x6e"
+        }
+      ]
+    }
+  },
+  "validation": {},
+  "summary": {
+    "identical": 0,
+    "modified": 1,
+    "failed": 0
+  }
+}

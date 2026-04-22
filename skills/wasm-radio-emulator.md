@@ -5,7 +5,6 @@
 The emulator is the FrSky Ethos firmware (`X18RS_FCC.wasm`) compiled to WebAssembly via Emscripten. It runs a fully functional radio simulator in Node.js or a browser. The JavaScript wrapper (`X18RS_FCC_patched.js`) bridges JS ↔ WASM.
 
 **WASM firmware binary:** `lib/X18RS_FCC.wasm` (self-contained copy in this migrator project)  
-**Decompiled WAT source:** `lib/out.wat` (143 MB human-readable WebAssembly text — useful for understanding firmware internals)  
 **All runtime files (wrapper, harness, radio settings):** `lib/` (self-contained local copies)
 
 **Primary use in migration work:**
@@ -21,7 +20,6 @@ The emulator is the FrSky Ethos firmware (`X18RS_FCC.wasm`) compiled to WebAssem
 | File | Location | Purpose |
 |------|----------|---------|
 | `X18RS_FCC.wasm` | `migrator/lib/` | Firmware binary (23 MB, Ethos X18RS FCC variant) |
-| `out.wat` | `migrator/lib/` | Decompiled WAT source (143 MB) — human-readable firmware internals |
 | `X18RS_FCC_patched.js` | `spike/` | Emscripten JS wrapper — **use this one** (has patched exports) |
 | `X18RS_FCC.js` | `spike/` | Original wrapper (less reliable for Node.js) |
 | `wasm_radio.bin` | `spike/` | Radio settings file — **required** at init time |

@@ -13,7 +13,6 @@ migrator/
 │   ├── X18RS_FCC_patched.js    # Emscripten WASM wrapper
 │   ├── test-model.js           # WASM testing harness
 │   ├── wasm_radio.bin          # Radio settings (required by firmware)
-│   ├── out.wat                 # Decompiled WASM source (143 MB, optional)
 │   └── etx-parser.py           # EdgeTX .etx parser
 ├── reference-models/
 │   ├── 1chnl.bin               # Minimal validated model
@@ -65,7 +64,6 @@ Used to start new sessions for each model.
 | Dependency | Location | Used For | Why? |
 |------------|----------|----------|------|
 | X18RS_FCC.wasm | `lib/` | WASM firmware | Self-contained local copy |
-| out.wat | `lib/` | Decompiled firmware source | Human-readable WAT for debugging |
 | X18RS_FCC_patched.js | `lib/` | WASM wrapper | Exposes firmware API |
 | test-model.js | `lib/` | Testing harness | Validates generated .bin files |
 | wasm_radio.bin | `lib/` | Firmware input | Pre-captured valid radio settings |
@@ -85,7 +83,6 @@ echo "Checking dependencies..."
 # Spike project
 [ -d ../spike ] && echo "✓ Spike project found" || echo "✗ Spike project missing"
 [ -f lib/X18RS_FCC.wasm ] && echo "✓ WASM firmware found (local)" || echo "✗ WASM firmware missing (lib/X18RS_FCC.wasm)"
-[ -f lib/out.wat ] && echo "✓ Decompiled WAT found (local)" || echo "⊘ out.wat not found (optional)"
 [ -f lib/test-model.js ] && echo "✓ Test harness found" || echo "✗ Test harness missing"
 
 # Python and YAML

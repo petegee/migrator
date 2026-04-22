@@ -46,7 +46,6 @@ check "WASM firmware" "[ -f lib/X18RS_FCC.wasm ]"
 check "WASM JS wrapper" "[ -f lib/X18RS_FCC_patched.js ]"
 check "Test harness" "[ -f lib/test-model.js ]"
 check "Radio settings" "[ -f lib/wasm_radio.bin ]"
-check "Decompiled WAT" "[ -f lib/out.wat ]" 0  # optional, 143 MB
 
 echo ""
 echo "reference-models/ (known good .bin files):"

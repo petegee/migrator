@@ -353,21 +353,41 @@ for name in mix_names:
 
 ---
 
-### FreeMix Sentinel — Expected Warning for Placeholder Multi-Mix Models
+### FreeMix Sentinel — Suppressed by Unique Per-Channel Mix Data
 
-**Problem:** `Sentinel(FreeMix) check failed` appears in firmware logs when a model has multiple mixes using placeholder/generic data bytes.
+**Problem:** `Sentinel(FreeMix) check failed` appears in firmware logs when multiple mix entries have identical data bytes.
 
-**Symptom:** Harness still reports PASS with 0 byte diff; model is structurally valid. Warning logged during firmware model initialization.
+**Symptom:** Harness PASS with 0 diff, but sentinel warning in firmware log. With 25 identical entries, fires consistently.
 
-**Root Cause:** The firmware's FreeMix pool validator checks that mix destination/source fields point to valid channel assignments. Placeholder mix data (all identical bytes like `01 00 00...`) encodes invalid channel references, triggering the sentinel. With 1 mix (1chnl.bin), the firmware may tolerate it; with 4+ mixes the sentinel consistently fires.
+**Root Cause:** The firmware's FreeMix pool validator requires each entry to be unique. With all 25 mixes having identical placeholder bytes (`01 00 00 00 00 00 00 01 01...`), the pool detects duplicates and fires the sentinel.
 
-**Solution:** This is NOT a blocker for structural validation. The warning indicates the mix data needs real encoding (destination channel, source, weight) but doesn't prevent firmware parsing. 
-- Accept it for Attempt 1 (structural skeleton)
-- Fix in Attempt 2 by decoding the 30-byte mix data format from `shinto.bin`
+**Solution:** Encode unique bytes 4-7 per mix entry using destination channel and rank within that channel group:
 
-**Evidence:** `BAMF2_Std_attempt_1.bin` (25 mixes) passes with 0 diff despite the sentinel.
+```python
+SECONDARY_SEQ = [0x08, 0x0e, 0x11, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
 
-**Status:** ✓ Verified (non-blocking; known behavior for placeholder mixes)
+def make_mix_data(dest_ch: int, rank_in_group: int) -> bytes:
+    sec_byte = SECONDARY_SEQ[rank_in_group % len(SECONDARY_SEQ)]
+    ch_byte = dest_ch + 1  # 1-indexed
+    prefix = bytes([0x01, 0x00, 0x00, 0x00,  # constant header
+                    0x01,                      # mix type
+                    ch_byte,                   # dest channel (1-indexed)
+                    sec_byte,                  # rank within channel group
+                    0x00])                     # padding
+    suffix = bytes([0x00, 0x00, 0x00, 0x01, 0x00, 0x01,
+                    0x00, 0x00, 0x00, 0x81, 0x64, 0x01,
+                    0x80, 0x01, 0x00, 0x00, 0x00, 0x00,
+                    0x00, 0x00, 0x00, 0x00])  # 22 bytes
+    return prefix + suffix  # 30 bytes
+```
+
+Track channel rank by grouping mixes by dest channel, incrementing rank per entry in the group.
+
+**Evidence:** BAMF2 Std v4 (25 mixes across 9 dest channels): PASS, 0 errors, 0 sentinel in firmware log.
+
+**Note:** Bytes 0-3 (`01 00 00 00`) and 8-29 are still placeholders. Only bytes 4-7 need to be unique — the pool validator only checks those fields for uniqueness/validity.
+
+**Status:** ✓ Verified (BAMF2 Std, 25 mixes, build 37)
 
 ---
 

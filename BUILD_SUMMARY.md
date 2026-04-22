@@ -121,7 +121,6 @@ cp ~/path/to/model.etx models/model/
 
 The migrator contains self-contained copies and references spike for JS tooling:
 - **`lib/X18RS_FCC.wasm`** — Firmware binary (local self-contained copy, 23 MB)
-- **`lib/out.wat`** — Decompiled WASM source (local, 143 MB) — human-readable firmware internals
 - **`test-model.js`** — Firmware testing harness at lib/test-model.js
 - **`X18RS_FCC_patched.js`** — WASM JS wrapper at lib/X18RS_FCC_patched.js
 - **`wasm_radio.bin`** — Reference radio settings at lib/wasm_radio.bin

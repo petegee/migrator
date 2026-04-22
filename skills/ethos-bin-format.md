@@ -410,22 +410,75 @@ Record 1 at content[0x137]:
 
 ## 10. Mix Entries
 
-Each mix line:
+### Mix Section Header (REQUIRED)
+
+Before the first mix entry, a 9-byte header must appear:
+
+```
+80 80 [count] 00 05 00 00 00 01
+```
+
+Where `count` = number of mix entries (uint8). **This header is mandatory.** Without it, the firmware cannot locate or count the mix entries, and the model will not appear in the model selection list.
+
+### Entry Format
+
+Each mix entry:
 ```
 [0]      name_len   uint8
 [1..N]   name       ASCII
 [N+1..N+4]  switch  4 bytes: FF FF FF FF = no switch (NONE)
-                              other values = switch condition
-[N+5..]  data       variable (mix weights, curve, flight modes, etc.)
+[N+5..N+34] data    30 bytes (see below)
 ```
 
-**Switch field:**
-- `FF FF FF FF` = NONE (no switch condition)
+**Separator between entries:** byte `0x01` appears **between** entries — NOT before the first entry.
+
+```python
+for i, name in enumerate(mix_names):
+    if i > 0:
+        content.append(0x01)     # separator BETWEEN entries only
+    content.extend(encode_name(name))
+    content.extend(b'\xff\xff\xff\xff')  # switch NONE
+    content.extend(mix_data_30_bytes)
+```
+
+### 30-Byte Mix Data Block
+
+```
+Bytes 0–3:  01 00 00 00       — constant header
+Byte 4:     0x01              — mix type (FreeMix = 0x01)
+Byte 5:     dest_ch + 1       — destination channel, 1-indexed
+Byte 6:     secondary code    — rank within channel group (see below)
+Byte 7:     0x00              — padding
+Bytes 8–29: [22 bytes]        — source, weight, FM mask, curve (not yet fully decoded)
+```
+
+**Bytes 4–7 are the FreeMix pool identity fields.** The firmware requires each entry to be unique in these bytes. If all entries are identical the firmware logs `Sentinel(FreeMix) check failed`.
+
+**Secondary code (byte 6) by rank within a dest channel group:**
+```python
+SECONDARY_SEQ = [0x08, 0x0e, 0x11, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
+# rank 0 → 0x08, rank 1 → 0x0e, rank 2 → 0x11, rank 3 → 0x00, ...
+```
+
+**Working placeholder for bytes 8–29** (verified with build 37, 25-mix model):
+```python
+suffix = bytes([0x00, 0x00, 0x00, 0x01, 0x00, 0x01,
+                0x00, 0x00, 0x00, 0x81, 0x64, 0x01,
+                0x80, 0x01, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00])
+```
+
+**Example — 3 mixes all targeting dest channel 0 (Elev):**
+```python
+# rank 0: 01 00 00 00  01 01 08 00  [suffix]
+# rank 1: 01 00 00 00  01 01 0e 00  [suffix]
+# rank 2: 01 00 00 00  01 01 11 00  [suffix]
+```
 
 **Example (test.bin, "Ailerons" mix):**
 ```
 08 41 69 6C 65 72 6F 6E 73  FF FF FF FF  01 00 00 00 00 00 00 04 01 05 06 07  81 64 00 ...
-↑len  └──── "Ailerons" ────┘  └── NONE ──┘  └──────────── mix data ────────────┘
+↑len  └──── "Ailerons" ────┘  └── NONE ──┘  └──────────── 30-byte mix data ──────────────┘
 ```
 
 ---
@@ -560,7 +613,6 @@ is well-formed.
 
 In `migrator/lib/`:
 - `X18RS_FCC.wasm` — firmware binary (self-contained local copy, 23 MB)
-- `out.wat` — decompiled WebAssembly text (143 MB) — human-readable firmware source, useful for understanding internal field names and struct layouts
 
 In `migrator/lib/`:
 - `X18RS_FCC_patched.js` — patched Emscripten wrapper (exposes `_writeDefaultSettingsAndModel`, `_start`)
