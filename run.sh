@@ -66,29 +66,66 @@ if [ "$FEEDBACK_MODE" = "--feedback" ]; then
   echo ""
   echo "=== FEEDBACK COLLECTION FOR ATTEMPT $PREV ==="
   echo ""
-  echo "Did the model load on the radio? (yes/no)"
-  read -r LOADED
+  echo "--- Part 1: Model visible on select screen ---"
+  echo "Did the model appear in the model select list on the radio? (yes/no)"
+  read -r PART1_VISIBLE
 
-  echo ""
-  echo "Any errors in the UI or control responses? (describe)"
-  read -r ERRORS
+  if [ "$PART1_VISIBLE" = "no" ]; then
+    echo ""
+    echo "Model was not visible on the select screen."
+    echo "What did you see instead? (e.g. blank list, error message, corrupted entry)"
+    read -r PART1_DETAIL
+    PART2_SELECTED="n/a (model not visible)"
+    PART2_INVALID_DATA="n/a"
+    PART2_DETAIL=""
+    SECTIONS_OK="none"
+    FIXES="Model not visible on select screen: $PART1_DETAIL"
+  else
+    PART1_DETAIL="appeared normally"
 
-  echo ""
-  echo "Which sections worked? (inputs/mixes/trims/outputs - comma separated, or 'all')"
-  read -r SECTIONS_OK
+    echo ""
+    echo "--- Part 2: Model loads on selection ---"
+    echo "After selecting the model, did it load without an 'Invalid Data' error? (yes/no)"
+    read -r PART2_SELECTED
 
-  echo ""
-  echo "What should we fix? (brief notes)"
-  read -r FIXES
+    if [ "$PART2_SELECTED" = "no" ]; then
+      PART2_INVALID_DATA="yes"
+      echo ""
+      echo "What error was shown? (exact text if possible)"
+      read -r PART2_DETAIL
+      SECTIONS_OK="none"
+      echo ""
+      echo "What should we fix? (brief notes)"
+      read -r FIXES
+    else
+      PART2_INVALID_DATA="no"
+      PART2_DETAIL="loaded cleanly"
+
+      echo ""
+      echo "--- Functional check ---"
+      echo "Which sections worked correctly? (inputs/mixes/trims/outputs - comma separated, or 'all')"
+      read -r SECTIONS_OK
+
+      echo ""
+      echo "Any errors in control responses or UI behaviour? (describe, or 'none')"
+      read -r ERRORS
+
+      echo ""
+      echo "What should we fix? (brief notes, or 'nothing')"
+      read -r FIXES
+    fi
+  fi
 
   FEEDBACK_FILE="$PREV_DIR/attempt-${PREV}_feedback.txt"
   {
     echo "=== Feedback for Attempt $PREV ==="
     echo "Date: $(date)"
     echo ""
-    echo "Loaded on radio: $LOADED"
-    echo "Errors: $ERRORS"
+    echo "Part 1 — model visible on select screen: $PART1_VISIBLE ($PART1_DETAIL)"
+    echo "Part 2 — model loaded without Invalid Data: $PART2_SELECTED ($PART2_DETAIL)"
+    echo "Invalid Data error shown: $PART2_INVALID_DATA"
     echo "Sections working: $SECTIONS_OK"
+    if [ -n "$ERRORS" ]; then echo "Control/UI errors: $ERRORS"; fi
     echo "Fixes needed: $FIXES"
   } | tee "$FEEDBACK_FILE"
 

@@ -1,0 +1,8 @@
+=== Feedback for Attempt 2 ===
+Date: Wed 22 Apr 2026 20:41:41 NZST
+
+Part 1 — model visible on select screen: yes (appeared normally)
+Part 2 — model loaded without Invalid Data: no (Invalid Data)
+Invalid Data error shown: yes
+Sections working: none
+Fixes needed: fix the invalid data error, so i can check the mixes, vars, outputs etc - eg the rest of the conversion

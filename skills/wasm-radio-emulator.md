@@ -20,12 +20,10 @@ The emulator is the FrSky Ethos firmware (`X18RS_FCC.wasm`) compiled to WebAssem
 | File | Location | Purpose |
 |------|----------|---------|
 | `X18RS_FCC.wasm` | `migrator/lib/` | Firmware binary (23 MB, Ethos X18RS FCC variant) |
-| `X18RS_FCC_patched.js` | `spike/` | Emscripten JS wrapper — **use this one** (has patched exports) |
-| `X18RS_FCC.js` | `spike/` | Original wrapper (less reliable for Node.js) |
-| `wasm_radio.bin` | `spike/` | Radio settings file — **required** at init time |
-| `test-model.js` | `spike/` | Main validation harness — run this for migration testing |
-| `run-ethos.js` | `spike/` | Interactive runner for manual exploration |
-| `probe-exports.js` | `spike/` | Enumerate all WASM exports |
+| `X18RS_FCC_patched.js` | `migrator/lib/` | Emscripten JS wrapper (has patched exports) |
+| `wasm_radio.bin` | `migrator/lib/` | Radio settings file — **required** at init time |
+| `test-model.js` | `migrator/lib/` | Main validation harness — run this for migration testing |
+| `out.wat` | `migrator/lib/` | Decompiled WASM source (143 MB) — searchable firmware internals |
 
 ---
 
@@ -48,15 +46,18 @@ Outputs written to the same directory as the `.bin`:
 | `<model>_validation.txt` | Python structural validator output |
 | `wasm_out_<model>.bin` | What the firmware wrote back after loading your model |
 
-**Pass criteria:**
-- `status: "PASS"` — firmware logged `ModelData::read` (model parsed successfully)
-- `diffCount: 0` — firmware re-saved identical bytes (no normalisation needed)
-- No sentinel errors in stderr
+**Two-part loading — both must pass:**
 
-**Fail signals:**
-- `status: "FAIL"` — stderr contains `Sentinel` or `check failed`
-- `diffCount > 0` — firmware modified the model (wrong field values or structure)
-- `status: "UNKNOWN"` — firmware exited before reading the model (likely crash or bad header)
+| Part | What it means | Pass signal | Fail signal |
+|------|--------------|-------------|-------------|
+| **Part 1** — model visible on select screen | The .bin file was found, header parsed, model appears in the firmware's model list | `ModelData::read(...)` in logs | No `ModelData::read` / `UNKNOWN` |
+| **Part 2** — model loads on selection | Model is selected and starts without content errors | No `Invalid Data` in logs | `Invalid Data` visible in emulator UI / logs |
+
+**Overall status:**
+- `status: "PASS"` — both parts passed; `part1ModelVisible: true`, `part2ModelLoaded: true`
+- `status: "FAIL"` — sentinel error, or Part 1 passed but Part 2 failed (Invalid Data)
+- `status: "UNKNOWN"` — firmware exited before reading the model (bad header/crash)
+- `diffCount: 0` — firmware re-saved identical bytes (no normalisation needed; check this after PASS)
 
 ---
 
@@ -127,7 +128,7 @@ onRuntimeInitialized() {
   // Create directory
   try { FS.mkdir('/models'); } catch(e) {}
 
-  // Write radio settings (required — firmware won't boot without this)
+  // Write radio settings (required — firmware won't boot without this; RADIO_BIN from LIB_DIR)
   FS.writeFile('/radio.bin', new Uint8Array(fs.readFileSync(RADIO_BIN)));
 
   // Write your model into slot 0
@@ -425,14 +426,14 @@ global.document = {
   body: { appendChild:()=>{} }, head: { appendChild:()=>{} }
 };
 global.window   = global; global.self = global;
-global.location = { href:`file://${SPIKE_DIR}/`, origin:'file://' };
+global.location = { href:`file://${LIB_DIR}/`, origin:'file://' };
 global.performance = { now: () => Date.now() };
 global.navigator   = { userAgent:'Node.js', hardwareConcurrency:1 };
 
 const firmwareCode = fs.readFileSync(PATCHED_JS, 'utf8');
 const X18RS_FCC = new Function('require','module','exports','__dirname','__filename',
   firmwareCode+'\nreturn X18RS_FCC;'
-)(require,module,exports,SPIKE_DIR,PATCHED_JS);
+)(require,module,exports,LIB_DIR,PATCHED_JS);
 
 const wasmBinary = fs.readFileSync(WASM_BIN);
 const modelData  = fs.readFileSync(MODEL_BIN);

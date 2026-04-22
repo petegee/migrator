@@ -1,13 +1,13 @@
-# Reverse Engineer {MODEL} from EdgeTX to Ethos — Attempt {ATTEMPT}
+# Reverse Engineer BAMF2 Std from EdgeTX to Ethos — Attempt 2
 
 ## Before You Begin: Load Reference Documentation
 
 Read these files **now**, before doing anything else — they contain the full format specification:
 
-1. `{DIR}/skills/ethos-bin-format.md` — complete binary format reference (required)
-2. `{DIR}/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos concept mapping (required)
-3. `{DIR}/skills/wasm-radio-emulator.md` — WASM emulator testing API (required)
-4. `{DIR}/templates/mistakes-and-lessons.md` — prior lessons and known pitfalls (required)
+1. `/home/pete/source/ethos/migrator/skills/ethos-bin-format.md` — complete binary format reference (required)
+2. `/home/pete/source/ethos/migrator/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos concept mapping (required)
+3. `/home/pete/source/ethos/migrator/skills/wasm-radio-emulator.md` — WASM emulator testing API (required)
+4. `/home/pete/source/ethos/migrator/templates/mistakes-and-lessons.md` — prior lessons and known pitfalls (required)
 
 Do not proceed to Step 1 until you have read all four files.
 
@@ -17,9 +17,9 @@ Do not proceed to Step 1 until you have read all four files.
 
 You are reverse-engineering a model from an EdgeTX container (.etx format, a ZIP file) into the Ethos binary format (.bin). 
 
-**Container:** {CONTAINER}  
-**Model name:** {MODEL}  
-**Output filename:** `attempt-{ATTEMPT}.bin` ← you MUST use exactly this name
+**Container:** models/20231128.etx  
+**Model name:** BAMF2 Std  
+**Output filename:** `attempt-2.bin` ← you MUST use exactly this name
 
 Your goal is to generate a valid Ethos model file that:
 
@@ -28,11 +28,11 @@ Your goal is to generate a valid Ethos model file that:
 3. **Loads on the radio** as an active model without errors
 4. **Produces zero byte changes** after firmware round-trip (firmware should not modify it)
 
-This is **Attempt {ATTEMPT}** — you have access to lessons learned from prior attempts (if any) in `{DIR}/templates/mistakes-and-lessons.md`.
+This is **Attempt 2** — you have access to lessons learned from prior attempts (if any) in `/home/pete/source/ethos/migrator/templates/mistakes-and-lessons.md`.
 
 ---
 
-## Source Model: {MODEL}
+## Source Model: BAMF2 Std
 
 ### Structure Summary
 
@@ -96,7 +96,7 @@ See `skills/wasm-radio-emulator.md` for detailed emulator API and testing strate
 
 **Layer 1: Structural Validation (round-trip test)**
 ```bash
-! node {DIR}/lib/test-model.js attempt-{ATTEMPT}.bin
+! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-2.bin
 ```
 - Confirms firmware parses the model without assertion failures
 - Byte-for-byte round-trip (0 changes = valid structure)
@@ -120,7 +120,7 @@ Grep firmware logs for channel/mixer output messages.
 
 ## Reference Models
 
-Three fully working examples are in `{DIR}/reference-models/`:
+Three fully working examples are in `/home/pete/source/ethos/migrator/reference-models/`:
 
 ### 1. `reference-models/1chnl.bin` (527 bytes, minimal model)
 - 1 input: "Inp1"
@@ -139,8 +139,8 @@ Three fully working examples are in `{DIR}/reference-models/`:
 ---
 
 **All reference models have been firmware-validated (PASS, 0 byte changes).**
-- `{DIR}/reference-models/1chnl.bin` — minimal, verified
-- `{DIR}/reference-models/shinto.bin` — complex, verified
+- `/home/pete/source/ethos/migrator/reference-models/1chnl.bin` — minimal, verified
+- `/home/pete/source/ethos/migrator/reference-models/shinto.bin` — complex, verified
 
 ---
 
@@ -195,7 +195,7 @@ Once you have a .bin file, validate it:
 
 ```bash
 # Test against WASM firmware (automatically runs Python validator)
-! node {DIR}/lib/test-model.js attempt-{ATTEMPT}.bin
+! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-2.bin
 ```
 
 This will:
@@ -205,9 +205,9 @@ This will:
 4. Generate JSON report + diff file + validation report
 
 **Check the output:**
-- `attempt-{ATTEMPT}_test_report.json` — status (PASS/FAIL), diffs
-- `attempt-{ATTEMPT}_diff.txt` — byte changes
-- `attempt-{ATTEMPT}_validation.txt` — structure analysis
+- `attempt-2_test_report.json` — status (PASS/FAIL), diffs
+- `attempt-2_diff.txt` — byte changes
+- `attempt-2_validation.txt` — structure analysis
 
 ### Step 5: Interpret Results
 
@@ -250,7 +250,7 @@ If the test failed:
 3. Compare against reference models (use hex dump to see structure)
 4. Fix the issue in your code
 5. Regenerate the .bin file
-6. Test again: `! node {DIR}/lib/test-model.js`
+6. Test again: `! node /home/pete/source/ethos/migrator/lib/test-model.js`
 
 Repeat until status = `PASS` and diffCount = 0.
 
@@ -278,9 +278,9 @@ Once firmware test passes, report:
 
 **Minimum (Layer 1 — Structural Validation):**
 
-- [ ] Binary file written to `attempt-{ATTEMPT}.bin`
+- [ ] Binary file written to `attempt-2.bin`
 - [ ] File size > 100 bytes (sanity check)
-- [ ] Run: `! node {DIR}/lib/test-model.js attempt-{ATTEMPT}.bin`
+- [ ] Run: `! node /home/pete/source/ethos/migrator/lib/test-model.js attempt-2.bin`
 - [ ] `part1ModelVisible: true` — model appeared on select screen (`ModelData::read` in logs)
 - [ ] `part2ModelLoaded: true` — model loaded without `Invalid Data` error
 - [ ] Test report overall `status = PASS`
@@ -322,11 +322,11 @@ Check `templates/mistakes-and-lessons.md` for solutions.
 
 ## Files You Have Access To
 
-- `{DIR}/skills/ethos-bin-format.md` — Complete reference
-- `{DIR}/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos mapping
-- `{DIR}/reference-models/1chnl.bin` — Minimal reference model (527 bytes)
-- `{DIR}/lib/test-model.js` — WASM harness testing script
-- `{DIR}/lib/X18RS_FCC.wasm` — Firmware binary (self-contained local copy)
+- `/home/pete/source/ethos/migrator/skills/ethos-bin-format.md` — Complete reference
+- `/home/pete/source/ethos/migrator/skills/edgetx-ethos-migration.md` — EdgeTX→Ethos mapping
+- `/home/pete/source/ethos/migrator/reference-models/1chnl.bin` — Minimal reference model (527 bytes)
+- `/home/pete/source/ethos/migrator/lib/test-model.js` — WASM harness testing script
+- `/home/pete/source/ethos/migrator/lib/X18RS_FCC.wasm` — Firmware binary (self-contained local copy)
 - `templates/mistakes-and-lessons.md` — Prior attempt insights
 
 ---
@@ -352,3 +352,78 @@ Once complete, save your findings. The next attempt will start fresh but with le
 The parsed model structure is shown below. Begin with Step 1: Analyze.
 
 Good luck! 🚀
+
+## Parsed Model Structure
+
+```
+Model: BAMF2 Std
+Container: 20231128.etx
+Source YAML: BAMF2 Std.yml (searched by header.name)
+
+=== INPUTS (Expo) ===
+  Ailero: 0 line(s)
+  CrowDi: 0 line(s)
+  Elevat: 0 line(s)
+  Rudder: 0 line(s)
+  Thottl: 0 line(s)
+Total: 5
+
+=== MIXES ===
+  AILL: 0 line(s)
+  AILR: 0 line(s)
+  Adj: 0 line(s)
+  Ail-Ru: 0 line(s)
+  AilLCa: 0 line(s)
+  AilLRf: 0 line(s)
+  AilLnc: 0 line(s)
+  AilRCa: 0 line(s)
+  AilRRf: 0 line(s)
+  AilTri: 0 line(s)
+  CAL: 0 line(s)
+  CrowDi: 0 line(s)
+  ELECom: 0 line(s)
+  El-Flp: 0 line(s)
+  ElCmpT: 0 line(s)
+  Elev: 0 line(s)
+  ElevCo: 0 line(s)
+  FineAd: 0 line(s)
+  Flpron: 0 line(s)
+  LncOfS: 0 line(s)
+  RSComp: 0 line(s)
+  RUD: 0 line(s)
+  Speed: 0 line(s)
+  Therma: 0 line(s)
+  Volume: 0 line(s)
+Total: 25
+
+=== FLIGHT MODES ===
+  Normal
+  Lnch1
+  Lnch2
+  Speed
+  Therml
+  ... and 4 more
+Total: 9
+
+=== TRIMS ===
+  (none)
+Total: 0
+
+=== OUTPUT CHANNELS ===
+  Elev
+  Rudd
+  AilR
+  AilL
+  ThmC
+  SpdC
+  ... and 3 more
+Total: 9
+
+=== OTHER SECTIONS ===
+  Logical switches: 21
+  Special functions: 18
+  GVars: 0
+  Telemetry sensors: 0
+
+Complexity: COMPLEX (39 features)
+```

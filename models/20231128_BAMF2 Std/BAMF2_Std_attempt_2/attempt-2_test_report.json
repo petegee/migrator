@@ -1,0 +1,27 @@
+{
+  "timestamp": "2026-04-22T07:51:16.136Z",
+  "modelFile": "attempt-2.bin",
+  "modelSize": 2077,
+  "elapsedMs": 5332,
+  "status": "PASS",
+  "reason": "model appeared on select screen and loaded without Invalid Data error (Parts 1+2 OK)",
+  "part1ModelVisible": true,
+  "part2ModelLoaded": true,
+  "firmwareLogsCount": 34,
+  "errorCount": 0,
+  "filesProcessed": 1,
+  "diffs": {
+    "model00.bin": {
+      "inputLen": 2077,
+      "outputLen": 2077,
+      "diffCount": 0,
+      "diffs": []
+    }
+  },
+  "validation": {},
+  "summary": {
+    "identical": 1,
+    "modified": 0,
+    "failed": 0
+  }
+}

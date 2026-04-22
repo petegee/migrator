@@ -319,7 +319,32 @@ content.extend(rf_module_bytes)
 
 **Status:** ✓ Verified (BAMF2 Std attempt 1 — harness PASS, emulator "invalid data" until channel entries fixed)
 
+**Update (attempt 2):** After fixing channel entries, the final structure passes the harness with `part1ModelVisible: true`, `part2ModelLoaded: true`, 0 byte changes, and 0 errors. The minimal POST_INPUT blob (from 1chnl.bin, no LS/SF/GVars encoded) is accepted by firmware for full boot — no sentinel errors occur.
+
 ---
+
+### Confirmed Working Structure — BAMF2 Std (35 mixes, 5 inputs, build 37)
+
+**Context:** Confirmed over two attempts (attempt-1 and attempt-2 are byte-for-byte identical, both PASS with 0 diffs and 0 errors).
+
+**Structure that works:**
+- Preamble: `00 00`
+- Model name: length-prefixed ASCII
+- Bitmap: 16 bytes (all zero = no image)
+- Config block: `FF FF 30 31 00 00 00 01 00 00 00 00 00 06` (14 bytes, from 1chnl.bin)
+- 6 trim blocks × 7 bytes each: `02 19 00 02 01 00 00` (all 0µs, Easy mode)
+- Channel slots: `00 00` + count=6 + src=[0-5] + `00 00 00` + default TLV (16 bytes)
+  + slot 0 named (limitData[0].name) + `01 01` flags + `01×16` data
+  + 46 bytes `01` fill for slots 1–5 + `00` separator
+- RF block: 2 × 40 bytes (from 1chnl.bin)
+- 33-byte POST_RF_PRE_MIX constant
+- Mix header: `80 80 [count] 00 05 00 00 00 01`
+- Mix entries: name + `FF FF FF FF` + 30-byte data (ch_byte, sec_byte starting at 1)
+- Inputs: count(1) + `00 00` + N × (channel_name + var_name + `08 00` + `01 00 00 00` + rate_lo + rate_hi + `00×6`)
+- POST_INPUT: 126-byte minimal blob from 1chnl.bin
+- Footer: `55 55 55 55` + 23-byte tail
+
+**Status:** ✓ Verified (BAMF2 Std attempt 2 — part1ModelVisible=true, part2ModelLoaded=true, diffCount=0, errorCount=0)
 
 ---
 
