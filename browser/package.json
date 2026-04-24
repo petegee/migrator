@@ -1,0 +1,25 @@
+{
+  "name": "ethos-playwright-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright test suite for the FrSky ETHOS radio simulator",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "generate-fixtures": "ts-node fixtures/generate-fixtures.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.29.2",
+    "@types/adm-zip": "^0.5.5",
+    "@types/node": "^18.0.0",
+    "adm-zip": "^0.5.10",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  }
+}

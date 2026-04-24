@@ -20,7 +20,8 @@ migrator/
 ├── CLAUDE.md                 # This file
 ├── skills/                   # Local copies of format documentation
 │   ├── ethos-bin-format.md         # Ethos binary format reference
-│   └── edgetx-ethos-migration.md   # EdgeTX → Ethos concepts
+│   ├── edgetx-ethos-migration.md   # EdgeTX → Ethos concepts
+│   └── wasm-browser-driver.md      # Playwright UI driver: screen hierarchy, nav patterns, diff workflow
 ├── lib/                      # Self-contained runtime files
 │   ├── etx-parser.py         # Parse .etx YAML → structured data
 │   ├── test-model.js         # WASM testing harness
