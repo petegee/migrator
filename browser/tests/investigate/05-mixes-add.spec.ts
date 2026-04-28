@@ -11,7 +11,8 @@
  *   findings/diffs/05-mixes-add.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap } from '../helpers/navigate';
 import { navigateToMixes, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
@@ -27,7 +28,7 @@ test('investigate: add one default Mix', async ({ page }) => {
   const mixesScreen = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('mixes-screen-before-add', { body: mixesScreen, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'plus button to add a new Mix');
+  await tapBitmap(page, 569, 54); // header + (wizard pre-populates mixes)
   await page.waitForTimeout(500);
 
   const afterAdd = await page.locator('canvas').screenshot({ type: 'png' });

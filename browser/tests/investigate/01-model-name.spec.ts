@@ -13,7 +13,8 @@
  *   findings/diffs/01-model-name-changed.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap } from '../helpers/navigate';
 import { navigateToEditModel, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
@@ -28,26 +29,29 @@ test('investigate: model name change via virtual keyboard', async ({ page }) => 
   // --- change: tap Name field, clear, type "Test" ---
   await navigateToEditModel(page);
 
-  // Tap the name field — virtual keyboard should appear
-  await clickCanvasButton(page, 'Name text input field showing the current model name');
+  // Tap the Name row edit icon (right edge of row 1 in Edit model)
+  await tapBitmap(page, 750, 77);
+  await page.waitForTimeout(600);
 
-  // Screenshot the keyboard for layout discovery (attach to report)
+  // Screenshot the keyboard
   const kbScreenshot = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('virtual-keyboard', { body: kbScreenshot, contentType: 'image/png' });
 
-  // Clear existing text: tap backspace repeatedly to delete "New model" (9 chars)
+  // Clear "New model" (9 chars) — backspace key is far-right of row 3, y=400
   for (let i = 0; i < 9; i++) {
-    await clickCanvasButton(page, 'backspace or delete key on virtual keyboard', { retries: 3, waitMs: 200 });
+    await tapBitmap(page, 740, 400);
+    await page.waitForTimeout(150);
   }
 
-  // Type "Test"
-  await clickCanvasButton(page, 'key T on virtual keyboard');
-  await clickCanvasButton(page, 'key e on virtual keyboard');
-  await clickCanvasButton(page, 'key s on virtual keyboard');
-  await clickCanvasButton(page, 'key t on virtual keyboard');
+  // Type "TEST" — row 1 y=280: T=360, E=200, S is row 2 y=340: S=160, T=360
+  await tapBitmap(page, 360, 280); // T
+  await tapBitmap(page, 200, 280); // E
+  await tapBitmap(page, 160, 340); // S
+  await tapBitmap(page, 360, 280); // T
 
-  // Confirm / close keyboard — look for a tick, Enter, or OK button
-  await clickCanvasButton(page, 'confirm or OK button to close the virtual keyboard', { retries: 3, waitMs: 400 });
+  // ENTER to confirm
+  await tapBitmap(page, 680, 460);
+  await page.waitForTimeout(400);
 
   // Screenshot after keyboard dismissed
   const afterScreenshot = await page.locator('canvas').screenshot({ type: 'png' });

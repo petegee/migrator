@@ -10,7 +10,8 @@
  *   findings/diffs/11-flight-modes-add.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap } from '../helpers/navigate';
 import { navigateToFlightModes, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
@@ -26,7 +27,7 @@ test('investigate: add one Flight mode', async ({ page }) => {
   const fmScreen = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('flight-modes-screen', { body: fmScreen, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'plus button to add a new flight mode');
+  await tapBitmap(page, 569, 54); // header + (FM0 default always exists)
   await page.waitForTimeout(500);
 
   const afterAdd = await page.locator('canvas').screenshot({ type: 'png' });

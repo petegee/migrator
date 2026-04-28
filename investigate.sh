@@ -228,6 +228,7 @@ echo "Press ENTER to continue, or Ctrl+C to cancel..."
 read -r
 
 cd "$SESSION_DIR"
+unset ANTHROPIC_API_KEY
 claude \
   --model claude-haiku-4-5 \
   --dangerously-skip-permissions \

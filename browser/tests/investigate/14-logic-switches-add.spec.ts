@@ -10,7 +10,8 @@
  *   findings/diffs/14-logic-switches-add.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap } from '../helpers/navigate';
 import { navigateToLogicSwitches, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
@@ -26,7 +27,7 @@ test('investigate: add one default Logic switch', async ({ page }) => {
   const lsScreen = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('logic-switches-screen', { body: lsScreen, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'plus button to add a new Logic switch');
+  await tapBitmap(page, 400, 266); // large centred + on empty Logic switches screen
   await page.waitForTimeout(500);
 
   const afterAdd = await page.locator('canvas').screenshot({ type: 'png' });

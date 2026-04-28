@@ -10,7 +10,8 @@
  *   findings/diffs/15-special-functions-add.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap } from '../helpers/navigate';
 import { navigateToSpecialFunctions, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
@@ -26,7 +27,7 @@ test('investigate: add one default Special function', async ({ page }) => {
   const sfScreen = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('special-functions-screen', { body: sfScreen, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'plus button to add a new Special function');
+  await tapBitmap(page, 400, 266); // large centred + on empty Special funcs screen
   await page.waitForTimeout(500);
 
   const afterAdd = await page.locator('canvas').screenshot({ type: 'png' });

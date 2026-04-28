@@ -10,7 +10,8 @@
  *   findings/diffs/08-outputs-direction.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap } from '../helpers/navigate';
 import { navigateToOutputs, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
@@ -26,13 +27,13 @@ test('investigate: output direction Normal → Reverse', async ({ page }) => {
   const outputsScreen = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('outputs-screen', { body: outputsScreen, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'first output channel entry in the list');
+  await tapBitmap(page, 200, 112); // CH1 top-left cell in outputs grid
   await page.waitForTimeout(400);
 
   const outputEditor = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('output-editor', { body: outputEditor, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'Direction toggle or Reverse option');
+  await tapBitmap(page, 600, 175); // Direction row, Reverse toggle
   await page.waitForTimeout(400);
 
   const afterToggle = await page.locator('canvas').screenshot({ type: 'png' });

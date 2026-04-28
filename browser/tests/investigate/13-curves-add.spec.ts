@@ -10,7 +10,8 @@
  *   findings/diffs/13-curves-add.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap } from '../helpers/navigate';
 import { navigateToCurves, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
@@ -26,7 +27,7 @@ test('investigate: add one default Curve', async ({ page }) => {
   const curvesScreen = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('curves-screen-before-add', { body: curvesScreen, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'plus button to add a new Curve');
+  await tapBitmap(page, 400, 266); // large centred + on empty Curves screen
   await page.waitForTimeout(500);
 
   const afterAdd = await page.locator('canvas').screenshot({ type: 'png' });

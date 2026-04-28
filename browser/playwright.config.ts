@@ -4,8 +4,8 @@ import { devices } from '@playwright/test';
 const config: PlaywrightTestConfig = {
   testDir: './tests',
 
-  // WASM boot is slow; allow 60 s per test
-  timeout: 60_000,
+  // WASM boot is slow; allow 90 s per test
+  timeout: 90_000,
 
   // One retry gives the trace file on first failure
   retries: 1,

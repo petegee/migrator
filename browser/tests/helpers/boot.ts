@@ -16,13 +16,48 @@ const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const BITMAP = {
   langOk:      { x: 565, y: 297 },
   storageOk:   { x: 639, y: 292 },
-  wizAirplane: { x: 81,  y: 220 },
+  // Model type icons on the wizard first page (bitmap x, y=220)
+  wizAirplane: { x:  81, y: 220 },
+  wizGlider:   { x: 237, y: 220 },  // 2nd icon; confirmed from pixel analysis
   wizNext:     { x: 729, y: 449 },
 } as const;
 
-/** Capture a PNG screenshot of only the canvas element. */
+/**
+ * Return the bounding rect of the ETHOS Display canvas.
+ *
+ * The simulator page has two canvases: the ETHOS Display (WebGL, WASM renderer)
+ * and the Controls panel (2D canvas, joystick visualisation). They are similar
+ * in area so we identify the Display canvas by its WebGL rendering context.
+ */
+async function getDisplayRect(page: Page): Promise<{ x: number; y: number; w: number; h: number; index: number }> {
+  const result = await page.evaluate(() => {
+    const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+    if (!canvases.length) return null;
+
+    // Prefer the canvas that already holds a WebGL context (the ETHOS WASM renderer).
+    let idx = canvases.findIndex(c => c.getContext('webgl') !== null || c.getContext('webgl2') !== null);
+
+    // Fallback: largest by area (safety net before WASM initialises).
+    if (idx === -1) {
+      let bestArea = 0;
+      canvases.forEach((c, i) => {
+        const r = c.getBoundingClientRect();
+        const area = r.width * r.height;
+        if (area > bestArea) { bestArea = area; idx = i; }
+      });
+    }
+
+    const r = canvases[idx].getBoundingClientRect();
+    return { x: r.x, y: r.y, w: r.width, h: r.height, index: idx };
+  });
+  if (!result) throw new Error('getDisplayRect: no canvas elements found');
+  return result;
+}
+
+/** Capture a PNG screenshot of only the ETHOS Display canvas. */
 async function canvasScreenshot(page: Page): Promise<Buffer> {
-  return page.locator('canvas').screenshot({ type: 'png' });
+  const { index } = await getDisplayRect(page);
+  return page.locator('canvas').nth(index).screenshot({ type: 'png' });
 }
 
 /** MD5 of a buffer — used to detect canvas changes after a click. */
@@ -32,16 +67,10 @@ function md5(buf: Buffer): string {
 
 /** Return a function that converts 800×480 bitmap coords to page coords. */
 async function getCanvasMapper(page: Page) {
-  const rect = await page.evaluate(() => {
-    const c = document.querySelector('canvas');
-    if (!c) return null;
-    const r = c.getBoundingClientRect();
-    return { x: r.x, y: r.y, w: r.width, h: r.height };
-  });
-  if (!rect) throw new Error('getCanvasMapper: canvas element not found');
+  const { x, y, w, h } = await getDisplayRect(page);
   return (bx: number, by: number) => ({
-    x: rect.x + bx * (rect.w / 800),
-    y: rect.y + by * (rect.h / 480),
+    x: x + bx * (w / 800),
+    y: y + by * (h / 480),
   });
 }
 
@@ -145,12 +174,8 @@ export async function clickCanvasButton(
       continue;
     }
 
-    const rect = await page.evaluate(() => {
-      const c = document.querySelector('canvas');
-      if (!c) return null;
-      const r = c.getBoundingClientRect();
-      return { x: r.x, y: r.y, w: r.width, h: r.height };
-    });
+    const { x: rx, y: ry, w: rw, h: rh } = await getDisplayRect(page);
+    const rect = { x: rx, y: ry, w: rw, h: rh };
     if (!rect) throw new Error(`clickCanvasButton: canvas element not found (attempt ${attempt})`);
 
     const pageX = rect.x + coords.x;
@@ -195,16 +220,19 @@ export async function bootApp(page: Page): Promise<void> {
   } catch { /* WASM loaded before bar appeared */ }
   await page.locator('mat-progress-bar').waitFor({ state: 'hidden', timeout: 30_000 });
 
-  // Poll until canvas is non-black (logo animation or first dialog visible).
+  // Poll until the ETHOS Display canvas (WebGL) is non-black.
+  // Identify the Display canvas by its WebGL context, not by size.
   await page.waitForFunction(
     () => {
-      const canvas = document.querySelector('canvas') as HTMLCanvasElement;
-      if (!canvas) return false;
-      const gl = (canvas.getContext('webgl') ?? canvas.getContext('webgl2')) as WebGLRenderingContext | null;
-      if (!gl) return false;
-      const px = new Uint8Array(4);
-      gl.readPixels(400, 240, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
-      return px[0] > 30 || px[1] > 30 || px[2] > 30;
+      const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+      for (const c of canvases) {
+        const gl = (c.getContext('webgl') ?? c.getContext('webgl2')) as WebGLRenderingContext | null;
+        if (!gl) continue;
+        const px = new Uint8Array(4);
+        gl.readPixels(400, 240, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+        if (px[0] > 30 || px[1] > 30 || px[2] > 30) return true;
+      }
+      return false;
     },
     { timeout: 20_000 },
   );
@@ -220,8 +248,9 @@ export async function bootApp(page: Page): Promise<void> {
   // one causes a canvas change (dialog dismissed). If none of the positions
   // trigger a change, there are no more dialogs and we stop.
   const OK_CANDIDATES = [
-    BITMAP.langOk,            // "Select language"   (565, 297)
-    BITMAP.storageOk,         // "Storage error"     (639, 292)
+    BITMAP.langOk,            // "Select language"        (565, 297)
+    BITMAP.storageOk,         // "Radio data load: storage error" (639, 292)
+    { x: 528, y: 280 },       // "Model data load: starting wizard" (confirmed via pixel analysis)
     { x: 600, y: 295 },       // generic centre fallback
   ];
 
@@ -276,13 +305,17 @@ export async function navigateCreateModelWizard(
     return;
   }
 
-  // Select Airplane type and advance through all wizard pages.
-  const airplane = toPage(BITMAP.wizAirplane.x, BITMAP.wizAirplane.y);
-  await page.mouse.click(airplane.x, airplane.y);
+  // Select Glider type and advance through all wizard pages.
+  // The wizard has 7 configuration pages after model-type selection, then a
+  // Date & Time screen before reaching the model home screen.  12 Next clicks
+  // reliably lands on the home screen regardless of how many boot-dialog clicks
+  // accidentally advanced the wizard beforehand.
+  const glider = toPage(BITMAP.wizGlider.x, BITMAP.wizGlider.y);
+  await page.mouse.click(glider.x, glider.y);
   await page.waitForTimeout(300);
 
   const next = toPage(BITMAP.wizNext.x, BITMAP.wizNext.y);
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 12; i++) {
     await page.mouse.click(next.x, next.y);
     await page.waitForTimeout(300);
   }
