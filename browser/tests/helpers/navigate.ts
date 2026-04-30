@@ -53,6 +53,23 @@ export async function tapBitmap(page: Page, bx: number, by: number): Promise<voi
   );
 }
 
+/** Touch a point in 800×480 bitmap space using touch events (for small controls). */
+export async function touchBitmap(page: Page, bx: number, by: number): Promise<void> {
+  const rect = await page.evaluate(() => {
+    const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+    const c = canvases.find(cv => cv.getContext('webgl') !== null || cv.getContext('webgl2') !== null)
+           ?? canvases[0];
+    if (!c) return null;
+    const r = c.getBoundingClientRect();
+    return { x: r.x, y: r.y, w: r.width, h: r.height };
+  });
+  if (!rect) throw new Error('touchBitmap: canvas not found');
+  await page.touchscreen.tap(
+    rect.x + bx * (rect.w / 800),
+    rect.y + by * (rect.h / 480),
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Swipe gesture (page 1 ↔ page 2 in Model Setup)
 // ---------------------------------------------------------------------------

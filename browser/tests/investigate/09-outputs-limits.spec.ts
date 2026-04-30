@@ -1,8 +1,8 @@
 /**
- * Investigation: Outputs screen → Min/Max travel limits
+ * Investigation: Outputs screen → Max travel limit
  *
- * Baseline: channel 1 output, Min = -100%, Max = 100% (defaults).
- * Change:   set Max to 80% using the number control bar.
+ * Baseline: CH1 output, Max = 100%.
+ * Change:   set Max to 80% (step-up ×2 to 10%, decrement ×2).
  *
  * Reveals which bytes encode output travel limits.
  *
@@ -10,8 +10,8 @@
  *   findings/diffs/09-outputs-limits.json
  */
 import { test } from '@playwright/test';
-import { bootApp, navigateCreateModelWizard, clickCanvasButton } from '../helpers/boot';
-import { navigateToOutputs, goBack } from '../helpers/navigate';
+import { bootApp, navigateCreateModelWizard } from '../helpers/boot';
+import { tapBitmap, navigateToOutputs, goBack } from '../helpers/navigate';
 import { downloadModelBin, saveBin, saveDiff, logDiff } from '../helpers/diff';
 
 test('investigate: output Max limit 100% → 80%', async ({ page }) => {
@@ -22,32 +22,35 @@ test('investigate: output Max limit 100% → 80%', async ({ page }) => {
   saveBin('09-outputs-limits-baseline', baseline);
 
   await navigateToOutputs(page);
-  await clickCanvasButton(page, 'first output channel entry in the list');
+  await tapBitmap(page, 200, 112); // CH1 row
   await page.waitForTimeout(400);
 
   const outputEditor = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('output-editor', { body: outputEditor, contentType: 'image/png' });
 
-  await clickCanvasButton(page, 'Max travel limit field');
+  // Tap Max field (confirmed at bitmap y=380 from probe: outputs-field-tap-y380.png)
+  await tapBitmap(page, 700, 380);
   await page.waitForTimeout(400);
 
   const controlBar = await page.locator('canvas').screenshot({ type: 'png' });
-  await test.info().attach('number-control-bar', { body: controlBar, contentType: 'image/png' });
+  await test.info().attach('max-control-bar', { body: controlBar, contentType: 'image/png' });
 
-  // Decrement Max from 100% to 80% — 2 steps at 10%
-  await clickCanvasButton(page, 'right arrow or greater-than button to increase step size in number control bar');
+  // Step up to 10%: 0.1% → 1% → 10%
+  await tapBitmap(page, 400, 456); // ">" step up
   await page.waitForTimeout(200);
-  await clickCanvasButton(page, 'right arrow or greater-than button to increase step size in number control bar');
+  await tapBitmap(page, 400, 456); // ">" step up
   await page.waitForTimeout(200);
-  await clickCanvasButton(page, 'minus or decrement button in number control bar');
+
+  // Decrement 2×: 100% → 90% → 80%
+  await tapBitmap(page, 480, 456); // "-" decrement
   await page.waitForTimeout(200);
-  await clickCanvasButton(page, 'minus or decrement button in number control bar');
+  await tapBitmap(page, 480, 456); // "-" decrement
   await page.waitForTimeout(200);
 
   const afterChange = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('after-max-change', { body: afterChange, contentType: 'image/png' });
 
-  await goBack(page);
+  await goBack(page); // exit CH1 editor (auto-saves)
   await page.waitForTimeout(300);
 
   const changed = await downloadModelBin(page);

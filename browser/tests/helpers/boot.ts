@@ -306,10 +306,10 @@ export async function navigateCreateModelWizard(
   }
 
   // Select Glider type and advance through all wizard pages.
-  // The wizard has 7 configuration pages after model-type selection, then a
-  // Date & Time screen before reaching the model home screen.  12 Next clicks
-  // reliably lands on the home screen regardless of how many boot-dialog clicks
-  // accidentally advanced the wizard beforehand.
+  // Glider wizard has fewer configuration pages than Airplane. We click Next
+  // enough times to clear the wizard, then forcibly exit to the home screen via
+  // back-arrow spamming + Home nav tap — this works regardless of how many pages
+  // the Glider wizard has or whether Date & Time is the last screen.
   const glider = toPage(BITMAP.wizGlider.x, BITMAP.wizGlider.y);
   await page.mouse.click(glider.x, glider.y);
   await page.waitForTimeout(300);
@@ -320,5 +320,14 @@ export async function navigateCreateModelWizard(
     await page.waitForTimeout(300);
   }
 
+  // Exit any open settings screens (Date & Time, wizard, sub-menus) by pressing
+  // back repeatedly, then tap the Home nav button to land on the model home screen.
+  const back = toPage(25, 25);
+  const home = toPage(54, 459);
+  for (let i = 0; i < 8; i++) {
+    await page.mouse.click(back.x, back.y);
+    await page.waitForTimeout(200);
+  }
+  await page.mouse.click(home.x, home.y);
   await page.waitForTimeout(800);
 }

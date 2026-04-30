@@ -27,7 +27,8 @@ test('investigate: add one Flight mode', async ({ page }) => {
   const fmScreen = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('flight-modes-screen', { body: fmScreen, contentType: 'image/png' });
 
-  await tapBitmap(page, 569, 54); // header + (FM0 default always exists)
+  // "+" header: canvas measurements show circle at canvas (455, 55) → bitmap (569, 69)
+  await tapBitmap(page, 569, 69); // header +
   await page.waitForTimeout(500);
 
   const afterAdd = await page.locator('canvas').screenshot({ type: 'png' });

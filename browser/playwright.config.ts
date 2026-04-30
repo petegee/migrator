@@ -35,6 +35,9 @@ const config: PlaywrightTestConfig = {
 
     // Per-action timeout (clicks, locator waits, etc.)
     actionTimeout: 15_000,
+
+    // ETHOS firmware is a touchscreen UI; popup items need touch events
+    hasTouch: true,
   },
 
   projects: [
@@ -43,7 +46,7 @@ const config: PlaywrightTestConfig = {
       // Spread Desktop Chrome defaults, then pin viewport so canvas layout is
       // deterministic — Desktop Chrome default (1280×720) would override the
       // global viewport setting above.
-      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 } },
+      use: { ...devices['Desktop Chrome'], viewport: { width: 1280, height: 800 }, hasTouch: true },
     },
   ],
 };

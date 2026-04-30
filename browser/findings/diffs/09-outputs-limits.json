@@ -1,0 +1,27 @@
+{
+  "action": "Output 1 Max: 100% → 80%",
+  "timestamp": "2026-04-29T04:08:16.452Z",
+  "baselineBytes": 651,
+  "changedBytes": 651,
+  "diffCount": 3,
+  "diffs": [
+    {
+      "offset": 14,
+      "hex": "0x000E",
+      "before": 146,
+      "after": 243
+    },
+    {
+      "offset": 15,
+      "hex": "0x000F",
+      "before": 113,
+      "after": 245
+    },
+    {
+      "offset": 106,
+      "hex": "0x006A",
+      "before": 232,
+      "after": 32
+    }
+  ]
+}

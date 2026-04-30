@@ -37,20 +37,26 @@ test('investigate: model name change via virtual keyboard', async ({ page }) => 
   const kbScreenshot = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('virtual-keyboard', { body: kbScreenshot, contentType: 'image/png' });
 
-  // Clear "New model" (9 chars) — backspace key is far-right of row 3, y=400
+  // Clear "New model" (9 chars) — backspace ⌫ is far-right of row 3 (y≈340), NOT row 4
   for (let i = 0; i < 9; i++) {
-    await tapBitmap(page, 740, 400);
+    await tapBitmap(page, 750, 340);
     await page.waitForTimeout(150);
   }
 
-  // Type "TEST" — row 1 y=280: T=360, E=200, S is row 2 y=340: S=160, T=360
-  await tapBitmap(page, 360, 280); // T
-  await tapBitmap(page, 200, 280); // E
-  await tapBitmap(page, 160, 340); // S
-  await tapBitmap(page, 360, 280); // T
+  // Type "TEST":
+  //   Row 1 (QWERTYUIOP): y≈262  — T=360, E=200
+  //   Row 2 (ASDFGHJKL):  y≈302  — S=160
+  await tapBitmap(page, 360, 262); // T
+  await page.waitForTimeout(100);
+  await tapBitmap(page, 200, 262); // E
+  await page.waitForTimeout(100);
+  await tapBitmap(page, 160, 302); // S
+  await page.waitForTimeout(100);
+  await tapBitmap(page, 360, 262); // T
+  await page.waitForTimeout(100);
 
-  // ENTER to confirm
-  await tapBitmap(page, 680, 460);
+  // ENTER (row 4, right portion): y≈418
+  await tapBitmap(page, 700, 418);
   await page.waitForTimeout(400);
 
   // Screenshot after keyboard dismissed

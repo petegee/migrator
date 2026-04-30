@@ -9,14 +9,31 @@ import * as path from 'path';
 
 /**
  * Trigger the "Save the current model file" download and return its contents.
- * The Angular toolbar Download button is always accessible regardless of canvas state.
+ * After the download, click the Display canvas status bar area to restore ETHOS
+ * pointer-event focus — without this, subsequent tapBitmap calls are ignored.
  */
 export async function downloadModelBin(page: Page): Promise<Buffer> {
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     clickDownloadMenuItem(page, MENU.modelFile),
   ]);
-  return downloadToBuffer(download);
+  const buf = await downloadToBuffer(download);
+
+  // Restore canvas focus: tap the top-right status area of the Display canvas.
+  // No interactive element lives there so this is a safe no-op for ETHOS navigation.
+  const rect = await page.evaluate(() => {
+    const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+    const c = canvases.find(cv => (cv.getContext('webgl') ?? cv.getContext('webgl2')) !== null) ?? canvases[0];
+    if (!c) return null;
+    const r = c.getBoundingClientRect();
+    return { x: r.x, y: r.y, w: r.width, h: r.height };
+  });
+  if (rect) {
+    await page.mouse.click(rect.x + rect.w * 0.85, rect.y + rect.h * 0.05);
+    await page.waitForTimeout(300);
+  }
+
+  return buf;
 }
 
 // ---------------------------------------------------------------------------

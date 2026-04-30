@@ -1,8 +1,27 @@
 {
   "action": "Output 1 direction: Normal → Reverse",
-  "timestamp": "2026-04-27T23:23:01.809Z",
-  "baselineBytes": 722,
-  "changedBytes": 722,
-  "diffCount": 0,
-  "diffs": []
+  "timestamp": "2026-04-29T02:07:23.735Z",
+  "baselineBytes": 651,
+  "changedBytes": 651,
+  "diffCount": 3,
+  "diffs": [
+    {
+      "offset": 14,
+      "hex": "0x000E",
+      "before": 146,
+      "after": 119
+    },
+    {
+      "offset": 15,
+      "hex": "0x000F",
+      "before": 113,
+      "after": 43
+    },
+    {
+      "offset": 102,
+      "hex": "0x0066",
+      "before": 0,
+      "after": 1
+    }
+  ]
 }

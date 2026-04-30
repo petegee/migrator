@@ -33,7 +33,8 @@ test('investigate: output direction Normal → Reverse', async ({ page }) => {
   const outputEditor = await page.locator('canvas').screenshot({ type: 'png' });
   await test.info().attach('output-editor', { body: outputEditor, contentType: 'image/png' });
 
-  await tapBitmap(page, 600, 175); // Direction row, Reverse toggle
+  // Toggle circle (●) between Normal and Reverse: confirmed at bitmap (615, 250) from y-sweep probe
+  await tapBitmap(page, 615, 250); // Direction toggle circle
   await page.waitForTimeout(400);
 
   const afterToggle = await page.locator('canvas').screenshot({ type: 'png' });
