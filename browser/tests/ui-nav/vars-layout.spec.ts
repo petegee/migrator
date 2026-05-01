@@ -48,35 +48,47 @@ test('probe: Vars editor — field y-sweep', async ({ page }) => {
   await navigateCreateModelWizard(page);
   await navigateToVars(page);
 
-  // Add Var1 via centred + button
+  // Add Var1 — from now on re-open via list context menu (tap row, tap row, tap Edit)
   await tapBitmap(page, 400, 266);
   await page.waitForTimeout(600);
-
   await snap(page, 'vars-04-editor-open.png');
 
-  // Sweep value side (x=600) at candidate y positions.
-  // If Name or Comment open a keyboard, subsequent taps land on keys —
-  // that's still useful evidence of which field triggered the keyboard.
-  // After each keyboard-opening field we do goBack to return to the editor.
-  for (const y of [80, 120, 160, 200, 240, 280, 320, 360, 400, 440]) {
-    await tapBitmap(page, 600, y);
+  // Return to list so we can re-enter cleanly each time via context menu.
+  // goBack from the editor goes to the Vars list.
+  await goBack(page);
+  await page.waitForTimeout(400);
+
+  // Re-open helper: from Vars list, tap Var1 row twice to get context, tap Edit.
+  // Var1 row is at approximately (200, 106) bitmap.
+  const reopenEditor = async () => {
+    await tapBitmap(page, 200, 106);   // highlight Var1
+    await page.waitForTimeout(300);
+    await tapBitmap(page, 200, 106);   // open context menu
+    await page.waitForTimeout(300);
+    await tapBitmap(page, 200, 106);   // tap Edit (sits at same y as highlighted row)
     await page.waitForTimeout(500);
+  };
+
+  // Close any open keyboard/picker by tapping the back arrow, then return to Vars list.
+  const resetToList = async () => {
+    await goBack(page);  // closes keyboard → back to editor, OR editor → list
+    await page.waitForTimeout(300);
+    await goBack(page);  // in case first back only closed keyboard
+    await page.waitForTimeout(300);
+    // Navigate back to Vars list explicitly
+    await navigateToVars(page);
+    await page.waitForTimeout(300);
+  };
+
+  for (const y of [59, 110, 190, 267, 312, 356, 400]) {
+    await reopenEditor();
+    await snap(page, `vars-05-pre-tap-y${y}.png`);
+
+    await tapBitmap(page, 600, y);
+    await page.waitForTimeout(600);
     await snap(page, `vars-05-field-tap-y${y}.png`);
 
-    // If a full-screen keyboard appeared, dismiss it and return to the editor.
-    // We detect this by checking if the back arrow can get us back to the editor.
-    // Just always goBack and re-enter — cost is a few extra steps but keeps
-    // state clean between field taps.
-    await goBack(page);
-    await page.waitForTimeout(400);
-    await snap(page, `vars-06-after-back-y${y}.png`);
-
-    // If we're still in the editor, great. If we went back to the Vars list,
-    // re-open the editor via the first Var row context menu.
-    // Tap the Var1 row to highlight, then tap again to open context, then Edit.
-    // First check — tap list area to see if we're on the list (no-op if in editor).
-    // We do this conservatively: try to re-enter the editor after each field.
-    // (Over-navigating is fine; we just capture screenshots to see state.)
+    await resetToList();
   }
 });
 

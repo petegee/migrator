@@ -178,7 +178,39 @@ Result: FM1 editor opens directly. The context popup "Edit" item y-coord equals 
 
 | Action | Coords | Type | Notes |
 |--------|--------|------|-------|
-| Add var (+ on empty screen) | (400, 266) | tap | Large centered + icon |
+| Add var (+ on empty screen) | (400, 266) | tap | Large centered + icon; editor opens directly ✓ confirmed 2026-05-01 |
+| Add var (+ in list header, once ≥1 exist) | (563, 69) | tap | Same position as FM/Mixes header + (estimated from layout) |
+| Var list: tap row to highlight | (200, 106) | tap | Var1 row approximate y; second tap opens context menu |
+
+**Var editor field layout** — all y-coords in bitmap space (800×480).
+Rule: upper fields (Comment and above) use **tap**; lower fields (Range and below) use **touch**.
+
+| Field | Coords | Type | Notes |
+|--------|--------|------|-------|
+| Value (read-only) | (600, 70) | — | No response to tap or touch |
+| Name | n/a | — | **Non-interactive in WASM.** Extensive testing (tap+touch, x=400–780, y=90–115, double-tap) all produced no response. May be a WASM emulator limitation. |
+| Comment text area | (600, 267) | **tap** | Opens keyboard ✓ confirmed 2026-05-01; area spans y≈220–295 |
+| Range low value (-100.0%) | (450, 320) | **touch** | Opens numeric control bar ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈310–340 |
+| Range high value (100.0%) | (640, 320) | **touch** | Opens numeric control bar ✓ confirmed 2026-05-01; x=590 still hit low value; x=640 hits high value |
+| Values default value (0.0%) | (600, 395) | **touch** | Opens numeric control bar ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈380–425 |
+| "+ Add a new value" button | (600, 440) | **touch** | Adds conditional value entry ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈435–455 |
+
+**"+ Add a new value" result:** Adds a new row with `[condition picker "---" ▼] [value 0.0%]`. Tap the condition dropdown to pick FM / switch / always on.
+
+**Control bar layout** (appears at bottom of screen, y≈440–480, when a touch-activated numeric field is active):
+
+| Button | Bitmap x (approx) | Notes |
+|--------|------------|-------|
+| `<` step down | ~50 | Decreases step size |
+| step size display | ~200 | Shows current step (e.g. 0.1%) |
+| `>` step up | ~350 | Increases step size |
+| `−` decrement | ~470 | Decreases value by one step |
+| `+` increment | ~620 | Increases value by one step |
+| `⋮` more options | ~760 | Opens options popup (e.g. assign Var) |
+
+**Actions section (scroll required):** After a mouse swipe up (centre-x≈400, drag y≈440→150, 15 steps), the Actions section becomes visible. By analogy with the Values section, "+ Add a new action" likely requires **touch** at (400, ~440) in the scrolled state — not yet confirmed.
+
+**⚠ Remaining unconfirmed:** Actions section coordinates after scroll; Add-action interaction type.
 
 ### Special Functions screen
 
