@@ -100,7 +100,7 @@ These are already established — do NOT re-probe them:
 - **Small edit icons** (e.g. FM name pencil icon): `touchBitmap` — mouse events are ignored
 - **Keyboard key presses**: `touchBitmap` — `tapBitmap` produces wrong/no key registration
   (observed: `tapBitmap` typed 'F' at offset 0x0185 instead of 'C' from row 3)
-- **Context menu items** (Edit/Add/Delete popup rows): UNRESOLVED — see below
+- **Context menu items** (Edit/Add/Delete popup rows): `tapBitmap` — confirmed for FM1 "Edit" (popup "Edit" row y-coord equals the list row y-coord)
 
 ### Confirmed coordinates
 
@@ -114,22 +114,16 @@ These are already established — do NOT re-probe them:
 | Model Setup grid r1c3 (Flight Modes) | (500, 140) | tap | ✓ |
 | FM list: "+" header button (add FM1) | (569, 69) | tap | ✓ |
 | FM editor: Name pencil icon | (780, 80) OR (750, 83) | **touch** | ✓ |
-| Keyboard ENTER | (700, 415) | tap | ✓ (assumed) |
-| Keyboard Row 1 (QWERTYUIOP) y | 262 | - | confirmed from probe screenshots |
-| Keyboard Row 2 (ASDFGHJKL) y | 305 | - | confirmed from probe screenshots |
-| Keyboard Row 3 (ZXCVBNM) y | 340 | - | confirmed from probe screenshots |
+| Keyboard ENTER | (700, 450) | **touch** | ✓ confirmed (y=415 tap had no effect) |
+| Keyboard Row 1 (QWERTYUIOP) y | 315 | **touch** | ✓ confirmed (safe centre) |
+| Keyboard Row 2 (ASDFGHJKL) y | 340 | **touch** | ✓ confirmed by D/F |
+| Keyboard Row 3 (ZXCVBNM) y | 395 | **touch** | ✓ confirmed (y=385 first hit) |
+| Keyboard x-spacing | 80px per key, x=40 for Q/A | **touch** | ✓ confirmed from D(200)/F(280) |
+| FM1 editor open (4-tap) | see sequence in skills file | tap | ✓ confirmed 2026-05-01 |
 
-### Unresolved issues (probes needed)
+### Known quirks
 
-1. **Keyboard key input**: `tapBitmap` typed wrong character — need to confirm whether
-   `touchBitmap` correctly registers key presses. Next probe: `keyboard-touch-vs-tap`.
-
-2. **FM1 context menu "Edit"**: 4-tap sequence opens the context popup (confirmed ✓),
-   but tapping "Edit" at y≈132 either dismisses the popup or does nothing. Edit row
-   y-coord may be wrong, or it may require `touchBitmap`. Next probe: `fm1-ctx-edit`.
-
-3. **Exact key x-positions on keyboard**: The x-positions in the spec comments are
-   estimates. Each key may need ±20px adjustment. Next probe: `keyboard-key-positions`.
+- **FM0 expanded touch area**: taps at FM1 list row y≈148 are intercepted by FM0 — use the 4-tap workaround (see skills file FM1 editor open sequence).
 
 ---
 

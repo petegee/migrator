@@ -16,6 +16,7 @@ const config: PlaywrightTestConfig = {
   workers: 1,
 
   outputDir: 'test-results/',
+  preserveOutput: 'always',
 
   reporter: [
     ['list'],

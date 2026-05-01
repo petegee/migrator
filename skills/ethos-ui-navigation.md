@@ -103,6 +103,8 @@ Row 1 y≈140, Row 2 y≈330. Columns at x≈100, 300, 500, 700.
 | Action | Coords | Type | Notes |
 |--------|--------|------|-------|
 | Add FM (+ header) | (569, 69) | tap | New FM editor auto-opens |
+| Open FM1 editor via context menu | see sequence below | tap | 4-tap sequence; "Edit" is at same y as FM1 row |
+| FM editor: Name field (opens keyboard) | (400, 85) | tap | Tapping anywhere in Name row activates field + opens keyboard |
 | FM editor: Name pencil icon | (780, 80) | **touch** | Mouse events ignored for this icon |
 | FM editor: Name pencil icon (alt) | (750, 83) | **touch** | Alternate confirmed position |
 | Keyboard: key input | any | **touch** | `tapBitmap` registers wrong key — always use `touchBitmap` |
@@ -134,9 +136,17 @@ After typing a name and pressing ENTER (keyboard closes, editor shows typed text
 3. `goBack` again — exits FM list to Model Setup
 4. Then download. A single `goBack` does **not** flush the name to the model binary.
 
+**FM1 editor open sequence (confirmed 2026-05-01):**
+```
+tapBitmap(page, 400, 148)   // highlight FM0 row
+tapBitmap(page, 400, 165)   // highlight FM1 row (FM0 popup dismissed)
+tapBitmap(page, 400, 165)   // open FM1 context menu popup
+tapBitmap(page, 400, 165)   // tap "Edit" (popup "Edit" sits at same y as FM1 row)
+```
+Result: FM1 editor opens directly. The context popup "Edit" item y-coord equals the FM1 row y-coord (165).
+
 **⚠ Unresolved:**
-- FM1 context menu "Edit" item y-coordinate unconfirmed (popup appears at top of screen)
-- FM0 has an expanded touch area: taps at FM1's list row (y≈148) are intercepted by FM0
+- FM0 has an expanded touch area: taps at FM1's list row (y≈148) are intercepted by FM0 (hence the 4-tap workaround above)
 
 ### Outputs screen
 
@@ -169,6 +179,76 @@ After typing a name and pressing ENTER (keyboard closes, editor shows typed text
 | Action | Coords | Type | Notes |
 |--------|--------|------|-------|
 | Add var (+ on empty screen) | (400, 266) | tap | Large centered + icon |
+
+### Special Functions screen
+
+| Action | Coords | Type | Notes |
+|--------|--------|------|-------|
+| Add SF (+ on empty screen) | (400, 266) | tap | Large centered + icon; editor opens directly ✓ confirmed 2026-05-01 |
+| SF editor: Action field | (600, 100) | tap | Opens action type picker ✓ confirmed 2026-05-01 |
+| SF editor: State toggle | (600, 160) | tap | Toggles Disable↔Enable ✓ confirmed 2026-05-01 |
+| SF editor: Active condition field | (600, 220) | tap | Opens condition picker (---, Always on, Switch positions) ✓ confirmed 2026-05-01 |
+| SF editor: Global toggle | (600, 280) | tap | Toggles OFF↔ON ✓ confirmed 2026-05-01 |
+| SF editor: Reset param field | (600, 340) | tap | Opens reset category picker (Timers / Flight data / …) ✓ confirmed 2026-05-01 |
+
+**SF editor field y-ranges (bitmap, confirmed from tap sweep 2026-05-01):**
+- Action: y≈70–130 (center ~100) — opens action type picker
+- State: y≈130–195 (center ~160) — Disable/Enable toggle
+- Active condition: y≈200–255 (center ~220) — opens condition picker
+- Global: y≈260–315 (center ~280) — OFF/ON toggle
+- Action-specific param (e.g. Reset): y≈320–380 (center ~340)
+
+**SF Action picker** (opens from Action field at (600, 100); item y-coords in picker):
+
+| Action type | Picker item y (bitmap) | Confirmed | Action-specific field added |
+|-------------|------------------------|-----------|----------------------------|
+| Reset | 170 | ✓ 2026-05-01 | "Reset" category field at editor y≈340 (Timers / Flight data) |
+| Screenshot | 210 | ✓ 2026-05-01 | none |
+| Set failsafe | 250 | ✓ 2026-05-01 | "Module" field (Internal module) |
+| Play audio | ~290 | estimated | (Voice/Repeat/Skip/Sequence) |
+| Haptic | ~330 | estimated | (Pattern/Strength/Repeat) |
+| Write logs · Play text · Go to screen · Lock touchscreen · Load model · Play vario | scroll needed | not confirmed | — |
+
+Note: picker item spacing ≈ 40 bitmap px. Items scroll — only 5 visible at a time.
+To reach items 6+, need touch-based swipe inside the picker overlay.
+
+### Logic Switches screen
+
+| Action | Coords | Type | Notes |
+|--------|--------|------|-------|
+| Add LS (+ on empty screen) | (400, 266) | tap | Large centered + icon; editor opens directly ✓ confirmed 2026-05-01 |
+| LS editor: Name field | (600, 120) | tap | Keyboard opens directly (no touch needed) ✓ confirmed 2026-05-01 |
+| LS editor: Function field (value side) | (600, 160) | tap | Opens function picker ✓ confirmed 2026-05-01 |
+| LS editor: Source(A) field | (600, 215) | tap | Opens Category/Member source picker ✓ confirmed 2026-05-01 |
+| LS editor: Value(X) field | (600, 280) | tap | Opens numeric control bar ✓ confirmed 2026-05-01 |
+| LS editor: Active condition field | (600, 360) | tap | Opens condition picker (System event / Always on / Switch positions) ✓ confirmed 2026-05-01 |
+
+**LS editor field y-ranges (bitmap, confirmed from tap sweep 2026-05-01):**
+- Name: y≈90–130 (center ~120)
+- Function: y≈130–190 (center ~160)
+- Source(A): y≈195–245 (center ~215)
+- Value(X): y≈255–310 (center ~280)
+- Active condition: y≈340–390 (center ~360)
+- Delay before active: y≈395–435 (estimated, not yet probed)
+
+**LS editor full field list** (scroll down to see lower rows):
+1. Name — y≈120
+2. Function — y≈160
+3. Source(A) — y≈215
+4. Value(X) — y≈280
+5. Active condition — y≈360
+6. Delay before active — y≈400 (scrolled; estimated)
+7. Delay before inactive — (scrolled)
+8. Confirmation before active — toggle (scrolled)
+9. Confirmation before inactive — toggle (scrolled)
+10. Min duration — (scrolled)
+
+**LS Function picker** (opens from Function field at (600, 160), scrollable list):
+- Items visible without scrolling: A~X · A=X · A>X · A<X · |A|>X
+- Items below scroll: |A|<X · Δ>X · |Δ|>X · Range · AND · OR · XOR · Timer gen · Sticky · Edge
+- Picker item height ≈ 40 bitmap px; first item (A~X) at picker y≈130-170
+- To scroll picker: must use touch swipe inside the picker overlay (mouse drag dismisses picker)
+- Confirmed: tap (350, 170) selects A~X ✓ 2026-05-01
 
 ---
 
