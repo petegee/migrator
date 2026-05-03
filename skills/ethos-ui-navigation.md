@@ -59,6 +59,7 @@ plus screenshot evidence in `browser/findings/screenshots/`.
 |--------|--------|------|-------|
 | Dismiss "Select language" OK | (565, 297) | tap | |
 | Dismiss "Radio data load: storage error" OK | (639, 292) | tap | |
+| Dismiss "Checklist warning" OK | (700, 405) | tap | Appears once per session when tapping Model Setup if model has a checklist; dismisses to Home (not to Model Setup) ✓ confirmed 2026-05-02 |
 
 ### Bottom navigation bar (y=459 for all)
 
@@ -66,6 +67,8 @@ plus screenshot evidence in `browser/findings/screenshots/`.
 |--------|--------|------|-------|
 | Home | (54, 459) | tap | |
 | Model Setup | (194, 459) | tap | |
+| Configure Screens | (334, 459) | tap | ✓ confirmed 2026-05-02 |
+| System | (474, 459) | tap | ✓ confirmed 2026-05-02 |
 
 ### Global controls
 
@@ -93,10 +96,44 @@ Row 1 y≈140, Row 2 y≈330. Columns at x≈100, 300, 500, 700.
 | Action | Coords | Type | Notes |
 |--------|--------|------|-------|
 | Telemetry | (100, 140) | tap | r1c1 |
+| Checklist | (300, 140) | tap | r1c2 ✓ confirmed 2026-05-02 |
 | Logic Switches | (500, 140) | tap | r1c3 |
 | Special Functions | (700, 140) | tap | r1c4 |
 | Curves | (100, 330) | tap | r2c1 |
 | Vars | (300, 330) | tap | r2c2 |
+| Trainer | (500, 330) | tap | r2c3 ✓ confirmed 2026-05-02 |
+| Lua | (700, 330) | tap | r2c4 — **absent in v1.6.6 X18RS** even with scripts installed; position reserved |
+
+### System menu grid ✓ confirmed 2026-05-02
+
+Reached via bottom nav x=474. Two pages (dot indicator at top).
+
+**Page 1** (row 1 y≈140, row 2 y≈330, columns x≈100/300/500/700):
+
+| Action | Coords | Type | Notes |
+|--------|--------|------|-------|
+| File manager | (100, 140) | tap | r1c1 — browse RADIO:/ SD card Flash |
+| System alerts | (300, 140) | tap | r1c2 |
+| Date & Time | (500, 140) | tap | r1c3 |
+| General | (700, 140) | tap | r1c4 — language, keyboard, brightness, sleep |
+| Battery | (100, 330) | tap | r2c1 |
+| Hardware | (300, 330) | tap | r2c2 — sticks/pots/switches calibration |
+| Sticks | (500, 330) | tap | r2c3 |
+| Device config | (700, 330) | tap | r2c4 — sensors, servos, receivers, VTX, ESC |
+| Swipe to Page 2 | swipeCanvas('left') | swipe | |
+
+**Page 2** — only one tile:
+
+| Action | Coords | Type | Notes |
+|--------|--------|------|-------|
+| Info | (100, 140) | tap | r1c1 — firmware version, serial numbers |
+
+**File manager layout:**
+- Left panel: scrollable file/folder list
+- Right panel: preview/info area with tabs: **Radio** \| **SD card** \| **Flash**
+- RADIO:/ filesystem contains: `[audio]`, `[models]`, `[scripts]` (after Lua upload), `radio.bin`
+
+---
 
 ### Flight Modes screen
 
@@ -150,37 +187,120 @@ Result: FM1 editor opens directly. The context popup "Edit" item y-coord equals 
 
 ### Outputs screen
 
+**List layout** — 2-column grid, 4 rows, 8 channels per page.
+Left column (x≈100–200) = odd channels; right column (x≈400–600) = even channels.
+Page-dot indicator at y≈69; up to 8 pages (64 channels max in firmware).
+This model (X18RS, 24 ch) shows 3 pages: CH1–8, CH9–16, CH17–24.
+
+**Row y-coordinates** (consistent across all pages):
+| Row | Approx y range | Confirmed tap y |
+|-----|---------------|-----------------|
+| 1 | y≈90–180 | y=112 (left) ✓, y=140 (right) ✓ |
+| 2 | y≈185–265 | y=220 (right col CH4) ✓ |
+| 3 | y≈270–385 | y=300 (right col CH6) ✓, y=350 (left col CH5) ✓ |
+| 4 | y≈388–450 | y=390 (both cols CH7+CH8) ✓ |
+
 | Action | Coords | Type | Notes |
 |--------|--------|------|-------|
-| Open CH1 editor | (200, 112) | tap | Top-left cell of CH1 row |
-| Direction toggle (Normal↔Reverse) | (615, 250) | tap | Circle toggle in editor |
-| Max field | (700, 380) | tap | Opens control bar |
-| Center/Subtrim field | (700, 440) | tap | Opens control bar |
-| Control bar: step-up ">" | (400, 456) | tap | Increases step size |
-| Control bar: "-" decrement | (480, 456) | tap | |
-| Control bar: "+" increment | (630, 456) | tap | |
+| Open CH1 editor (left col row 1) | (200, 112) | tap | ✓ confirmed 2026-05-03 |
+| Open CH2 editor (right col row 1) | (600, 140) | tap | ✓ confirmed 2026-05-03 |
+| Open CH3 editor (left col row 2) | (200, 220) | tap | estimated (same y as CH4) |
+| Open CH4 editor (right col row 2) | (600, 220) | tap | ✓ confirmed 2026-05-03 |
+| Open CH5 editor (left col row 3) | (200, 350) | tap | ✓ confirmed 2026-05-03 |
+| Open CH6 editor (right col row 3) | (600, 300) | tap | ✓ confirmed 2026-05-03 |
+| Open CH7 editor (left col row 4) | (200, 390) | tap | ✓ confirmed 2026-05-03 |
+| Open CH8 editor (right col row 4) | (600, 390) | tap | ✓ confirmed 2026-05-03 |
+| Swipe to next page (+8 channels) | swipeCanvas('left') | swipe | CH9–16 on page 2, CH17–24 on page 3 ✓ 2026-05-03 |
+| Open CH9 editor (page 2, left row 1) | (200, 112) | tap | Same coords as CH1 ✓ confirmed 2026-05-03 |
+
+**Channel editor fields** — field y-coords confirmed from tap sweep 2026-05-03:
+
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| Name | (600, ~150) | tap | Opens keyboard directly (tapBitmap works — unlike FM name) ✓ 2026-05-03 |
+| Direction toggle (Normal↔Reverse) | (615, 250) | tap | Toggles between Normal/Reverse ✓ 2026-05-03 |
+| Min | (600, 340) | tap | Opens numeric control bar ✓ 2026-05-03 |
+| Max | (600, 380) | tap | Opens numeric control bar ✓ 2026-05-03 |
+| Center/Subtrim | (600, 440) | tap | Opens numeric control bar; editor scrolls to show field ✓ 2026-05-03 |
+
+**Control bar** (appears at y≈456 when numeric field is selected):
+
+| Control | Coords | Type | Notes |
+|---------|--------|------|-------|
+| Step-down "<" | (44, 456) | tap | Decreases step size |
+| Step label | (200, 456) | — | Shows current step (e.g. "0.1%") |
+| Step-up ">" | (437, 456) | tap | Increases step size |
+| Decrement "−" | (562, 456) | tap | Subtracts one step |
+| Increment "+" | (675, 456) | tap | Adds one step |
+| More "⋮" | (750, 456) | tap | Opens extended options |
 
 ### Mixes screen
 
+**List layout** — scrollable rows grouped by output channel. Header shows Name | Channels | Source | [+].
+New model comes pre-populated with default mixes (Ailerons/Elevators/Rudders). Right panel shows a curve graph + detail for the selected mix.
+
+**To open a mix:** tap row once to select (orange highlight + right-panel preview), tap again to open context menu. Context menu items require `touchBitmap`.
+
 | Action | Coords | Type | Notes |
 |--------|--------|------|-------|
-| Add mix (+ header) | (563, 69) | tap | Opens type picker |
-| Type picker: "Free mix" | (100, 101) | tap | |
-| Placement picker: "Last position" | (396, 186) | tap | Mix editor auto-opens |
-| Context menu (tap name column) | (200, 116) | tap | Second tap on same row |
-| Context menu "Edit" | (320, 167) | tap | |
-| Source picker — open (1st tap compact) | (350, 207) | tap | |
-| Source picker — expand to full list (2nd tap) | (350, 207) | tap | |
-| Source picker: "Analogs" category | (280, 207) | tap | |
-| Source picker: first Analog member (Rudder) | (440, 204) | tap | Right column of 2-col view |
+| + header button | (563, 69) | tap | Opens Mixes library grid (NOT a simple type picker) ✓ 2026-05-03 |
+| Mixes library: Free mix | (100, 101) | tap | r1c1 of 4-col library grid; opens placement popup ✓ 2026-05-03 |
+| Mixes library: Ailerons | (300, 101) | tap | r1c2 ✓ 2026-05-03 (visible in library screenshot) |
+| Mixes library: Elevators | (500, 101) | tap | r1c3 ✓ 2026-05-03 |
+| Mixes library: Rudders | (700, 101) | tap | r1c4 ✓ 2026-05-03 |
+| Mixes library: Flaps (r2c1) | (100, 150) | tap | ✓ 2026-05-03 (visible in library screenshot) |
+| Mixes library: Ail=>Rud (r2c2) | (300, 150) | tap | ✓ 2026-05-03 |
+| Mixes library: Airbrake (r2c3) | (500, 150) | tap | ✓ 2026-05-03 |
+| Mixes library: Butterfly (r2c4) | (700, 150) | tap | ✓ 2026-05-03 |
+| Placement popup: First position | (320, 141) | **touch** | tapBitmap misses popup items; touchBitmap required ✓ 2026-05-03 |
+| Placement popup: Last position | (320, 187) | **touch** | ✓ 2026-05-03 (tapBitmap(396,186) also worked when centred) |
+| Placement popup: existing mix names | (320, 233+) | **touch** | Each ~46px below "Last position" |
+| Mix row: select (1st tap) | (200, 116) | tap | "Free mix" row y≈116; highlights row, shows right-panel preview ✓ 2026-05-03 |
+| Mix row: context menu (2nd tap) | (200, 116) | tap | Tap again on selected row → popup ✓ 2026-05-03 |
+| Context menu: Edit | (350, 140) | **touch** | tapBitmap misses; touchBitmap required ✓ 2026-05-03 |
+| Context menu: Add | (350, 187) | **touch** | opens new Free mix editor directly (same type as parent) ✓ 2026-05-03 |
+| Context menu: Move | (350, 233) | **touch** | opens Mixes library (to replace/change mix type) ✓ 2026-05-03 |
+| Context menu: Clone | (350, 279) | **touch** | duplicates mix in list ✓ 2026-05-03 |
+| Context menu: Delete | (350, 340) | **touch** | opens "Are you sure you want to delete this mix?" confirm dialog ✓ 2026-05-03 (y=325 missed popup bottom; y=340 and y=350 both work) |
+| Delete confirm: Yes | (520, 288) | tap | estimated from dialog layout |
+| Delete confirm: No | (600, 288) | tap | estimated from dialog layout |
+
+**Mix editor field layout** — left panel (x≈0–540), right panel = curve graph (x≈540–800). Use x=350 for all field taps.
+Row spacing confirmed: Name@y=80, Active cond@y=140, Source@y=200, Operation@y=260 (each ~60px apart).
+
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| Name | (350, 80) | tap | Keyboard opens directly (no touch needed, unlike FM editor) ✓ 2026-05-03 |
+| Active condition | (350, 140) | tap | Picker: Category / --- / Always on / Switch positions ✓ 2026-05-03 |
+| Source | (350, 200) | tap | Compact category picker on 1st tap; full-screen list on 2nd tap; 2-col Category+Member on 3rd ✓ 2026-05-03 |
+| Operation (multiplex) | (350, 260) | tap | Picker: Add / Multiply / Replace / Lock ✓ 2026-05-03 |
+| Actions header | y≈305–350 | — | Inert separator label |
+| Actions weight row (e.g. "Always on Weight 100%") | (350, 390) | tap | tap opens action row editor directly; row spans y≈390–465 ✓ 2026-05-03 |
+| Action row context menu | wheel×5 + CDP Enter | special | "Action" popup: Edit / Clone / Add / Delete ✓ 2026-05-03 |
+| Action ctx menu: Edit | (320, 150) | tap | ✓ 2026-05-03 |
+| Action ctx menu: Clone | (320, 190) | tap | ✓ 2026-05-03 (estimated from spacing) |
+| Action ctx menu: Add | (320, 230) | tap | adds new action row ✓ 2026-05-03 |
+| Action ctx menu: Delete | (320, 270) | tap | ✓ 2026-05-03 (estimated from spacing) |
+| + Add a new action | wheel×6 + CDP Enter | special | same as Vars; 6 wheels focuses button (orange), Enter opens new action editor ✓ 2026-05-03 |
+
+**Action row editor** (opened by tapping "Always on Weight" row or via 6 wheels + Enter for new):
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| Active condition | (350, 95) | tap | picker: --- / Always on / Switch positions ✓ 2026-05-03 |
+| Action (type) | (350, 135) | tap | picker: Weight / Offset / … ✓ 2026-05-03 |
+| Weight / Rates | (350, 185) | tap | opens numeric control bar ✓ 2026-05-03 |
+| + Add a new weight | (350, 230) | tap | adds per-condition weight entry ✓ 2026-05-03 |
+
+**Source picker categories:** --- / Special / Analogs / Switches / Trims / Channels (scrollable)
+**Source picker flow:** 1st tap = compact category list → 2nd tap = full-screen list → 3rd tap = 2-col Category+Member view
 
 ### Vars screen
 
 | Action | Coords | Type | Notes |
 |--------|--------|------|-------|
 | Add var (+ on empty screen) | (400, 266) | tap | Large centered + icon; editor opens directly ✓ confirmed 2026-05-01 |
-| Add var (+ in list header, once ≥1 exist) | (563, 69) | tap | Same position as FM/Mixes header + (estimated from layout) |
-| Var list: tap row to highlight | (200, 106) | tap | Var1 row approximate y; second tap opens context menu |
+| Add var (+ in list header, once ≥1 exist) | (563, 69) | tap | Opens new Var editor directly ✓ confirmed 2026-05-02 |
+| Var list: tap row to highlight | (200, 106) | tap | Var1 row approximate y; second tap opens context menu (estimated) |
 
 **Var editor field layout** — all y-coords in bitmap space (800×480).
 Rule: upper fields (Comment and above) use **tap**; lower fields (Range and below) use **touch**.
@@ -195,7 +315,11 @@ Rule: upper fields (Comment and above) use **tap**; lower fields (Range and belo
 | Values default value (0.0%) | (600, 395) | **touch** | Opens numeric control bar ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈380–425 |
 | "+ Add a new value" button | (600, 440) | **touch** | Adds conditional value entry ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈435–455 |
 
-**"+ Add a new value" result:** Adds a new row with `[condition picker "---" ▼] [value 0.0%]`. Tap the condition dropdown to pick FM / switch / always on.
+**"+ Add a new value" result:** Adds a new conditional value row at the bottom of the editor:
+`[🗑 delete] [--- ▼ condition] [0.0% value]`
+- Delete button: bx≈25, y≈460 — `tapBitmap` opens "remove this value?" confirm dialog (estimated, same pattern as action row)
+- Condition dropdown (`--- ▼`): `tapBitmap(200, 430)` opens Category picker (System event / --- / Always on / switches) ✓ 2026-05-02
+- Value (0.0%): right side of row, `tapBitmap` opens numeric control bar (estimated, same as default value field)
 
 **Control bar layout** (appears at bottom of screen, y≈440–480, when a touch-activated numeric field is active):
 
@@ -208,9 +332,88 @@ Rule: upper fields (Comment and above) use **tap**; lower fields (Range and belo
 | `+` increment | ~620 | Increases value by one step |
 | `⋮` more options | ~760 | Opens options popup (e.g. assign Var) |
 
-**Actions section (scroll required):** After a mouse swipe up (centre-x≈400, drag y≈440→150, 15 steps), the Actions section becomes visible. By analogy with the Values section, "+ Add a new action" likely requires **touch** at (400, ~440) in the scrolled state — not yet confirmed.
+**Scrolling the Var editor — confirmed approach (2026-05-01):**
 
-**⚠ Remaining unconfirmed:** Actions section coordinates after scroll; Add-action interaction type.
+Use a CDP touch swipe sequence (touchStart + touchMove × 20 + touchEnd) from bitmap y=440→150 to scroll the content and reveal the Actions section. This is better than mouse drag scroll, which corrupts subsequent touch events.
+
+After CDP touch swipe, touch events remain fully functional — confirmed:
+| Field | y (scrolled, bitmap) | Type | Status |
+|-------|---------------------|------|--------|
+| Comment text area | y≈130–180 (center ~155) | **touch** (keyboard opens) | ✓ confirmed 2026-05-01 |
+| Range low value | y≈185–250 (center ~220) | **touch** (control bar) | ✓ confirmed 2026-05-01 |
+| Values 0.0% | y≈270–315 (center ~290) | **touch** (control bar) | ✓ confirmed 2026-05-01 |
+| "+ Add a new value" | y≈320–365 (center ~340) | **touch** | ✓ reachable post-scroll |
+| Actions header | y≈365–400 | — | inert |
+| "+ Add a new action" | wheel×7 then CDP Enter | special | ✓ confirmed 2026-05-02 — see below |
+
+**"+ Add a new action" — activation method (confirmed 2026-05-02):**
+
+The button renders at y≈452–479 (very bottom edge of canvas). Neither `tapBitmap` nor `touchBitmap` at any y from 380–480 activate it (tested exhaustively). It requires encoder-style focus + confirm:
+
+```typescript
+// 1. Open the Var editor (tapBitmap 400,266)
+// 2. Wheel to focus the button (7 × deltaY=300)
+const centre = await bitmapToPage(page, 400, 300);
+const client = await page.context().newCDPSession(page);
+for (let i = 0; i < 7; i++) {
+  await client.send('Input.dispatchMouseEvent', {
+    type: 'mouseWheel', x: centre.x, y: centre.y,
+    deltaX: 0, deltaY: 300, modifiers: 0, pointerType: 'mouse',
+  });
+  await page.waitForTimeout(150);
+}
+await page.waitForTimeout(400);
+// Button is now orange-highlighted (focused)
+
+// 3. Activate via CDP key dispatch (NOT page.keyboard.press — canvas lacks DOM focus)
+await client.send('Input.dispatchKeyEvent', {
+  type: 'keyDown', windowsVirtualKeyCode: 13,
+  key: 'Enter', code: 'Enter', nativeVirtualKeyCode: 13,
+});
+await page.waitForTimeout(80);
+await client.send('Input.dispatchKeyEvent', {
+  type: 'keyUp', windowsVirtualKeyCode: 13,
+  key: 'Enter', code: 'Enter', nativeVirtualKeyCode: 13,
+});
+```
+
+Why `page.keyboard.press('Enter')` fails: the WASM canvas has no DOM keyboard focus, so keydown events go to `document.body` and are ignored by the WASM. CDP `Input.dispatchKeyEvent` bypasses DOM focus and reaches the WASM directly.
+
+**After activation:** A new action row appears inline in the Actions list:
+`[🗑] [--- ▼] [Add(+) ▼] [■■■] [0.0]`
+- 🗑 — **delete button** (bx≈25, y≈465): `tapBitmap` opens "Are you sure you want to remove this action?" confirm dialog ✓ 2026-05-02
+- `--- ▼` — condition/switch picker (bx≈150, y≈465): `tapBitmap` opens Category picker (System event / --- / Always on / switches below scroll) ✓ 2026-05-02
+- `Add(+) ▼` — action type / function picker (bx≈290, y≈465): `tapBitmap` opens Function picker ✓ 2026-05-02
+- Orange bar — range indicator (bx≈420) — inert/display only
+- `0.0` — value field; `tapBitmap(600, ~465)` opens numeric control bar ✓ 2026-05-02
+
+**Action row Function picker** (opens from bx=290 tap; title "Function") ✓ fully confirmed 2026-05-02:
+
+Full item list (9 total): **Assign(=) · Add(+) · Subtract(-) · Multiply(*) · Divide(/) · Percent · Min · Max · Repurpose**
+
+Picker shows 5 items at a time. Item heights ≈40px each. Visible y-positions (bitmap) are always:
+
+| Slot | y (center) | After 0 scrolls | After 1 scroll | After 2 scrolls |
+|------|-----------|-----------------|----------------|-----------------|
+| 1 | ≈140 | Assign(=) | Multiply(*) | Divide(/) |
+| 2 | ≈180 | Add(+) ← default | Divide(/) | Percent |
+| 3 | ≈218 | Subtract(-) | Percent | Min |
+| 4 | ≈252 | Multiply(*) | Min | Max |
+| 5 | ≈288 | Divide(/) | Max | Repurpose |
+
+**Scrolling the picker:** use CDP touch swipe UPWARD inside the picker (byStart=280 → byEnd=140, bx=320):
+```typescript
+await touchSwipeInPicker(page, 320, 280, 140);  // one scroll = reveals rows 4–8
+await touchSwipeInPicker(page, 320, 280, 140);  // two scrolls = reveals rows 5–9 (Repurpose visible)
+```
+Mouse drag dismisses the picker — must use CDP `Input.dispatchTouchEvent` (touchStart/Move/End).
+
+To select an item: `tapBitmap(page, 400, <slot_y>)` after scrolling to the desired position.
+
+**Action row condition picker** (opens from bx=150 tap; title "Category"):
+Same picker as LS/SF Active condition — items: System event / --- / Always on / switch positions (scroll to reach). Selecting an item closes the picker and updates the `--- ▼` field.
+
+**User workaround:** Click canvas to give it DOM focus, then press physical Enter on keyboard — equivalent effect to CDP dispatch.
 
 ### Special Functions screen
 
@@ -232,17 +435,42 @@ Rule: upper fields (Comment and above) use **tap**; lower fields (Range and belo
 
 **SF Action picker** (opens from Action field at (600, 100); item y-coords in picker):
 
-| Action type | Picker item y (bitmap) | Confirmed | Action-specific field added |
-|-------------|------------------------|-----------|----------------------------|
-| Reset | 170 | ✓ 2026-05-01 | "Reset" category field at editor y≈340 (Timers / Flight data) |
-| Screenshot | 210 | ✓ 2026-05-01 | none |
-| Set failsafe | 250 | ✓ 2026-05-01 | "Module" field (Internal module) |
-| Play audio | ~290 | estimated | (Voice/Repeat/Skip/Sequence) |
-| Haptic | ~330 | estimated | (Pattern/Strength/Repeat) |
-| Write logs · Play text · Go to screen · Lock touchscreen · Load model · Play vario | scroll needed | not confirmed | — |
+Item positions in the picker overlay window are fixed at y = 170, 210, 250, 290, 330 (40 px spacing).
+Picker shows 5 items at a time; Play vario (item 10, last) sits at the bottom edge (y≈330) and its
+tap area is clipped — select it via wheel focus + CDP Enter instead (see scroll recipe below).
 
-Note: picker item spacing ≈ 40 bitmap px. Items scroll — only 5 visible at a time.
-To reach items 6+, need touch-based swipe inside the picker overlay.
+| Action type | Picker item y | Confirmed | Action-specific fields added |
+|-------------|---------------|-----------|------------------------------|
+| Reset | 170 | ✓ 2026-05-01 | "Reset" category (Timers / Flight data) at editor y≈340 |
+| Screenshot | 210 | ✓ 2026-05-01 | none |
+| Set failsafe | 250 | ✓ 2026-05-01 | "Module" field |
+| Play audio | 290 | ✓ 2026-05-02 | Voice, Repeat fields |
+| Haptic | 210 after 1 swipe | ✓ 2026-05-02 | Pattern, Strength fields |
+| Write logs | 250 after 1 swipe | ✓ 2026-05-02 | Write interval, Sticks/Pots/Sliders fields |
+| Go to screen | 210 after 2 swipes | ✓ 2026-05-02 | Screen picker field |
+| Lock touchscreen | 250 after 2 swipes | ✓ 2026-05-02 | none |
+| Load model | 290 after 2 swipes | ✓ 2026-05-02 | Model picker, Confirmation fields |
+| Play vario | wheel focus + Enter | ✓ 2026-05-02 | Source field |
+
+**Note:** "Play text" does NOT appear in the picker — absent in this firmware version.
+
+**Picker scroll recipe** (CDP touch swipe — mouse drag dismisses the overlay):
+```ts
+// One swipe: finger moves UP (byFrom=290 → byTo=130), shifts list ~3 items forward
+await touchSwipeBitmap(page, 350, 290, 130);
+// After 1 swipe: Play audio(170) Haptic(210) Write logs(250) Lock touchscreen(290)
+// After 2 swipes: Write logs(170) Go to screen(210) Lock touchscreen(250) Load model(290) Play vario(330)
+```
+
+**Selecting Play vario** (bottom item, tap area clipped at picker boundary):
+```ts
+// 2 swipes to reach the bottom of the list, then wheel focus + CDP Enter
+await touchSwipeBitmap(page, 350, 290, 130);
+await touchSwipeBitmap(page, 350, 290, 130);
+// Negative wheel delta focuses Play vario (highlights it orange)
+await wheelAt(page, 350, 250, -300);   // deltaY=-300 moves focus DOWN to last item
+await cdpEnter(page);                   // confirms the focused item → Play vario selected
+```
 
 ### Logic Switches screen
 
@@ -255,25 +483,40 @@ To reach items 6+, need touch-based swipe inside the picker overlay.
 | LS editor: Value(X) field | (600, 280) | tap | Opens numeric control bar ✓ confirmed 2026-05-01 |
 | LS editor: Active condition field | (600, 360) | tap | Opens condition picker (System event / Always on / Switch positions) ✓ confirmed 2026-05-01 |
 
-**LS editor field y-ranges (bitmap, confirmed from tap sweep 2026-05-01):**
+**LS editor field y-ranges (bitmap, confirmed from tap sweep 2026-05-01/03):**
 - Name: y≈90–130 (center ~120)
 - Function: y≈130–190 (center ~160)
 - Source(A): y≈195–245 (center ~215)
 - Value(X): y≈255–310 (center ~280)
 - Active condition: y≈340–390 (center ~360)
-- Delay before active: y≈395–435 (estimated, not yet probed)
 
-**LS editor full field list** (scroll down to see lower rows):
-1. Name — y≈120
-2. Function — y≈160
-3. Source(A) — y≈215
-4. Value(X) — y≈280
-5. Active condition — y≈360
-6. Delay before active — y≈400 (scrolled; estimated)
-7. Delay before inactive — (scrolled)
-8. Confirmation before active — toggle (scrolled)
-9. Confirmation before inactive — toggle (scrolled)
-10. Min duration — (scrolled)
+**Scrolled fields** — require 1× CDP touch swipe (bx=400, byStart=440, byEnd=150) to reach.
+After scroll, y-positions in bitmap space:
+- Delay before active: y≈70–115 (center ~100) — tap, numeric control bar (0.1s step) ✓ 2026-05-03
+- Delay before inactive: y≈120–165 (center ~180) — tap, numeric control bar (0.1s step) ✓ 2026-05-03
+- Confirmation before active: y≈215–255 (center ~220) — tap toggle (full-row; no control bar) ✓ 2026-05-03
+- Confirmation before inactive: y≈260–300 (center ~260) — tap toggle ✓ 2026-05-03
+- Min duration: y≈360–405 (center ~380) — tap, numeric control bar (0.1s step) ✓ 2026-05-03
+- Max duration: y≈410–450 (center ~420) — tap, numeric control bar (0.1s step) ✓ 2026-05-03
+- Comment: visible at y≈460+ after 1 scroll / y≈340 after 2 scrolls — likely touchBitmap (pencil icon); not yet confirmed
+
+**⚠ Dismiss-tap warning:** after interacting with a scrolled field, dismiss by tapping a neutral area
+such as (400, 50) or using `goBack`. Do NOT dismiss at y≈220–260 — those rows are toggle fields
+and will inadvertently flip their state.
+
+**LS editor full field list** (12 fields total):
+1. Name — y≈120 (unscrolled)
+2. Function — y≈160 (unscrolled)
+3. Source(A) — y≈215 (unscrolled)
+4. Value(X) — y≈280 (unscrolled)
+5. Active condition — y≈360 (unscrolled)
+6. Delay before active — y≈100 (after 1 scroll) ✓ 2026-05-03
+7. Delay before inactive — y≈180 (after 1 scroll) ✓ 2026-05-03
+8. Confirmation before active — y≈220 (after 1 scroll), toggle ✓ 2026-05-03
+9. Confirmation before inactive — y≈260 (after 1 scroll), toggle ✓ 2026-05-03
+10. Min duration — y≈380 (after 1 scroll) ✓ 2026-05-03
+11. Max duration — y≈420 (after 1 scroll) ✓ 2026-05-03
+12. Comment — y≈460 (after 1 scroll) / y≈340 (after 2 scrolls) — touchBitmap; unconfirmed
 
 **LS Function picker** (opens from Function field at (600, 160), scrollable list):
 - Items visible without scrolling: A~X · A=X · A>X · A<X · |A|>X
@@ -828,6 +1071,54 @@ Pitch increases with positive climb rate; continuous tone when descending.
 
 **Initial curve screen fields:** Name (text), Type (dropdown).
 
+#### Confirmed Coordinates — Curves screen
+
+| Action | Coords | Type | Notes |
+|--------|--------|------|-------|
+| Add curve (+ on empty screen) | (400, 266) | tap | Same large centred + as Vars/LS/SF ✓ confirmed 2026-05-01 |
+| Curve editor: Name field | (600, 80) | tap | Keyboard opens directly — tapBitmap works here (unlike FM/Vars name) ✓ confirmed 2026-05-01 |
+| Curve editor: Type field | (600, 140) | tap | Opens Type picker ✓ confirmed 2026-05-01 |
+
+**Type picker** (overlay, x≈320 for item taps):
+
+| Item | y | Notes |
+|------|---|-------|
+| `---` (no type) | 210 | Already selected by default — first tap re-highlights without closing; use y=210 to confirm ✓ |
+| Expo | 225 | Tap once → selects and closes picker ✓ confirmed 2026-05-01 |
+| Function | 270 | Tap once → selects and closes picker ✓ confirmed 2026-05-01 |
+| Custom | 320 | Tap once → selects and closes picker ✓ confirmed 2026-05-01 |
+
+**Expo editor fields** (x=600, all tap, all open standard control bar):
+
+| Field | y | Step | Notes |
+|-------|---|------|-------|
+| Weight | 220 | 1% | Default 100% ✓ confirmed 2026-05-01 |
+| Offset | 300 | 0.1% | Default 0.0% ✓ confirmed 2026-05-01 |
+| Expo% | 340 | 1% | Default 40% ✓ confirmed 2026-05-01 |
+
+**Function editor fields** (x=600, all tap):
+
+| Field | y | Notes |
+|-------|---|-------|
+| Function | 220 | Opens sub-picker: `---` / `x>0` / `x<0` / `|x|` / `f>0` / (scroll for `f<0` / `|f|`) ✓ confirmed 2026-05-01 |
+| Offset | 300 | Control bar, 0.1% step ✓ confirmed 2026-05-01 |
+
+**Custom editor fields** (x=600, all tap):
+
+| Field | y | Notes |
+|-------|---|-------|
+| Points count | 220 | Opens picker: 2–21 points (default 5) ✓ confirmed 2026-05-01 |
+| Smooth | 300 | Toggle ✓ confirmed 2026-05-01 |
+| Easy mode | 340 | Toggle ✓ confirmed 2026-05-01 |
+| Offset | 420 | Control bar 0.1% step; activating auto-scrolls view ✓ confirmed 2026-05-01 |
+| Points table | scrolled | Requires touch-based scroll to reach; WASM touch limitations apply (same as Vars) |
+
+**Note on Name field:** Responds to `tapBitmap` (mouse click) to open the keyboard — unlike the FM name pencil icon or Vars name field. Key input still uses `touchBitmap` per the established keyboard rule.
+
+**Graph interaction icons (bitmap, bottom-left of graph area):**
+- Joystick icon ≈ (35, 455) — use current analog input as live X source
+- Lock icon ≈ (75, 455) — locks stick input during adjustment
+
 ---
 
 #### Curve type: Expo `[CURVE_EXPO]`
@@ -859,7 +1150,7 @@ Select one of six mathematical functions — all support an **Offset** field (sh
 
 | Field | Notes |
 |---|---|
-| Points count | 5–21 points (default 5) |
+| Points count | 2–21 points (default 5) |
 | Smooth | Toggle — interpolates a smooth curve through points |
 | Easy mode | ON: X values fixed (equidistant), only Y editable. OFF: both X and Y editable |
 | Offset | Vertical shift (Y axis) |
@@ -1054,6 +1345,45 @@ Model Setup (✈) → Page 1 or Page 2 (swipe right) → tap tile → tap row/it
 Press [RTN] repeatedly until bottom bar is visible, then tap 🏠
 OR tap 🏠 in the bottom navigation bar directly
 ```
+
+---
+
+## Lua Plugin Upload ✓ confirmed 2026-05-02
+
+The web interface Upload button (toolbar) → "Upload a Lua plugin" menu item handles Lua script installation.
+
+**Requirements:**
+- File must be a `.zip` archive (not a plain `.lua`; the handler filters by `.zip` extension)
+- ZIP must contain **explicit directory entries** before any file entries — otherwise `FS.writeFile` fails with "No such file or directory" (the extractor does not auto-create parent dirs)
+- Correct ZIP structure:
+  ```
+  tools/                          ← directory entry (empty content, mode 0o40755)
+  tools/<name>/                   ← directory entry
+  tools/<name>/<name>.lua         ← script file
+  ```
+
+**What happens on upload:**
+1. Files extracted to `/persist/X18RS/scripts/` in the WASM IndexedDB filesystem
+2. `[scripts]` folder appears in System → File manager → RADIO:/
+3. On next boot: firmware logs `setUserScriptsDirectory("/persist/X18RS/scripts")`
+4. IndexedDB persists across page reloads (use `page.goto('about:blank')` between sessions to unload WASM, then reboot)
+
+**Playwright helper** (already in `browser/tests/helpers/upload.ts`):
+```typescript
+await uploadFile(page, 'lua', '/path/to/plugin.zip');
+```
+
+**AdmZip example** for correct ZIP construction:
+```typescript
+import AdmZip from 'adm-zip';
+const zip = new AdmZip();
+zip.addFile('tools/',           Buffer.alloc(0), '', 0o40755);  // dir entry
+zip.addFile('tools/myscript/',  Buffer.alloc(0), '', 0o40755);  // dir entry
+zip.addFile('tools/myscript/myscript.lua', Buffer.from(luaSource, 'utf8'));
+zip.writeZip('/tmp/plugin.zip');
+```
+
+**Lua tile in Model Setup:** r2c4 (700,330) is reserved for Lua but **does not appear in v1.6.6 X18RS** even with scripts correctly installed. The mechanism for launching uploaded tools in this firmware version is not yet confirmed.
 
 ---
 

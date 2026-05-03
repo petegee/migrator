@@ -201,3 +201,58 @@ export async function navigateToVars(page: Page): Promise<void> {
   await tapBitmap(page, B.r2c2.x, B.r2c2.y);
   await page.waitForTimeout(300);
 }
+
+// ---------------------------------------------------------------------------
+// Vars action helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Wheel-navigate inside the Var editor to focus the "+ Add a new action" button.
+ * Opens the editor first (tapBitmap 400,266 on empty Vars screen), then sends
+ * 7 wheel clicks to reach the button (orange highlight).
+ *
+ * WHY: The button renders at bitmap y≈452–479 (canvas bottom edge). tapBitmap and
+ * touchBitmap both fail there. Wheel navigation focuses the item; CDP Enter activates.
+ */
+export async function focusAddNewAction(page: Page): Promise<void> {
+  const centre = await bitmapToPage(page, 400, 300);
+  const client = await (page.context() as any).newCDPSession(page);
+  for (let i = 0; i < 7; i++) {
+    await client.send('Input.dispatchMouseEvent', {
+      type: 'mouseWheel', x: centre.x, y: centre.y,
+      deltaX: 0, deltaY: 300, modifiers: 0, pointerType: 'mouse',
+    });
+    await page.waitForTimeout(150);
+  }
+  await page.waitForTimeout(400);
+}
+
+/**
+ * Activate the currently wheel-focused item via CDP key dispatch (Enter, keyCode 13).
+ * page.keyboard.press('Enter') does NOT work because the WASM canvas has no DOM focus.
+ * CDP Input.dispatchKeyEvent bypasses DOM focus and reaches the WASM directly.
+ */
+export async function cdpEnterKey(page: Page): Promise<void> {
+  const client = await (page.context() as any).newCDPSession(page);
+  await client.send('Input.dispatchKeyEvent', {
+    type: 'keyDown', windowsVirtualKeyCode: 13,
+    key: 'Enter', code: 'Enter', nativeVirtualKeyCode: 13,
+  });
+  await page.waitForTimeout(80);
+  await client.send('Input.dispatchKeyEvent', {
+    type: 'keyUp', windowsVirtualKeyCode: 13,
+    key: 'Enter', code: 'Enter', nativeVirtualKeyCode: 13,
+  });
+  await page.waitForTimeout(500);
+}
+
+async function bitmapToPage(page: Page, bx: number, by: number) {
+  return page.evaluate((args: number[]) => {
+    const [bx, by] = args;
+    const canvases = Array.from(document.querySelectorAll('canvas')) as HTMLCanvasElement[];
+    const c = canvases.find((cv: any) => cv.getContext('webgl') || cv.getContext('webgl2')) ?? canvases[0];
+    if (!c) return { x: 0, y: 0 };
+    const r = c.getBoundingClientRect();
+    return { x: r.x + bx * (r.width / 800), y: r.y + by * (r.height / 480) };
+  }, [bx, by]);
+}

@@ -100,7 +100,8 @@ These are already established — do NOT re-probe them:
 - **Small edit icons** (e.g. FM name pencil icon): `touchBitmap` — mouse events are ignored
 - **Keyboard key presses**: `touchBitmap` — `tapBitmap` produces wrong/no key registration
   (observed: `tapBitmap` typed 'F' at offset 0x0185 instead of 'C' from row 3)
-- **Context menu items** (Edit/Add/Delete popup rows): `tapBitmap` — confirmed for FM1 "Edit" (popup "Edit" row y-coord equals the list row y-coord)
+- **Context menu items** (Edit/Add/Delete popup rows): `tapBitmap` for FM1 "Edit"; but **Mixes list context menu and placement picker require `touchBitmap`** — `tapBitmap` consistently misses popup items in the Mixes screen even when centred
+- **Buttons at canvas bottom edge** (e.g. "+Add a new action"): `page.keyboard.press` fails (canvas has no DOM focus). Use CDP `Input.dispatchKeyEvent` with keyCode 13 after wheel-focusing the item. See Vars action row in skills file.
 
 ### Confirmed coordinates
 
@@ -120,6 +121,54 @@ These are already established — do NOT re-probe them:
 | Keyboard Row 3 (ZXCVBNM) y | 395 | **touch** | ✓ confirmed (y=385 first hit) |
 | Keyboard x-spacing | 80px per key, x=40 for Q/A | **touch** | ✓ confirmed from D(200)/F(280) |
 | FM1 editor open (4-tap) | see sequence in skills file | tap | ✓ confirmed 2026-05-01 |
+| Curves: Add curve (+ empty screen) | (400, 266) | tap | ✓ confirmed 2026-05-01 |
+| Curves: Name field | (600, 80) | tap | keyboard opens (tapBitmap works) ✓ 2026-05-01 |
+| Curves: Type field | (600, 140) | tap | Type picker ✓ 2026-05-01 |
+| Curves Type picker: Expo | (320, 225) | tap | ✓ 2026-05-01 |
+| Curves Type picker: Function | (320, 270) | tap | ✓ 2026-05-01 |
+| Curves Type picker: Custom | (320, 320) | tap | ✓ 2026-05-01 |
+| Curves Expo: Weight (600,220) Offset (600,300) Expo% (600,340) | x=600, y=220/300/340 | tap | all open control bar ✓ 2026-05-01 |
+| Curves Function: Function sub-picker (600,220) Offset (600,300) | x=600 | tap | ✓ 2026-05-01 |
+| Curves Custom: Points count (600,220) Smooth (600,300) Easy mode (600,340) Offset (600,420) | x=600 | tap | ✓ 2026-05-01 |
+| Vars: Add a new action | wheel×7 (delta=300 each) → CDP Enter (keyCode 13) | special | ✓ confirmed 2026-05-02 |
+| Vars action row: value field | (600, ~465) | tap | opens numeric control bar ✓ 2026-05-02 |
+| Vars action row: delete button (leftmost icon) | (25, ~465) | tap | opens "remove this action?" confirm dialog ✓ 2026-05-02 |
+| Vars action row: condition picker (--- ▼) | (150, ~465) | tap | opens Category picker (System event/Always on/switches) ✓ 2026-05-02 |
+| Vars action row: function picker (Add(+) ▼) | (290, ~465) | tap | opens Function picker (Assign/Add/Subtract/Multiply/Divide/…) ✓ 2026-05-02 |
+| Vars: Function picker — Assign(=) | (400, ~160) | tap | selects Assign(=), closes picker ✓ 2026-05-02 |
+| Vars: list header + button (when vars exist) | (563, 69) | tap | opens new Var editor directly ✓ 2026-05-02 |
+| Vars: conditional value condition picker | (200, ~430) | tap | opens Category picker after "+ Add a new value" ✓ 2026-05-02 |
+| SF: Add SF (empty screen) | (400, 266) | tap | ✓ 2026-05-02 |
+| SF: Action field | (600, 100) | tap | opens action type picker ✓ 2026-05-02 |
+| SF Action picker: Reset | y=170 | tap | ✓ 2026-05-01 |
+| SF Action picker: Screenshot | y=210 | tap | ✓ 2026-05-01 |
+| SF Action picker: Set failsafe | y=250 | tap | ✓ 2026-05-01 |
+| SF Action picker: Play audio | y=290 (no scroll) | touch | ✓ 2026-05-02 — Voice+Repeat fields |
+| SF Action picker: Haptic | y=210 after 1 swipe | touch | ✓ 2026-05-02 — Pattern+Strength fields |
+| SF Action picker: Write logs | y=250 after 1 swipe | touch | ✓ 2026-05-02 — Write interval+Sticks/Pots/Sliders |
+| SF Action picker: Go to screen | y=210 after 2 swipes | touch | ✓ 2026-05-02 — Screen picker field |
+| SF Action picker: Lock touchscreen | y=250 after 2 swipes | touch | ✓ 2026-05-02 — no params |
+| SF Action picker: Load model | y=290 after 2 swipes | touch | ✓ 2026-05-02 — Model+Confirmation fields |
+| SF Action picker: Play vario | 2 swipes + wheel(-300) + CDP Enter | special | ✓ 2026-05-02 — Source field |
+| SF picker scroll | touchSwipeBitmap(350, 290, 130) | CDP touch | shifts list ~3 items; 2 swipes = bottom of list ✓ 2026-05-02 |
+| Mixes: + header button | (563, 69) | tap | opens Mixes library grid ✓ 2026-05-03 |
+| Mixes library: Free mix | (100, 101) | tap | opens placement popup ✓ 2026-05-03 |
+| Mixes placement: First position | (320, 141) | **touch** | popup items need touchBitmap ✓ 2026-05-03 |
+| Mixes placement: Last position | (320, 187) | **touch** | ✓ 2026-05-03 |
+| Mixes list row select | (200, 116) | tap | "Free mix" row; 2nd tap opens context menu ✓ 2026-05-03 |
+| Mixes context menu: Edit | (350, 140) | **touch** | popup items need touchBitmap ✓ 2026-05-03 |
+| Mixes context menu: Add | (350, 187) | **touch** | opens new Free mix editor directly ✓ 2026-05-03 |
+| Mixes context menu: Move | (350, 233) | **touch** | opens Mixes library (to replace mix type) ✓ 2026-05-03 |
+| Mixes context menu: Clone | (350, 279) | **touch** | duplicates mix in list ✓ 2026-05-03 |
+| Mixes context menu: Delete | (350, 340) | **touch** | opens "Are you sure?" confirm dialog ✓ 2026-05-03 (y=325 missed; y=340+ works) |
+| Mixes editor: Name | (350, 80) | tap | keyboard opens (no touch needed) ✓ 2026-05-03 |
+| Mixes editor: Active condition | (350, 140) | tap | picker: --- / Always on / Switch positions ✓ 2026-05-03 |
+| Mixes editor: Source | (350, 200) | tap | compact category picker; 2nd tap = full list ✓ 2026-05-03 |
+| Mixes editor: Operation | (350, 260) | tap | picker: Add / Multiply / Replace / Lock ✓ 2026-05-03 |
+| Mixes editor: Actions weight row | (350, 390) | tap | tap opens action row editor directly (row spans y≈390–465) ✓ 2026-05-03 |
+| Mixes editor: action row context menu | wheel×5 + CDP Enter | special | "Action" popup: Edit/Clone/Add/Delete ✓ 2026-05-03 |
+| Mixes editor: action ctx menu Add | (320, 230) | tap | adds new action row ✓ 2026-05-03 |
+| Mixes editor: + Add a new action | wheel×6 + CDP Enter | special | focuses button, Enter opens new action editor ✓ 2026-05-03 |
 
 ### Known quirks
 
