@@ -1,0 +1,381 @@
+{
+  "action": "Var name: empty → \"TEST\"",
+  "timestamp": "2026-05-03T21:17:51.915Z",
+  "baselineBytes": 665,
+  "changedBytes": 669,
+  "diffCount": 62,
+  "diffs": [
+    {
+      "offset": 8,
+      "hex": "0x0008",
+      "before": 137,
+      "after": 141
+    },
+    {
+      "offset": 14,
+      "hex": "0x000E",
+      "before": 193,
+      "after": 53
+    },
+    {
+      "offset": 15,
+      "hex": "0x000F",
+      "before": 160,
+      "after": 62
+    },
+    {
+      "offset": 495,
+      "hex": "0x01EF",
+      "before": 0,
+      "after": 4
+    },
+    {
+      "offset": 496,
+      "hex": "0x01F0",
+      "before": 0,
+      "after": 84
+    },
+    {
+      "offset": 497,
+      "hex": "0x01F1",
+      "before": 128,
+      "after": 69
+    },
+    {
+      "offset": 498,
+      "hex": "0x01F2",
+      "before": 0,
+      "after": 83
+    },
+    {
+      "offset": 499,
+      "hex": "0x01F3",
+      "before": 0,
+      "after": 84
+    },
+    {
+      "offset": 500,
+      "hex": "0x01F4",
+      "before": 130,
+      "after": 0
+    },
+    {
+      "offset": 501,
+      "hex": "0x01F5",
+      "before": 24,
+      "after": 128
+    },
+    {
+      "offset": 502,
+      "hex": "0x01F6",
+      "before": 252,
+      "after": 0
+    },
+    {
+      "offset": 503,
+      "hex": "0x01F7",
+      "before": 130,
+      "after": 0
+    },
+    {
+      "offset": 504,
+      "hex": "0x01F8",
+      "before": 232,
+      "after": 130
+    },
+    {
+      "offset": 505,
+      "hex": "0x01F9",
+      "before": 3,
+      "after": 24
+    },
+    {
+      "offset": 506,
+      "hex": "0x01FA",
+      "before": 0,
+      "after": 252
+    },
+    {
+      "offset": 507,
+      "hex": "0x01FB",
+      "before": 0,
+      "after": 130
+    },
+    {
+      "offset": 508,
+      "hex": "0x01FC",
+      "before": 0,
+      "after": 232
+    },
+    {
+      "offset": 509,
+      "hex": "0x01FD",
+      "before": 0,
+      "after": 3
+    },
+    {
+      "offset": 512,
+      "hex": "0x0200",
+      "before": 3,
+      "after": 0
+    },
+    {
+      "offset": 516,
+      "hex": "0x0204",
+      "before": 0,
+      "after": 3
+    },
+    {
+      "offset": 576,
+      "hex": "0x0240",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "offset": 580,
+      "hex": "0x0244",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "offset": 586,
+      "hex": "0x024A",
+      "before": 4,
+      "after": 0
+    },
+    {
+      "offset": 588,
+      "hex": "0x024C",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "offset": 590,
+      "hex": "0x024E",
+      "before": 0,
+      "after": 4
+    },
+    {
+      "offset": 592,
+      "hex": "0x0250",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "offset": 598,
+      "hex": "0x0256",
+      "before": 2,
+      "after": 0
+    },
+    {
+      "offset": 602,
+      "hex": "0x025A",
+      "before": 0,
+      "after": 2
+    },
+    {
+      "offset": 606,
+      "hex": "0x025E",
+      "before": 21,
+      "after": 0
+    },
+    {
+      "offset": 610,
+      "hex": "0x0262",
+      "before": 1,
+      "after": 21
+    },
+    {
+      "offset": 611,
+      "hex": "0x0263",
+      "before": 2,
+      "after": 0
+    },
+    {
+      "offset": 614,
+      "hex": "0x0266",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "offset": 615,
+      "hex": "0x0267",
+      "before": 0,
+      "after": 2
+    },
+    {
+      "offset": 619,
+      "hex": "0x026B",
+      "before": 21,
+      "after": 0
+    },
+    {
+      "offset": 621,
+      "hex": "0x026D",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "offset": 623,
+      "hex": "0x026F",
+      "before": 1,
+      "after": 21
+    },
+    {
+      "offset": 624,
+      "hex": "0x0270",
+      "before": 2,
+      "after": 0
+    },
+    {
+      "offset": 625,
+      "hex": "0x0271",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "offset": 627,
+      "hex": "0x0273",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "offset": 628,
+      "hex": "0x0274",
+      "before": 0,
+      "after": 2
+    },
+    {
+      "offset": 632,
+      "hex": "0x0278",
+      "before": 21,
+      "after": 0
+    },
+    {
+      "offset": 634,
+      "hex": "0x027A",
+      "before": 2,
+      "after": 0
+    },
+    {
+      "offset": 636,
+      "hex": "0x027C",
+      "before": 1,
+      "after": 21
+    },
+    {
+      "offset": 638,
+      "hex": "0x027E",
+      "before": 85,
+      "after": 2
+    },
+    {
+      "offset": 639,
+      "hex": "0x027F",
+      "before": 85,
+      "after": 0
+    },
+    {
+      "offset": 640,
+      "hex": "0x0280",
+      "before": 85,
+      "after": 1
+    },
+    {
+      "offset": 641,
+      "hex": "0x0281",
+      "before": 85,
+      "after": 0
+    },
+    {
+      "offset": 642,
+      "hex": "0x0282",
+      "before": 1,
+      "after": 85
+    },
+    {
+      "offset": 643,
+      "hex": "0x0283",
+      "before": 1,
+      "after": 85
+    },
+    {
+      "offset": 644,
+      "hex": "0x0284",
+      "before": 0,
+      "after": 85
+    },
+    {
+      "offset": 645,
+      "hex": "0x0285",
+      "before": 0,
+      "after": 85
+    },
+    {
+      "offset": 646,
+      "hex": "0x0286",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "offset": 647,
+      "hex": "0x0287",
+      "before": 4,
+      "after": 1
+    },
+    {
+      "offset": 651,
+      "hex": "0x028B",
+      "before": 0,
+      "after": 4
+    },
+    {
+      "offset": 652,
+      "hex": "0x028C",
+      "before": 161,
+      "after": 0
+    },
+    {
+      "offset": 655,
+      "hex": "0x028F",
+      "before": 1,
+      "after": 0
+    },
+    {
+      "offset": 656,
+      "hex": "0x0290",
+      "before": 0,
+      "after": 161
+    },
+    {
+      "offset": 659,
+      "hex": "0x0293",
+      "before": 0,
+      "after": 1
+    },
+    {
+      "offset": 665,
+      "hex": "0x0299",
+      "before": -1,
+      "after": 0
+    },
+    {
+      "offset": 666,
+      "hex": "0x029A",
+      "before": -1,
+      "after": 0
+    },
+    {
+      "offset": 667,
+      "hex": "0x029B",
+      "before": -1,
+      "after": 0
+    },
+    {
+      "offset": 668,
+      "hex": "0x029C",
+      "before": -1,
+      "after": 0
+    }
+  ]
+}

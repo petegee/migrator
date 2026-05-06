@@ -1,0 +1,33 @@
+SUCCESS
+
+Var1 created in Ethos UI with Comment = "rudder".
+Screenshot 06-var-in-list.png confirms Var1 visible in list with Comment shown in right panel.
+accumulated.bin saved (671 bytes).
+
+--- Field mapping findings ---
+
+Fields set:
+  Comment = "rudder"  (only text-settable field; Name is non-interactive in WASM)
+
+Fields NOT set (no corresponding Var editor field):
+  srcRaw (Rud) — no Source field in Var editor
+  weight (80)  — no Weight/Rate field; Range and Values are different concepts
+  curve {0,0}  — no Curve field
+  swtch (NONE) — no Active condition field (only per-value conditions via Add new value)
+  mode (3)     — not settable
+
+--- Key lessons ---
+
+1. Keyboard auto-starts UPPERCASE on Comment open. Do NOT press Shift before first char.
+   Pressing Shift at (40,395) TOGGLES the keyboard to lowercase.
+   This session typed "rudder" (lowercase) because Shift was pressed first.
+   Fix for next sessions: remove the Shift press; first char auto-capitalises.
+
+2. Ethos Var = formula/global variable. It is NOT an input curve screen.
+   ETX expoData (Inputs) does not map cleanly to Ethos Vars.
+   Source/Weight/Curve/Condition fields are absent.
+
+3. The Var list right-panel shows Comment and Range when a row is selected.
+
+4. navigateToVars() helper works correctly.
+   tapBitmap(400, 266) on empty screen creates first var and opens editor directly.

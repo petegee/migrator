@@ -1,0 +1,20 @@
+SUCCESS
+
+FM2 "LNCH2" entered and confirmed by screenshot.
+
+Confirmed:
+- Name: LNCH2 ✓ (snap 18-12-fm2-named.png)
+- Active condition: --- (L3 logical switch not yet created)
+- Fade in: 0.0s ✓ (matches ETX fadeIn=0)
+- Fade out: 0.0s ✓ (matches ETX fadeOut=0)
+- FM list shows FM0/FM1/FM2 correctly (snap 19-13-fm-list-fm1-fm2.png)
+- accumulated.bin: 733 bytes (was 722 — 11 bytes added for FM2)
+
+FM editor field list confirmed: Name, Active condition, Fade in, Fade out (4 fields only, no scroll).
+Number "2" key in numbers keyboard: (120, 315) ✓
+
+ETX fields not in FM editor:
+- swtch: L3 → leave "---" until logical switch L3 is migrated, then update
+- fadeIn/fadeOut: 0 → defaults ✓
+- gvars: set in GVars screen, not FM editor
+- trim: runtime positions, not manually settable; handled automatically

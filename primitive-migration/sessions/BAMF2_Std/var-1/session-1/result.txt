@@ -1,0 +1,74 @@
+LEARN: Multiple issues discovered — see notes below. Session produced corrupt accumulated.bin. Session-2 must rebuild from scratch.
+
+--- What went wrong ---
+
+1. UPLOAD APPROACH BROKEN
+   navigateCreateModelWizard() creates a fresh model in WASM slot 1.
+   Uploading accumulated.bin after that goes to slot 2 (or a different slot).
+   navigateToVars() shows the ACTIVE model (slot 1 = fresh, no vars).
+   Result: Vars list was empty — we were not working with accumulated.bin at all.
+   FIX for session-2: Do NOT call navigateCreateModelWizard before upload.
+   Instead: bootApp → tapBitmap(25, 25) to dismiss wizard → upload → navigate.
+   OR: Build all vars from scratch on a fresh model each session.
+
+2. VALUES DEFAULT CONTROL BAR: KEY FINDINGS
+   tapBitmap(600, 267) with editor in scrolled-down state opens Values default control bar.
+   Control bar appears at bottom of canvas: < | 0.1% | > | - | + | ⋮
+   Approximate bitmap coordinates:
+     < (step decrease): (63, 468)
+     current value/step display: (200, 468)
+     > (step increase): (338, 468)
+     - (decrement): (475, 468)
+     + (increment): (613, 468)
+     ⋮ (more options): (750, 468)
+   Step size: 0.1% per + tap (need 550 taps for 55%, 800 taps for 80%).
+   UNTESTED: whether > button increases step size (e.g. to 1% or 10%).
+   UNTESTED: whether ⋮ opens a direct-value-entry dialog.
+   The editor must be in scrolled-down state (Values visible near y=267 bitmap)
+   for tapBitmap(600, 267) to hit the Values row.
+
+3. WHEEL EVENTS DO NOT CHANGE VALUES
+   After editor opens, wheel events NAVIGATE between fields (cursor moves).
+   They do NOT change the value of the highlighted field.
+   cdpEnterKey after wheel-focus of Values default does NOT open control bar;
+   instead it navigates away (or activates a button if the cursor was on a button).
+   Values default must be set via the control bar (tapBitmap → control bar → +/-).
+
+4. EDITOR SCROLL STATE
+   Wheel events (5 steps from fresh editor) focus Values default (orange highlight).
+   In this state the editor view shows Name/Comment/Range/Values/"+Add a new value".
+   tapBitmap(600, 267) in the UNSCROLLED state hits Comment field (opens keyboard).
+   tapBitmap(600, 267) in the SCROLLED state (after adding action row) hits Values field.
+   Need to find the correct y for Values in the 5-wheel-scrolled state: approx bitmap y=343.
+
+5. CONFIRM DIALOG ON goBack
+   When a conditional Values row is highlighted/focused, goBack triggers:
+   "Are you sure you want to stop using this rate?" (Yes/No dialog).
+   Before calling goBack, must: tap neutral area to deselect all rows,
+   OR explicitly handle the Confirm dialog (Yes to dismiss, then goBack).
+
+6. ACCUMULATED.BIN IS NOW CORRUPT
+   Session-2 downloaded a model with: Var1 with Values=0.1%, 1 Action row,
+   1 conditional Values row, Comment unknown (keyboard never opened).
+   The original var-0 "rudder" Var1 at 80% was lost.
+
+--- Plan for session-2 ---
+
+A) Start fresh: navigateCreateModelWizard (fresh Glider model).
+B) Navigate to Vars.
+C) Add Var1 via center + button (400, 266).
+D) In Var1 editor:
+   - 5 wheel events to scroll editor to Values-visible state
+   - tapBitmap(600, 343) to open Values control bar  [y=343 = approx Values position in 5-wheel view]
+   - Tap > at (338, 468) 1-2 times to increase step size to 1% (NEEDS TESTING)
+   - Tap + at (613, 468) 80 times for 80% (or 800 times for 0.1% steps)
+   - Tap neutral area to close control bar
+   - tapBitmap(600, 267) to open Comment keyboard
+   - Type "Rudder"
+   - Tap neutral area before goBack
+E) goBack to Vars list.
+F) Add Var2 via header + button (563, 69).
+G) Same process for Elevat: 55% value, Comment = "Elevat".
+H) Download and save.
+
+This session adds BOTH Var1 (Rudder) AND Var2 (Elevat) since upload is unreliable.

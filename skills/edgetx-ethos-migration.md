@@ -586,7 +586,86 @@ def compare_flight_modes(sim: EdgeTXSimulator, sources: dict) -> dict:
 
 ---
 
-## 7. Key Gotchas
+## 7. UI-Driven Migration via WASM Emulator (RALPH Loop)
+
+### Overview
+
+Instead of reverse-engineering the binary format, models are migrated by driving the **Ethos WASM emulator's own UI** using Playwright. The firmware serialises the binary correctly — we just need to enter the right values via the right screens. The RALPH loop (Reflect → Act → Learn → Persist → Have-another-go) iterates per primitive until each one is successfully entered and confirmed by screenshot.
+
+### Primitive Granularity
+
+Each session handles one primitive instance, e.g.:
+- `model-info` — name, model type, RF settings skip
+- `var/<n>` — a single Var (converted from one `expoData` entry)
+- `mix/<n>` — a single Free Mix (converted from one `mixData` entry)
+- `output/<n>` — a single Output/channel (converted from one `limitData` entry)
+- `curve/<n>` — a single Curve
+- `logical-switch/<n>` — a single Logical Switch
+
+Fine enough that failures are precisely isolated; coarse enough that one session has a clear, verifiable goal.
+
+### What Each Session Receives (Clean Context)
+
+- The ETX data for **this primitive instance only** (extracted from the `.etx` by the runner)
+- The current mapping rules for this primitive type: `skills/primitives/<type>.md`
+- `skills/ethos-ui-navigation.md` — Ethos screen hierarchy and navigation
+- `skills/wasm-browser-driver.md` — Playwright driver patterns
+- Nothing else — no prior conversation bleed, no full model context
+
+### Session Loop
+
+```
+learn-primitive.sh <type> <instance-index>
+  1. Extract primitive data from .etx
+  2. Load current rules from skills/primitives/<type>.md
+  3. Inject both into prompt template → spawn fresh Claude session
+  4. Claude drives WASM UI, takes screenshots to verify each field
+  5. Session ends with one of:
+       SUCCESS  → rules confirmed/refined, move to next instance
+       LEARN    → rules updated with failure details, retry same instance
+```
+
+### What Gets Updated After Each Run
+
+`skills/primitives/<type>.md` — the per-primitive-type mapping rules file.
+
+This is the **only file Claude writes to at the end of each session**. It accumulates the concrete UI steps, field mappings, gotchas, and confirmed patterns for that primitive type. Future sessions for the same type start with the accumulated knowledge from all prior sessions.
+
+Example files:
+```
+skills/primitives/
+  vars.md              # expoData → Var: confirmed UI steps
+  free-mixes.md        # mixData → Free Mix: confirmed UI steps
+  outputs.md           # limitData → Output: confirmed UI steps
+  curves.md            # curves → Curve: confirmed UI steps
+  logical-switches.md  # logicalSw → Logical Switch: confirmed UI steps
+  model-info.md        # header → Model Info screen: confirmed UI steps
+```
+
+### Success Criterion
+
+A primitive session succeeds when:
+- The screenshot shows the expected value in the Ethos UI
+- No error state visible in the emulator
+- The value matches the ETX source (within Ethos's precision/range)
+
+No binary parsing or round-trip test is needed — the firmware handles serialisation.
+
+### Primitive Mapping Quick Reference
+
+| ETX section | Ethos primitive | Rules file |
+|---|---|---|
+| `header` | Model Info screen | `skills/primitives/model-info.md` |
+| `expoData[n]` | Var n | `skills/primitives/vars.md` |
+| `mixData[n]` | Free Mix n | `skills/primitives/free-mixes.md` |
+| `limitData[n]` | Output n | `skills/primitives/outputs.md` |
+| `curves[n]` | Curve n | `skills/primitives/curves.md` |
+| `logicalSw[n]` | Logical Switch n | `skills/primitives/logical-switches.md` |
+| `customFn[n]` | Special Function n | `skills/primitives/special-functions.md` |
+
+---
+
+## 8. Key Gotchas
 
 1. **Flight mode bit string**: index 0 = FM0, `'1'` = **disabled**. Easy to invert this.
 2. **GV indexing**: `GV1` = `gvars[0]`, i.e. 1-indexed in name, 0-indexed in array.

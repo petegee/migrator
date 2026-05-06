@@ -1,0 +1,2028 @@
+semver: 2.8.5
+header:
+  name: Fosa
+  bitmap: Behance
+  labels: ""
+  modelId:
+    0:
+      val: 12
+timers:
+  0:
+    swtch: L8
+    mode: ON
+    name: Flight
+    minuteBeep: 1
+    countdownBeep: 0
+    start: 600
+    persistent: 0
+    countdownStart: -1
+    value: 0
+    showElapsed: 0
+  1:
+    swtch: "!SE0"
+    mode: ON
+    name: Working
+    minuteBeep: 0
+    countdownBeep: 0
+    start: 720
+    persistent: 0
+    countdownStart: -1
+    value: 0
+    showElapsed: 0
+noGlobalFunctions: 0
+thrTrim: 1
+trimInc: 1
+displayTrims: 0
+ignoreSensorIds: 0
+disableThrottleWarning: 1
+enableCustomThrottleWarning: 0
+customThrottleWarningPosition: 0
+beepANACenter: 256
+extendedLimits: 1
+extendedTrims: 1
+throttleReversed: 0
+flightModeData:
+  0:
+    trim:
+      1:
+        value: -44
+        mode: 0
+      2:
+        value: 4
+        mode: 0
+      3:
+        value: 4
+        mode: 0
+    name: Distance
+    fadeIn: 10
+    fadeOut: 0
+    gvars:
+      0:
+        val: -25
+      1:
+        val: 30
+      2:
+        val: -28
+      3:
+        val: -20
+      4:
+        val: -17
+  1:
+    trim:
+      0:
+        value: 0
+        mode: 2
+      1:
+        value: 44
+        mode: 2
+      2:
+        value: -127
+        mode: 2
+      3:
+        value: 16
+        mode: 2
+    swtch: L5
+    name: Launch
+    fadeIn: 5
+    fadeOut: 0
+    gvars:
+      0:
+        val: -100
+      1:
+        val: 100
+      2:
+        val: 0
+      3:
+        val: 0
+      4:
+        val: 0
+      5:
+        val: 0
+      6:
+        val: 72
+      7:
+        val: 30
+      8:
+        val: 0
+  2:
+    trim:
+      0:
+        value: 0
+        mode: 4
+      1:
+        value: -12
+        mode: 4
+      2:
+        value: 85
+        mode: 4
+      3:
+        value: 0
+        mode: 4
+    swtch: L2
+    name: Landing
+    fadeIn: 5
+    fadeOut: 0
+    gvars:
+      0:
+        val: 0
+      1:
+        val: 45
+      2:
+        val: 0
+      3:
+        val: 0
+      4:
+        val: 0
+      5:
+        val: 0
+      6:
+        val: 0
+      7:
+        val: 0
+      8:
+        val: 0
+  3:
+    trim:
+      0:
+        value: 0
+        mode: 6
+      1:
+        value: -16
+        mode: 6
+      2:
+        value: 25
+        mode: 6
+      3:
+        value: 0
+        mode: 6
+    swtch: L11
+    name: Speed
+    fadeIn: 3
+    fadeOut: 0
+    gvars:
+      0:
+        val: 0
+      1:
+        val: 0
+      2:
+        val: -28
+      3:
+        val: -28
+      4:
+        val: -26
+      5:
+        val: 0
+      6:
+        val: 0
+      7:
+        val: 0
+      8:
+        val: 0
+  4:
+    trim:
+      0:
+        value: -4
+        mode: 8
+      1:
+        value: -24
+        mode: 8
+      2:
+        value: -41
+        mode: 8
+      3:
+        value: 16
+        mode: 8
+    swtch: L12
+    name: Thermal
+    fadeIn: 3
+    fadeOut: 0
+    gvars:
+      0:
+        val: -40
+      1:
+        val: 20
+      2:
+        val: -24
+      3:
+        val: -16
+      4:
+        val: -16
+      5:
+        val: 0
+      6:
+        val: 0
+      7:
+        val: 0
+      8:
+        val: 0
+  5:
+    trim:
+      0:
+        value: 0
+        mode: 2
+      1:
+        value: -184
+        mode: 3
+      2:
+        value: 128
+        mode: 10
+      3:
+        value: -28
+        mode: 10
+    swtch: L6
+    name: Launch2
+    fadeIn: 10
+    fadeOut: 0
+    gvars:
+      0:
+        val: 1026
+      1:
+        val: 1026
+      2:
+        val: 1026
+      3:
+        val: 1026
+      4:
+        val: 1026
+      5:
+        val: 1026
+      6:
+        val: 42
+      7:
+        val: 51
+      8:
+        val: 0
+  6:
+    swtch: NONE
+    name: ""
+    fadeIn: 0
+    fadeOut: 0
+    gvars:
+      0:
+        val: 0
+      1:
+        val: 0
+      2:
+        val: 0
+      3:
+        val: 0
+      4:
+        val: 0
+      5:
+        val: 0
+      6:
+        val: 0
+      7:
+        val: 0
+      8:
+        val: 0
+  7:
+    swtch: NONE
+    name: ""
+    fadeIn: 0
+    fadeOut: 0
+    gvars:
+      0:
+        val: 0
+      1:
+        val: 0
+      2:
+        val: 0
+      3:
+        val: 0
+      4:
+        val: 0
+      5:
+        val: 0
+      6:
+        val: 0
+      7:
+        val: 0
+      8:
+        val: 0
+  8:
+    trim:
+      0:
+        value: 0
+        mode: 31
+      1:
+        value: 0
+        mode: 31
+      2:
+        value: 0
+        mode: 31
+      3:
+        value: 0
+        mode: 31
+    swtch: NONE
+    name: CALIBRATE
+    fadeIn: 0
+    fadeOut: 0
+    gvars:
+      0:
+        val: 0
+      1:
+        val: 0
+      2:
+        val: 0
+      3:
+        val: 0
+      4:
+        val: 0
+      5:
+        val: 0
+      6:
+        val: 0
+      7:
+        val: 0
+      8:
+        val: 0
+mixData:
+  - destCh: 0
+    srcRaw: I3
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: -GV1
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 6
+    name: AIL1
+  - destCh: 0
+    srcRaw: TrimAil
+    weight: 25
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: AilTri
+  - destCh: 0
+    srcRaw: ch(17)
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: -100
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 101110111
+    offset: 21
+    name: Launch
+  - destCh: 0
+    srcRaw: ch(9)
+    weight: -40
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111101111
+    offset: -14
+    name: Camber
+  - destCh: 0
+    srcRaw: ch(15)
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111011111
+    offset: -3
+    name: Reflex
+  - destCh: 0
+    srcRaw: I2
+    weight: 0
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 0
+    name: Crow
+  - destCh: 0
+    srcRaw: ch(11)
+    weight: -107
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 010001111
+    offset: 0
+    name: Snapfl
+  - destCh: 0
+    srcRaw: Ail
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: REPL
+    mixWarn: 0
+    flightModes: 111111110
+    offset: 0
+    name: CAL
+  - destCh: 1
+    srcRaw: I1
+    weight: -50
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: Elev
+  - destCh: 1
+    srcRaw: ch(14)
+    weight: -90
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 0
+    name: ElevCo
+  - destCh: 1
+    srcRaw: I0
+    weight: 80
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: RUD
+  - destCh: 1
+    srcRaw: I3
+    weight: GV2
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: Ail-Ru
+  - destCh: 1
+    srcRaw: Ele
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: REPL
+    mixWarn: 0
+    flightModes: 111111110
+    offset: 0
+    name: CAL
+  - destCh: 2
+    srcRaw: I1
+    weight: 50
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: Elev
+  - destCh: 2
+    srcRaw: ch(14)
+    weight: 90
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 0
+    name: ElevCo
+  - destCh: 2
+    srcRaw: I0
+    weight: 80
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: RUD
+  - destCh: 2
+    srcRaw: I3
+    weight: GV2
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: Ail-Ru
+  - destCh: 2
+    srcRaw: Rud
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: REPL
+    mixWarn: 0
+    flightModes: 111111110
+    offset: 0
+    name: CAL
+  - destCh: 3
+    srcRaw: I2
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 6
+    name: Crow
+  - destCh: 3
+    srcRaw: I3
+    weight: GV3
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 011001111
+    offset: -73
+    name: Flaper
+  - destCh: 3
+    srcRaw: ch(18)
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 101110111
+    offset: 0
+    name: Launch
+  - destCh: 3
+    srcRaw: ch(10)
+    weight: 40
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111101111
+    offset: 11
+    name: Camber
+  - destCh: 3
+    srcRaw: ch(16)
+    weight: 31
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111011111
+    offset: 0
+    name: Reflex
+  - destCh: 3
+    srcRaw: ch(12)
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 010001111
+    offset: 0
+    name: Snapfl
+  - destCh: 3
+    srcRaw: Thr
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: REPL
+    mixWarn: 0
+    flightModes: 111111110
+    offset: 0
+    name: CAL
+  - destCh: 4
+    srcRaw: I2
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 4
+    name: Crow
+  - destCh: 4
+    srcRaw: I3
+    weight: -GV3
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 011001111
+    offset: -76
+    name: Flaper
+  - destCh: 4
+    srcRaw: ch(18)
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: -100
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 101110111
+    offset: 0
+    name: Launch
+  - destCh: 4
+    srcRaw: ch(10)
+    weight: 40
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111101111
+    offset: 12
+    name: Camber
+  - destCh: 4
+    srcRaw: ch(16)
+    weight: 6
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111011111
+    offset: 0
+    name: Reflex
+  - destCh: 4
+    srcRaw: ch(12)
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 011001111
+    offset: 0
+    name: Snapfl
+  - destCh: 4
+    srcRaw: Thr
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: REPL
+    mixWarn: 0
+    flightModes: 111111110
+    offset: 0
+    name: CAL
+  - destCh: 5
+    srcRaw: I3
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: GV1
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: -12
+    name: AIL2
+  - destCh: 5
+    srcRaw: TrimAil
+    weight: 25
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000111
+    offset: 0
+    name: AilTri
+  - destCh: 5
+    srcRaw: ch(17)
+    weight: 98
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 101110111
+    offset: -4
+    name: Launch
+  - destCh: 5
+    srcRaw: ch(9)
+    weight: 47
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111101111
+    offset: 17
+    name: Camber
+  - destCh: 5
+    srcRaw: ch(15)
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111011111
+    offset: 4
+    name: Reflex
+  - destCh: 5
+    srcRaw: I2
+    weight: 0
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 0
+    name: Crow
+  - destCh: 5
+    srcRaw: ch(11)
+    weight: 130
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 011001111
+    offset: 0
+    name: Snapfl
+  - destCh: 5
+    srcRaw: Ail
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: REPL
+    mixWarn: 0
+    flightModes: 111111110
+    offset: 0
+    name: CAL
+  - destCh: 9
+    srcRaw: MAX
+    weight: -24
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110101111
+    offset: 0
+    name: AilCmb
+  - destCh: 9
+    srcRaw: I4
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: MUL
+    mixWarn: 0
+    flightModes: 110101111
+    offset: 0
+    name: FineAd
+  - destCh: 10
+    srcRaw: MAX
+    weight: -20
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110101111
+    offset: 0
+    name: FlpCmb
+  - destCh: 10
+    srcRaw: I4
+    weight: -100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: MUL
+    mixWarn: 0
+    flightModes: 110101111
+    offset: 0
+    name: FineAd
+  - destCh: 11
+    srcRaw: I1
+    weight: GV4
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 011001111
+    offset: 0
+    name: SnpAil
+  - destCh: 12
+    srcRaw: I1
+    weight: -GV5
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 011001111
+    offset: 0
+    name: SnpFlp
+  - destCh: 13
+    srcRaw: TrimThr
+    weight: 61
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 0
+    name: CmpGai
+  - destCh: 14
+    srcRaw: I2
+    weight: 50
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 50
+    name: ELECom
+  - destCh: 14
+    srcRaw: ch(13)
+    weight: 100
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 1
+    mltpx: MUL
+    mixWarn: 0
+    flightModes: 110111111
+    offset: 0
+    name: ElCmpT
+  - destCh: 15
+    srcRaw: MAX
+    weight: 6
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111011111
+    offset: 0
+    name: AilRfl
+  - destCh: 16
+    srcRaw: MAX
+    weight: -9
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 111011111
+    offset: 0
+    name: FlpRfl
+  - destCh: 17
+    srcRaw: MAX
+    weight: GV7
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 101110111
+    offset: 0
+    name: AilLnc
+  - destCh: 18
+    srcRaw: MAX
+    weight: GV8
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 101110111
+    offset: 0
+    name: FlpLnc
+  - destCh: 31
+    srcRaw: MAX
+    weight: 0
+    swtch: NONE
+    curve:
+      type: 0
+      value: 0
+    delayUp: 0
+    delayDown: 0
+    speedUp: 0
+    speedDown: 0
+    carryTrim: 0
+    mltpx: ADD
+    mixWarn: 0
+    flightModes: 000000000
+    offset: 0
+    name: CALIBR
+limitData:
+  0:
+    min: 0
+    max: 0
+    revert: 1
+    offset: 0
+    ppmCenter: -38
+    symetrical: 1
+    name: Ail_R
+    curve: 0
+  1:
+    min: 160
+    max: -160
+    revert: 0
+    offset: 0
+    ppmCenter: 120
+    symetrical: 1
+    name: LVee
+    curve: 0
+  2:
+    min: 160
+    max: -160
+    revert: 0
+    offset: 0
+    ppmCenter: 115
+    symetrical: 1
+    name: RVee
+    curve: 0
+  3:
+    min: 0
+    max: -30
+    revert: 1
+    offset: 0
+    ppmCenter: 0
+    symetrical: 1
+    name: Flap_R
+    curve: 0
+  4:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 1
+    name: Flap_L
+    curve: 1
+  5:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: -29
+    symetrical: 1
+    name: Ail_L
+    curve: 0
+  6:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 1
+    name: ""
+    curve: 0
+  7:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 1
+    name: ""
+    curve: 0
+  9:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: AilCmb
+    curve: 0
+  10:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: FlpCmb
+    curve: 0
+  11:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: SnpAil
+    curve: 0
+  12:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: SnpFlp
+    curve: 0
+  13:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: Gain
+    curve: 0
+  14:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: EleCmp
+    curve: 0
+  15:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: AilRfx
+    curve: 0
+  16:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: FlpRfx
+    curve: 0
+  17:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: AilLnc
+    curve: 0
+  18:
+    min: 0
+    max: 0
+    revert: 0
+    offset: 0
+    ppmCenter: 0
+    symetrical: 0
+    name: FlpLnc
+    curve: 0
+expoData:
+  - srcRaw: Rud
+    scale: 0
+    mode: 3
+    chn: 0
+    swtch: NONE
+    flightModes: 101110111
+    weight: 100
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: RudHig
+  - srcRaw: Rud
+    scale: 0
+    mode: 3
+    chn: 0
+    swtch: NONE
+    flightModes: 010101111
+    weight: 65
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: RudLow
+  - srcRaw: Ele
+    scale: 0
+    mode: 3
+    chn: 1
+    swtch: NONE
+    flightModes: 111011111
+    weight: 90
+    offset: 0
+    curve:
+      type: 1
+      value: 30
+    trimSource: 0
+    name: ElevHi
+  - srcRaw: Ele
+    scale: 0
+    mode: 3
+    chn: 1
+    swtch: NONE
+    flightModes: 010111111
+    weight: 68
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: ElevMi
+  - srcRaw: Ele
+    scale: 0
+    mode: 3
+    chn: 1
+    swtch: NONE
+    flightModes: 111101111
+    weight: 54
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: ElevLo
+  - srcRaw: Ele
+    scale: 0
+    mode: 3
+    chn: 1
+    swtch: NONE
+    flightModes: 101110111
+    weight: 40
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: Launch
+  - srcRaw: Thr
+    scale: 0
+    mode: 3
+    chn: 2
+    swtch: NONE
+    flightModes: 000000000
+    weight: -85
+    offset: 6
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: ""
+  - srcRaw: Ail
+    scale: 0
+    mode: 3
+    chn: 3
+    swtch: NONE
+    flightModes: 100110111
+    weight: 50
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: AilHig
+  - srcRaw: Ail
+    scale: 0
+    mode: 3
+    chn: 3
+    swtch: NONE
+    flightModes: 111011111
+    weight: 37
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: AilSpd
+  - srcRaw: Ail
+    scale: 0
+    mode: 3
+    chn: 3
+    swtch: NONE
+    flightModes: 011111111
+    weight: 41
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: AilMid
+  - srcRaw: Ail
+    scale: 0
+    mode: 3
+    chn: 3
+    swtch: NONE
+    flightModes: 111101111
+    weight: 35
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: AilLow
+  - srcRaw: SLIDER2
+    scale: 0
+    mode: 3
+    chn: 4
+    swtch: NONE
+    flightModes: 110101111
+    weight: -66
+    offset: -50
+    curve:
+      type: 0
+      value: 0
+    trimSource: 1
+    name: CambAd
+  - srcRaw: POT2
+    scale: 0
+    mode: 3
+    chn: 5
+    swtch: NONE
+    flightModes: 000000000
+    weight: 100
+    offset: 0
+    curve:
+      type: 0
+      value: 0
+    trimSource: 0
+    name: ""
+inputNames:
+  0:
+    val: Rud
+  1:
+    val: Ele
+  2:
+    val: Thr
+  3:
+    val: Ail
+  4:
+    val: RSld
+curves:
+  0:
+    type: 1
+    smooth: 0
+    points: 2
+    name: flp
+points:
+  0:
+    val: -100
+  1:
+    val: -61
+  2:
+    val: -30
+  3:
+    val: 10
+  4:
+    val: 39
+  5:
+    val: 73
+  6:
+    val: 100
+  7:
+    val: -67
+  8:
+    val: -33
+  9:
+    val: 0
+  10:
+    val: 33
+  11:
+    val: 67
+logicalSw:
+  0:
+    func: FUNC_VNEG
+    def: Thr,70
+    delay: 0
+    duration: 0
+    andsw: NONE
+  1:
+    func: FUNC_STICKY
+    def: L1,SF2
+    delay: 0
+    duration: 0
+    andsw: NONE
+  3:
+    func: FUNC_VPOS
+    def: SF,1
+    delay: 10
+    duration: 0
+    andsw: NONE
+  4:
+    func: FUNC_STICKY
+    def: L4,SF0
+    delay: 0
+    duration: 0
+    andsw: NONE
+  5:
+    func: FUNC_STICKY
+    def: L4,L7
+    delay: 0
+    duration: 0
+    andsw: NONE
+  6:
+    func: FUNC_VPOS
+    def: Ele,50
+    delay: 0
+    duration: 0
+    andsw: NONE
+  7:
+    func: FUNC_STICKY
+    def: L6,L5
+    delay: 0
+    duration: 0
+    andsw: NONE
+  8:
+    func: FUNC_OR
+    def: L5,L6
+    delay: 0
+    duration: 0
+    andsw: NONE
+  10:
+    func: FUNC_AND
+    def: "!L9,SG0"
+    delay: 0
+    duration: 0
+    andsw: NONE
+  11:
+    func: FUNC_AND
+    def: "!L9,SG2"
+    delay: 0
+    duration: 0
+    andsw: NONE
+  13:
+    func: FUNC_VNEG
+    def: tele(2),72
+    delay: 30
+    duration: 0
+    andsw: "!L15"
+  14:
+    func: FUNC_VNEG
+    def: tele(2),66
+    delay: 30
+    duration: 0
+    andsw: NONE
+  16:
+    func: FUNC_AND
+    def: SB0,SI2
+    delay: 0
+    duration: 0
+    andsw: NONE
+  17:
+    func: FUNC_AND
+    def: SB1,SI2
+    delay: 0
+    duration: 0
+    andsw: NONE
+  18:
+    func: FUNC_AND
+    def: SB2,SI2
+    delay: 0
+    duration: 0
+    andsw: NONE
+  20:
+    func: FUNC_VNEG
+    def: tele(3),20
+    delay: 10
+    duration: 0
+    andsw: NONE
+  21:
+    func: FUNC_VNEG
+    def: tele(3),30
+    delay: 10
+    duration: 0
+    andsw: NONE
+customFn:
+  0:
+    swtch: L4
+    func: RESET
+    def: Tmr1,1
+  1:
+    swtch: SE0
+    func: RESET
+    def: Tmr2,1
+  3:
+    swtch: L17
+    func: PLAY_VALUE
+    def: tele(1),1x
+  4:
+    swtch: L18
+    func: PLAY_VALUE
+    def: tele(2),1x
+  5:
+    swtch: L19
+    func: PLAY_VALUE
+    def: tele(3),1x
+  9:
+    swtch: L2
+    func: PLAY_TRACK
+    def: LndMode,3
+  10:
+    swtch: L14
+    func: PLAY_TRACK
+    def: batlow,6
+  11:
+    swtch: L14
+    func: HAPTIC
+    def: 1,6
+  12:
+    swtch: L15
+    func: HAPTIC
+    def: 3,3
+  13:
+    swtch: L15
+    func: PLAY_TRACK
+    def: batcrit,3
+  16:
+    swtch: L21
+    func: PLAY_TRACK
+    def: vfr-crit,4
+  17:
+    swtch: L22
+    func: PLAY_TRACK
+    def: vfr-low,8
+  19:
+    swtch: SF2
+    func: PLAY_VALUE
+    def: TIMER1,1x
+  20:
+    swtch: SH2
+    func: PLAY_VALUE
+    def: TIMER2,1x
+thrTraceSrc: Thr
+switchWarningState: Iu
+thrTrimSw: 0
+potsWarnMode: WARN_OFF
+jitterFilter: GLOBAL
+potsWarnEnabled: 31
+displayChecklist: 0
+gvars:
+  0:
+    name: Ail
+    min: 0
+    max: 0
+    popup: 0
+    prec: 0
+    unit: 0
+  1:
+    name: Ail
+    min: 0
+    max: 0
+    popup: 0
+    prec: 0
+    unit: 0
+  2:
+    name: Fla
+    min: 0
+    max: 0
+    popup: 0
+    prec: 0
+    unit: 0
+  3:
+    name: Snp
+    min: 0
+    max: 0
+    popup: 0
+    prec: 0
+    unit: 0
+  4:
+    name: Snp
+    min: 0
+    max: 0
+    popup: 0
+    prec: 0
+    unit: 0
+  5:
+    name: Flp
+    min: 0
+    max: 0
+    popup: 0
+    prec: 0
+    unit: 0
+  6:
+    name: LnA
+    min: 24
+    max: 24
+    popup: 0
+    prec: 0
+    unit: 0
+  7:
+    name: LnF
+    min: 0
+    max: 0
+    popup: 0
+    prec: 0
+    unit: 0
+telemetryProtocol: 0
+screens:
+  0:
+    type: VALUES
+    u:
+      lines:
+        0:
+          sources:
+            0:
+              val: tele(0)
+            1:
+              val: tele(+0)
+            2:
+              val: tele(-0)
+        1:
+          sources:
+            0:
+              val: tele(3)
+            1:
+              val: tele(+3)
+            2:
+              val: tele(-3)
+        2:
+          sources:
+            0:
+              val: tele(1)
+            1:
+              val: tele(+1)
+            2:
+              val: tele(-1)
+        3:
+          sources:
+            0:
+              val: tele(3)
+            1:
+              val: tele(+3)
+            2:
+              val: tele(-3)
+  1:
+    type: SCRIPT
+    u:
+      script:
+        file: glidsim
+varioData:
+  source: 4
+  centerSilent: 0
+  centerMax: 0
+  centerMin: 0
+  min: 0
+  max: 0
+rssiSource: 1
+voltsSource: 1
+altitudeSource: none
+rfAlarms:
+  warning: 32
+  critical: 29
+disableTelemetryWarning: 0
+moduleData:
+  0:
+    type: TYPE_ISRM_PXX2
+    subType: ACCESS
+    channelsStart: 0
+    channelsCount: 8
+    failsafeMode: CUSTOM
+    mod:
+      pxx2:
+        receivers: 3
+        racingMode: 0
+        receiverName:
+          0:
+            val: R6
+          1:
+            val: RS
+failsafeChannels:
+  0:
+    val: -62
+  1:
+    val: -239
+  2:
+    val: 236
+  3:
+    val: -960
+  4:
+    val: 980
+  5:
+    val: -122
+trainerData:
+  mode: MASTER_TRAINER_JACK
+  channelsStart: 0
+  channelsCount: -7
+  frameLength: 0
+  delay: 0
+  pulsePol: 0
+telemetrySensors:
+  0:
+    type: TYPE_CUSTOM
+    id1:
+      id: 61699
+    subId: 0
+    id2:
+      instance: 26
+    label: A2
+    unit: 1
+    prec: 1
+    autoOffset: 0
+    filter: 1
+    logs: 1
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 132
+        offset: 0
+  1:
+    type: TYPE_CUSTOM
+    id1:
+      id: 61697
+    subId: 0
+    id2:
+      instance: 24
+    label: RSSI
+    unit: 17
+    prec: 0
+    autoOffset: 0
+    filter: 0
+    logs: 1
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 0
+        offset: 0
+  2:
+    type: TYPE_CUSTOM
+    id1:
+      id: 61700
+    subId: 0
+    id2:
+      instance: 24
+    label: RxBt
+    unit: 1
+    prec: 1
+    autoOffset: 0
+    filter: 1
+    logs: 1
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 132
+        offset: 0
+  3:
+    type: TYPE_CUSTOM
+    id1:
+      id: 61456
+    subId: 0
+    id2:
+      instance: 26
+    label: VFR
+    unit: 13
+    prec: 0
+    autoOffset: 0
+    filter: 0
+    logs: 1
+    persistent: 0
+    onlyPositive: 0
+    cfg:
+      custom:
+        ratio: 0
+        offset: 0
+modelRegistrationID: b4zz_zeX

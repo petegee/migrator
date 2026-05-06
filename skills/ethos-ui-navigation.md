@@ -39,6 +39,16 @@ Source: Ethos v1.6.3 User Manual rev 1 (FrSky X18/X20/X20S/X20 Pro/X20R/X20RS).
 **Negative / inverse switch selector:**
 - Long-press [ENT] on a switch name → "Negative" checkbox → toggles `!SwitchName`
 
+**Hamburger icon (≡) on field cells:**
+- Some field cells show a small ≡ (three-line "hamburger") icon at their top-left corner.
+- **Long-hold on the hamburger icon** → opens a popup to change the field's *type/mode*:
+  - e.g. switch from "fixed value" → "use a source / input", "flight mode", "logical switch", etc.
+- This is separate from tapping the field value (which opens the numeric control bar or picker).
+- In Playwright: use a long-press mouse-down (**hold 1200ms minimum** — 900ms is NOT enough and opens the control bar instead) on the hamburger icon coords. ✓ confirmed 2026-05-06
+- Visible in: Var editor (Values default, Range fields), Mixes (source, weight, condition), and other formula-based fields.
+- **Var editor Values ≡** popup options: **Maximum / Minimum / Use a source** (confirmed 2026-05-06)
+  - "Use a source" → Values becomes "--- ▼" picker → touch to open Category/Member picker → select Analogs → analog list
+
 ---
 
 ## Confirmed Bitmap Coordinates
@@ -86,7 +96,7 @@ Row 1 y≈140, Row 2 y≈330. Columns at x≈100, 300, 500, 700.
 | Flight Modes | (500, 140) | tap | r1c3 |
 | Mixes | (700, 140) | tap | r1c4 |
 | Outputs | (100, 330) | tap | r2c1 |
-| Timers | (300, 330) | tap | r2c2 |
+| Timers | (300, 330) | tap | r2c2 ✓ confirmed 2026-05-05 |
 | Trims | (500, 330) | tap | r2c3 |
 | RF System | (700, 330) | tap | r2c4 |
 | Swipe to Page 2 | swipeCanvas('left') | swipe | distance≈400px, steps=20 |
@@ -204,7 +214,7 @@ This model (X18RS, 24 ch) shows 3 pages: CH1–8, CH9–16, CH17–24.
 |--------|--------|------|-------|
 | Open CH1 editor (left col row 1) | (200, 112) | tap | ✓ confirmed 2026-05-03 |
 | Open CH2 editor (right col row 1) | (600, 140) | tap | ✓ confirmed 2026-05-03 |
-| Open CH3 editor (left col row 2) | (200, 220) | tap | estimated (same y as CH4) |
+| Open CH3 editor (left col row 2) | (200, 220) | tap | ✓ confirmed 2026-05-04 |
 | Open CH4 editor (right col row 2) | (600, 220) | tap | ✓ confirmed 2026-05-03 |
 | Open CH5 editor (left col row 3) | (200, 350) | tap | ✓ confirmed 2026-05-03 |
 | Open CH6 editor (right col row 3) | (600, 300) | tap | ✓ confirmed 2026-05-03 |
@@ -213,7 +223,9 @@ This model (X18RS, 24 ch) shows 3 pages: CH1–8, CH9–16, CH17–24.
 | Swipe to next page (+8 channels) | swipeCanvas('left') | swipe | CH9–16 on page 2, CH17–24 on page 3 ✓ 2026-05-03 |
 | Open CH9 editor (page 2, left row 1) | (200, 112) | tap | Same coords as CH1 ✓ confirmed 2026-05-03 |
 
-**Channel editor fields** — field y-coords confirmed from tap sweep 2026-05-03:
+**Channel editor fields** — full field list with scroll requirements ✓ confirmed 2026-05-05:
+
+**Unscrolled (5 fields visible):**
 
 | Field | Coords | Type | Notes |
 |-------|--------|------|-------|
@@ -221,7 +233,41 @@ This model (X18RS, 24 ch) shows 3 pages: CH1–8, CH9–16, CH17–24.
 | Direction toggle (Normal↔Reverse) | (615, 250) | tap | Toggles between Normal/Reverse ✓ 2026-05-03 |
 | Min | (600, 340) | tap | Opens numeric control bar ✓ 2026-05-03 |
 | Max | (600, 380) | tap | Opens numeric control bar ✓ 2026-05-03 |
-| Center/Subtrim | (600, 440) | tap | Opens numeric control bar; editor scrolls to show field ✓ 2026-05-03 |
+| Center/Subtrim | (600, 440) | tap | Opens numeric control bar ✓ 2026-05-03 |
+
+**After 1 small CDP touch scroll (byStart=300, byEnd=200 — ~100px travel):**
+Reveals PWM center and Curve rows in the lower half of the screen.
+
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| PWM center | (600, 300) | tap | Opens numeric control bar (1us step) ✓ 2026-05-05 |
+| Curve | (600, 400) | tap | Opens curve type picker (--- / Expo / named curves) ✓ 2026-05-05 |
+
+**After 1 medium CDP touch scroll (byStart=350, byEnd=200 — ~150px travel):**
+Reveals Balance curve row in the interactive zone.
+
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| Balance curve "Add" | (730, 350) | tap | Opens "Balance channels" graphical curve editor screen ✓ 2026-05-05; y=340–360 both work, y=380+ misses |
+
+**After 1 full CDP touch scroll (byStart=400, byEnd=150 — ~250px travel):**
+Reveals Slow up, Slow down, and 3 action buttons. Note: Curve and Balance curve appear at top of
+screen in this scroll state but are **unresponsive** — interact with them via the smaller scrolls above.
+
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| Slow up | (600, 320) | tap | Opens numeric control bar (0.1s step) ✓ 2026-05-05 |
+| Slow down | (600, 400) | tap | Opens numeric control bar (0.1s step) ✓ 2026-05-05 |
+| Balance channels button | (133, 450) | tap | Opens "Choose channels" multi-select dialog ✓ 2026-05-05 |
+| Swap channels button | (400, 450) | tap | Opens "Swap channels" dialog (source + target dropdowns) ✓ 2026-05-05 |
+| Reset settings button | (666, 450) | tap | Opens "Confirm" dialog: reset to defaults ✓ 2026-05-05 |
+
+**⚠ Scroll quirk:** The channel editor has a "dead zone" — after any scroll, roughly the top 2 fully
+visible rows are unresponsive to tap/touch. Use a smaller scroll to position the target field in the
+lower half of the screen. Three scroll amounts are needed to cover all fields:
+- 100px (byStart=300,byEnd=200): PWM center + Curve
+- 150px (byStart=350,byEnd=200): Balance curve Add
+- 250px (byStart=400,byEnd=150): Slow up + Slow down + buttons
 
 **Control bar** (appears at y≈456 when numeric field is selected):
 
@@ -300,7 +346,22 @@ Row spacing confirmed: Name@y=80, Active cond@y=140, Source@y=200, Operation@y=2
 |--------|--------|------|-------|
 | Add var (+ on empty screen) | (400, 266) | tap | Large centered + icon; editor opens directly ✓ confirmed 2026-05-01 |
 | Add var (+ in list header, once ≥1 exist) | (563, 69) | tap | Opens new Var editor directly ✓ confirmed 2026-05-02 |
-| Var list: tap row to highlight | (200, 106) | tap | Var1 row approximate y; second tap opens context menu (estimated) |
+| Var list: tap row to open ctx menu | (350, 140) | tap | **Requires sticky state** (row highlighted after returning from editor). Single tap at (350, 140) opens context menu. No prior taps needed. ✓ confirmed 2026-05-04 |
+
+**Vars list context menu** — opens via `tapBitmap(350, 140)` when a Var row is in sticky/highlighted state (i.e. was the last var navigated from). Menu shows: Var1 (title) / Edit / Add / Clone / Delete.
+
+**Touch zones are lower than visual item centers.** Use `touchBitmap` (not tap) for item selection. Confirmed y-coords (bitmap, x=300):
+
+| Item | Touch y range | Representative coord | Outcome | Notes |
+|------|--------------|---------------------|---------|-------|
+| Edit | y≈165–210 | (300, 190) | Opens existing var's field editor ("< Var1"), no new var created | ✓ confirmed 2026-05-04/05 |
+| Add  | y≈215–260 | (300, 230) | Creates fresh new var, opens its editor ("< Var2", empty fields) | ✓ confirmed 2026-05-05 |
+| Clone | y≈268–310 | (300, 285) | Copies var (inherits all fields incl. Comment), new var appears in list without opening editor | ✓ confirmed 2026-05-05 |
+| Delete | y≈315–355 | (300, 335) | Opens "Are you sure you want to delete this var?" confirm dialog; tap "Yes" at (500, 290) to confirm; var count → 0 | ✓ confirmed 2026-05-04 (y=320/335/350 all trigger; y=365 miss) |
+
+**Correction to prior entries (2026-05-05):** Earlier probes used unreliable triggers and corrupt state. The entry "Clone at y=231 opens editor" was wrong — y=231 is in the **Add** zone and opens a fresh var editor. The entry "y=155=Edit model" and "y=170=Delete" were both from corrupted test state and are incorrect.
+
+**Sticky state** is set when: a var was created (via + on empty screen) and you returned to the list, OR you navigated away from and back to the Vars screen while a var was last-selected. The row appears highlighted orange. Without sticky state, `tapBitmap(350, 140)` does NOT open the context menu.
 
 **Var editor field layout** — all y-coords in bitmap space (800×480).
 Rule: upper fields (Comment and above) use **tap**; lower fields (Range and below) use **touch**.
@@ -308,11 +369,13 @@ Rule: upper fields (Comment and above) use **tap**; lower fields (Range and belo
 | Field | Coords | Type | Notes |
 |--------|--------|------|-------|
 | Value (read-only) | (600, 70) | — | No response to tap or touch |
-| Name | n/a | — | **Non-interactive in WASM.** Extensive testing (tap+touch, x=400–780, y=90–115, double-tap) all produced no response. May be a WASM emulator limitation. |
+| Name pencil icon | (738, 139) | **tap** | tapBitmap opens keyboard ✓ confirmed 2026-05-06; previous "Non-interactive" note was wrong — y=107 missed the icon, y=139 is correct |
 | Comment text area | (600, 267) | **tap** | Opens keyboard ✓ confirmed 2026-05-01; area spans y≈220–295 |
 | Range low value (-100.0%) | (450, 320) | **touch** | Opens numeric control bar ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈310–340 |
 | Range high value (100.0%) | (640, 320) | **touch** | Opens numeric control bar ✓ confirmed 2026-05-01; x=590 still hit low value; x=640 hits high value |
 | Values default value (0.0%) | (600, 395) | **touch** | Opens numeric control bar ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈380–425 |
+| Values ≡ hamburger | (449, 390) | **mouse hold 1200ms** | Opens "Values" popup: Maximum / Minimum / Use a source ✓ confirmed 2026-05-06; 900ms is too short and opens control bar instead |
+| Values "--- ▼" source picker | (510, 395) | **touch** | After "Use a source" selected; opens Category/Member two-column picker ✓ 2026-05-06 |
 | "+ Add a new value" button | (600, 440) | **touch** | Adds conditional value entry ✓ confirmed 2026-05-01; tapBitmap has no effect; spans y≈435–455 |
 
 **"+ Add a new value" result:** Adds a new conditional value row at the bottom of the editor:
@@ -482,6 +545,7 @@ await cdpEnter(page);                   // confirms the focused item → Play va
 | LS editor: Source(A) field | (600, 215) | tap | Opens Category/Member source picker ✓ confirmed 2026-05-01 |
 | LS editor: Value(X) field | (600, 280) | tap | Opens numeric control bar ✓ confirmed 2026-05-01 |
 | LS editor: Active condition field | (600, 360) | tap | Opens condition picker (System event / Always on / Switch positions) ✓ confirmed 2026-05-01 |
+| LS editor: Comment (after 2 scrolls) | (600, 445) | **touch** | Opens keyboard directly; field sits at canvas bottom edge ✓ 2026-05-05 |
 
 **LS editor field y-ranges (bitmap, confirmed from tap sweep 2026-05-01/03):**
 - Name: y≈90–130 (center ~120)
@@ -498,7 +562,7 @@ After scroll, y-positions in bitmap space:
 - Confirmation before inactive: y≈260–300 (center ~260) — tap toggle ✓ 2026-05-03
 - Min duration: y≈360–405 (center ~380) — tap, numeric control bar (0.1s step) ✓ 2026-05-03
 - Max duration: y≈410–450 (center ~420) — tap, numeric control bar (0.1s step) ✓ 2026-05-03
-- Comment: visible at y≈460+ after 1 scroll / y≈340 after 2 scrolls — likely touchBitmap (pencil icon); not yet confirmed
+- Comment: y≈445–455 (after 2 scrolls, at bottom edge) — **touchBitmap**, opens keyboard directly ✓ 2026-05-05
 
 **⚠ Dismiss-tap warning:** after interacting with a scrolled field, dismiss by tapping a neutral area
 such as (400, 50) or using `goBack`. Do NOT dismiss at y≈220–260 — those rows are toggle fields
@@ -516,7 +580,7 @@ and will inadvertently flip their state.
 9. Confirmation before inactive — y≈260 (after 1 scroll), toggle ✓ 2026-05-03
 10. Min duration — y≈380 (after 1 scroll) ✓ 2026-05-03
 11. Max duration — y≈420 (after 1 scroll) ✓ 2026-05-03
-12. Comment — y≈460 (after 1 scroll) / y≈340 (after 2 scrolls) — touchBitmap; unconfirmed
+12. Comment — y≈445–455 (after 2 scrolls, at canvas bottom edge) — **touchBitmap**, opens keyboard directly ✓ 2026-05-05
 
 **LS Function picker** (opens from Function field at (600, 160), scrollable list):
 - Items visible without scrolling: A~X · A=X · A>X · A<X · |A|>X
@@ -718,15 +782,54 @@ The default screen after boot. Shows:
 
 ### Edit Model `[MEDIT]` `[MEDIT_FIELDS]`
 
-**To reach:** Model select → context → Edit, or Model Setup Page 1 → "Edit model" tile.
+**To reach:** Model Setup Page 1 → "Edit model" tile (r1c2, tap at 300, 140). ✓ confirmed 2026-05-04
 
-| Field | Values / Notes |
-|---|---|
-| Name | Text string (keyboard appears) |
-| Image | Pick from SD card icons |
-| Model type | Glider / Plane / Multirotor / Heli / Boat / Car / Other |
-| Throttle warning | Switch to suppress throttle-high warning on power-on |
-| Switch warnings | Per-switch expected positions at power-on |
+**Screen layout:** Scrollable field list. x=600 is the value/dropdown side for all rows.  
+Row spacing ≈ 60–65 bitmap px. Two touch-swipes (400, 400→150) reach the bottom.
+
+**Name field note:** `tapBitmap` opens keyboard directly — no pencil icon touch needed (unlike FM name). ✓
+
+**Confirmed coordinates — unscrolled view:**
+
+| Field | Coords (x=600) | Type | Notes |
+|-------|---------------|------|-------|
+| Name | (600, 80) or (600, 120) | tap | keyboard opens directly ✓ 2026-05-04 |
+| Picture | (600, 160) | tap | dropdown picker (SD card images) ✓ 2026-05-04 |
+| Model type | (600, 240) | tap | picker: Airplane / Glider / Heli / Multi / Other ✓ 2026-05-04 |
+| Receiver | (600, 280) | tap | picker: Non stabilized receiver / S6R / S8R / Archer X / TD SR12 ✓ 2026-05-04 |
+| Ailerons | (600, 360) | tap | picker: No ailerons / 1 channel / 2 channels / 4 channels ✓ 2026-05-04 |
+| Tail | (600, 400) | tap | picker: None / Traditional / V-Tail ✓ 2026-05-04 |
+
+**After 1 scroll (swipe 400, 400→150):**
+
+| Field | Coords (x=600) | Type | Notes |
+|-------|---------------|------|-------|
+| Ailerons | (600, 80) | tap | same picker ✓ 2026-05-04 |
+| Tail | (600, 160) | tap | same picker ✓ 2026-05-04 |
+| Elevators | (600, 240) | tap | picker: No elevators / 1 channel / 2 channels / 4 channels ✓ 2026-05-04 |
+| Rudders | (600, 280) | tap | picker: No rudders / 1 channel / 2 channels / 3 channels / 4 channels ✓ 2026-05-04 (y=270 and y=290 both hit; y=300+ miss) |
+| Flaps | (600, 330) | tap | picker: No flaps / 1 channel / 2 channels / 4 channels ✓ 2026-05-04 |
+| Engine | (600, 400) | tap | picker: No engine / 1–4 channels ✓ 2026-05-04 |
+
+**After 2 scrolls (swipe again):**
+
+| Field | Coords (x=600) | Type | Notes |
+|-------|---------------|------|-------|
+| Flaps | (600, 80) | tap | picker: No flaps / 1 channel / 2 channels / 4 channels ✓ 2026-05-04 |
+| Engine | (600, 160) | tap | same picker ✓ 2026-05-04 |
+| Analogs filter | (600, 240) | tap | picker: Global / OFF / ON ✓ 2026-05-04 |
+| Function switches | (600, 270) | tap | picker: 6-Pos with OFF / 6-Pos / 2×3-Pos / 6×2-Pos / Momentary ✓ 2026-05-04 |
+| Persistent | (600, 320) | tap | toggle OFF↔ON ✓ 2026-05-04 (y=310 and y=330 both toggle; tap state each time) |
+| S.Port connector | (600, 400) | tap | toggle OFF↔5V ✓ 2026-05-04 (y=370 also hits; spans y≈365–410) |
+| Model runtime Reset | (650, 440) | tap | opens confirm dialog: "Runtime will be reset. Are you sure?" Yes/No ✓ 2026-05-04 |
+
+**Confirm dialog (Runtime reset):** Yes button at approx (415, 215), No at approx (455, 215).
+
+**⚠ Notes:**
+- "Throttle warning" and "Switch warnings" not observed in Glider model type — may be model-type-specific.
+- Persistent and S.Port connector are toggles — each tap flips state. Don't tap unless intentionally changing.
+- Gap between Rudders (y≈280) and Flaps (y≈330): y=300–320 is dead zone after 1 scroll.
+- Gap between Function switches (y≈270) and Persistent (y≈320): y=290–310 is narrow.
 
 ---
 
@@ -818,33 +921,97 @@ The default screen after boot. Shows:
 
 ### Timers `[TMR]` `[TMR_DETAIL]` `[TMR_FIELDS]`
 
-**To reach:** Model Setup Page 1 → "Timers" tile.  
-**Screen:** T1 and T2 rows. Tap either to edit.
+**To reach:** Model Setup Page 1 → `tapBitmap(300, 330)` ✓ confirmed 2026-05-05
 
-| Field | Notes |
-|---|---|
-| Name | Label |
-| Mode | **Countdown** / **Count-up** |
-| Start value | Initial time (for Countdown) |
-| Source | What drives the timer (throttle, switch, always, etc.) |
-| Switch | Enable condition |
-| Persistence | Whether timer survives power cycle |
-| Audio actions | Announce timer value at set intervals (uses Play audio) |
+**List screen layout** — 3 timers (Timer1, Timer2, Timer3). Header: Name | Value | [+].
+
+| Action | Coords | Type | Notes |
+|--------|--------|------|-------|
+| [+] header button | (563, 69) | tap | Adds a new timer ✓ 2026-05-05 |
+| Timer1 row | (400, 116) | tap | First tap highlights + shows read-only side panel ✓ 2026-05-05 |
+| Timer2 row | (400, 165) | tap | Same pattern ✓ 2026-05-05 |
+| Timer3 row | (400, 215) | tap | Same pattern ✓ 2026-05-05 |
+
+**Side panel** (appears on right after first tap): shows Mode, Start, Alarm, Start condition — **read-only, not interactive**.
+
+**Second tap** opens context menu:
+
+| Item | Coords | Type | Notes |
+|------|--------|------|-------|
+| Reset | (320, 140) | **touch** | Resets timer value |
+| Edit | (320, 190) | **touch** | Opens Timer edit screen ✓ 2026-05-05 |
+| Add | (320, 225) | **touch** | Adds new timer |
+| Move | (320, 270) | **touch** | Reorder |
+| Copy | (320, 315) | **touch** | Copies timer |
+| Clone | (320, 370) | **touch** | (after scrolling menu) |
+| Delete | (320, 415) | **touch** | (after scrolling menu) |
+
+**Timer edit screen** — reached via context menu → Edit:
+
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| Value | (600, 80) | — | Display only, inert ✓ 2026-05-05 |
+| Name | (600, 160) | tap | Keyboard opens directly (tapBitmap works, no touch needed) ✓ 2026-05-05 |
+| Mode | (600, 240) | tap | Picker: **Up** / **Down** ✓ 2026-05-05 |
+| Alarm | (600, 280) | tap | Highlights row (time value picker) ✓ 2026-05-05 |
+| Start condition | (600, 360) | tap | Category picker: System event / Always on / Switch positions ✓ 2026-05-05 |
+| Stop condition | (600, 400) | tap | Toggle: **Default** ↔ **Custom** ✓ 2026-05-05 |
+| Stop condition custom picker | (600, 440) | tap | Category picker — appears when Stop condition = Custom ✓ 2026-05-05 |
+
+**After 1 CDP touch swipe up** — additional fields scroll into view:
+
+| Field | Coords (after scroll) | Type | Notes |
+|-------|----------------------|------|-------|
+| % timing source | (600, 160) | tap | Category picker: Special / Analogs ✓ 2026-05-05 |
+| Reset | (600, 200) | tap | Category picker: System event / Always on ✓ 2026-05-05 |
+| Persistent | (600, 280) | tap | Toggle: OFF ↔ ON ✓ 2026-05-05 |
+| Voice | (600, 320) | tap | Picker: Voice1 - default (y estimated, not independently confirmed) |
+| Audio actions | — | special | "Add a new audio action" button below Voice |
+
+**Note:** Row spacing in Timer edit is ~80px (much larger than other editors). Name field opens keyboard via `tapBitmap` — unlike FM name which needs `touchBitmap`.
 
 ---
 
 ### Trims `[TRIM]`
 
-**To reach:** Model Setup Page 1 → "Trims" tile.
+**To reach:** Model Setup Page 1 → `tapBitmap(500, 330)` ✓ confirmed 2026-05-05
 
-| Control | Notes |
-|---|---|
-| Trim mode | **Easy** (all FMs share one trim) / **Independent** (each FM has own trim) / **Custom** (specify per-FM) / **OFF** |
-| Cross trim | Maps trim buttons cross-wise (e.g. Ail trim controls Ele) |
-| Instant trim | One-tap: captures current stick position as trim offset |
-| Move to subtrims | Transfers all trim values into Output Subtrims and zeros the trims |
+**Screen structure:** Scrollable list of 4 per-axis sections: **Trim Rudder**, **Trim Elevator**, **Trim Throttle**, **Trim Aileron** (in that order). Accordion layout — only one section is expanded at a time.
 
-**Trim step size** is configured per-axis in System Setup → Radio.
+**Note:** "Cross trim" and "Instant trim" from EdgeTX do NOT exist as separate fields in Ethos — trim configuration is per-axis only.
+
+**Axis header row** — spans full width, y≈80 when that axis is at the top of the viewport:
+- Tap anywhere on the header to toggle expand/collapse the section
+- Left side shows current trim value (e.g. "0%") — **display-only, not tappable**
+- Right side shows ▼ (expanded) or ▶ (collapsed) arrow
+
+**Per-axis sub-fields** (y-coords when Rudder is scrolled to top, i.e. axis header at y≈80):
+
+| Field | Coords | Type | Notes |
+|-------|--------|------|-------|
+| Axis header (expand/collapse) | (400, 80) | tap | Toggles accordion section; only one axis open at a time ✓ 2026-05-05 |
+| Range | (600, 160) | tap | Numeric control bar (1% step); default 25% ✓ 2026-05-05 |
+| Step | (600, 240) | tap | Picker: Disable / Extra fine / Fine / Medium / Coarse ✓ 2026-05-05 |
+| Mode | (600, 280) | tap | Picker: Easy mode / Independent per FM / Custom / OFF ✓ 2026-05-05 |
+| Audio | (600, 360) | tap | Toggle ON↔OFF ✓ 2026-05-05 |
+| Move trim to subtrim | (400, 400) | tap | Opens confirm dialog ✓ 2026-05-05 |
+
+**Confirm dialog** ("Confirm move trim to subtrim?"):
+
+| Button | Coords | Type | Notes |
+|--------|--------|------|-------|
+| No | (559, 289) | tap | Dismisses dialog, no action ✓ 2026-05-05 |
+| Yes | (471, 289) | tap | Moves trim value into subtrim, resets trim to 0 ✓ 2026-05-05 |
+
+**⚠ Coordinate warning:** dialog button y=289 is much lower than visual estimates suggest (dialog appears in bitmap y≈260–310 range). Confirmed via pixel analysis of a 640×385 screenshot.
+
+**Scrolling to other axes** — use CDP touch swipe (mouse drag dismissed overlays in SF probe; touch required here too):
+```
+touchSwipeBitmap(page, 400, 380, 80)  // swipe up; each swipe reveals next axis
+```
+After 1 swipe: Elevator section visible at top (y≈120). After 2 swipes: Throttle. After 3 swipes: Aileron. ✓ confirmed 2026-05-05
+
+**Trim step size** is configured per-axis in the Mode/Step fields above (not in System Setup as previously documented).
 
 ---
 

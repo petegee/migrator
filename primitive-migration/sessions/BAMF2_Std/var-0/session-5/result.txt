@@ -1,0 +1,76 @@
+SUCCESS
+
+Var1 created with:
+  Name          = "Rudder"        ✓  — confirmed in screenshot s5-04b-name-set.png
+  Values source = Rudder (analog) ✓  — confirmed in screenshot s5-09-values-confirmed.png
+  Comment       = "Rudder"        ✓  — confirmed in screenshot s5-12-vars-list.png
+
+accumulated.bin saved (680 bytes).
+
+--- Confirmed procedure ---
+
+1. OPEN EDITOR: tapBitmap(400, 266) — first var on empty list
+   → Var editor opens, title "Var1"
+
+2. SET NAME: tapBitmap(738, 139) — pencil icon in Name row
+   → Keyboard opens (Name row highlighted orange)
+   → Type: touchBitmap key presses (R at row1 x=280, shift at x=40 y=395, then udder)
+   → ENTER: touchBitmap(700, 450)
+   → Name = "Rudder" confirmed (editor unscrolled — Values row still at y=390)
+
+3. HAMBURGER LONG-HOLD: 1200ms mouse hold (NOT 900ms — too short)
+   longHoldBitmap(449, 390, 1200ms) → "Values" popup opens with:
+     Maximum | Minimum | Use a source
+
+4. TAP "Use a source": tapBitmap(397, 308)
+   → Values row changes to "--- ▼" source picker (highlighted orange)
+
+5. OPEN SOURCE PICKER: touchBitmap(510, 395) — touch (not tap) on the "--- ▼" button
+   → Two-column picker opens: Category | Member
+
+6. EXPAND CATEGORY LIST: tapBitmap(320, 207)
+   → Taps "---" in Category column → full "Category" list popup opens:
+     --- / Analogs / Switches / Trims / Channels
+
+7. SELECT ANALOGS: tapBitmap(440, 204)
+   → "Analogs" selected → two-column reopens; Rudder pre-highlighted in Member column
+   → Values row at bottom shows "Rudder ▼"
+
+8. COMMIT: tapBitmap(400, 50) — neutral area closes picker
+   → Values field confirmed = "Rudder ▼"
+
+9. SET COMMENT: tapBitmap(600, 267) — opens Comment keyboard
+   → Type: touchBitmap key presses (same keyboard layout)
+   → ENTER: touchBitmap(700, 450)
+
+10. RETURN: goBack(page)
+
+--- Key lessons ---
+
+1. NAME FIELD IS INTERACTIVE in WASM — nav skills incorrectly said "Non-interactive".
+   tapBitmap(738, 139) opens the Name keyboard. (738,139 is bitmap coords for pencil icon)
+
+2. SET NAME BEFORE ANALOG SOURCE — both operations work in unscrolled editor state.
+   Name keyboard does NOT scroll the editor, so Values ≡ remains at y=390 after.
+
+3. HOLD DURATION: 900ms is NOT enough. 1200ms mouse hold triggers the "Values" popup.
+   The popup has Maximum / Minimum / Use a source.
+
+4. HAMBURGER POSITION: x=449, y=390 (bitmap) confirmed correct for Values row (unscrolled).
+
+5. SOURCE PICKER FLOW (for Vars) differs from Mix source flow:
+   - Step 1: long-hold ≡ → Values popup (Maximum / Minimum / Use a source)
+   - Step 2: tap "Use a source" → "--- ▼" appears in Values row
+   - Step 3: touch "--- ▼" at (510, 395) → two-column Category/Member picker
+   - Step 4: tap "---" in Category column → full Category list opens
+   - Step 5: tap "Analogs" → Rudder auto-highlighted in Member column
+   - Step 6: tap neutral area → commits selection
+
+6. ETX srcRaw=Rud → Ethos analog "Rudder" (first item in Analogs category)
+
+--- ETX fields mapped ---
+  name (Rudder) → Name = "Rudder"              ✓
+  srcRaw (Rud)  → Values source = Rudder analog ✓
+  name (Rudder) → Comment = "Rudder"            ✓
+  weight (80)   → NOT SET — Values shows 0.0% (the "Use a source" replaced the numeric value)
+  swtch (NONE)  → single value row only         ✓ (no conditional values added)

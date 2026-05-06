@@ -169,10 +169,60 @@ These are already established — do NOT re-probe them:
 | Mixes editor: action row context menu | wheel×5 + CDP Enter | special | "Action" popup: Edit/Clone/Add/Delete ✓ 2026-05-03 |
 | Mixes editor: action ctx menu Add | (320, 230) | tap | adds new action row ✓ 2026-05-03 |
 | Mixes editor: + Add a new action | wheel×6 + CDP Enter | special | focuses button, Enter opens new action editor ✓ 2026-05-03 |
+| Vars: ctx menu trigger | (350, 140) | tap | Opens ctx menu when row is in sticky state (0 prior taps needed) ✓ 2026-05-04 |
+| Vars ctx menu: Edit | (300, 190) | **touch** | Opens existing var's field editor ("< Var1"), 1 var in list; zone y≈165–210 ✓ 2026-05-05 |
+| Vars ctx menu: Add | (300, 230) | **touch** | Creates fresh new var, opens its editor ("< Var2", empty fields); zone y≈215–260 ✓ 2026-05-05 |
+| Vars ctx menu: Clone | (300, 285) | **touch** | Copies var (inherits fields incl. Comment), stays on list, no editor opens; zone y≈268–310 ✓ 2026-05-05 |
+| Vars ctx menu: Delete | (300, 335) | **touch** | Opens "Are you sure?" dialog; confirm with tapBitmap(500, 290) for "Yes"; zone y≈315–355 ✓ confirmed 2026-05-04 |
+| Edit Model: Name | (600, 80) or (600, 120) | tap | keyboard opens directly (tapBitmap, no touch needed) ✓ 2026-05-04 |
+| Edit Model: Picture | (600, 160) | tap | dropdown picker ✓ 2026-05-04 |
+| Edit Model: Model type | (600, 240) | tap | picker: Airplane/Glider/Heli/Multi/Other ✓ 2026-05-04 |
+| Edit Model: Receiver | (600, 280) | tap | picker: Non stabilized receiver/S6R/S8R/Archer X/TD SR12 ✓ 2026-05-04 |
+| Edit Model: Ailerons | (600, 360) | tap | picker: No ailerons/1/2/4 channels ✓ 2026-05-04 |
+| Edit Model: Tail | (600, 400) | tap | picker: None/Traditional/V-Tail ✓ 2026-05-04 |
+| Edit Model: Elevators (after 1 scroll) | (600, 240) | tap | picker: No elevators/1/2/4 channels ✓ 2026-05-04 |
+| Edit Model: Rudders (after 1 scroll) | (600, 280) | tap | picker: No rudders/1–4 channels ✓ 2026-05-04 |
+| Edit Model: Flaps (after 1 scroll) | (600, 330) | tap | picker: No flaps/1/2/4 channels ✓ 2026-05-04 |
+| Edit Model: Engine (after 1 scroll) | (600, 400) | tap | picker: No engine/1–4 channels ✓ 2026-05-04 |
+| Edit Model: Analogs filter (after 2 scrolls) | (600, 240) | tap | picker: Global/OFF/ON ✓ 2026-05-04 |
+| Edit Model: Function switches (after 2 scrolls) | (600, 270) | tap | picker: 6-Pos with OFF/6-Pos/2×3-Pos/6×2-Pos/Momentary ✓ 2026-05-04 |
+| Edit Model: Persistent (after 2 scrolls) | (600, 320) | tap | toggle OFF↔ON ✓ 2026-05-04 |
+| Edit Model: S.Port connector (after 2 scrolls) | (600, 400) | tap | toggle OFF↔5V ✓ 2026-05-04 |
+| Edit Model: Model runtime Reset (after 2 scrolls) | (650, 440) | tap | confirm dialog "Runtime will be reset" ✓ 2026-05-04 |
+| Trims: axis header (expand/collapse) | (400, 80) | tap | accordion — only one axis open at a time; 4 axes: Rudder/Elevator/Throttle/Aileron ✓ 2026-05-05 |
+| Trims: Range | (600, 160) | tap | numeric control bar (1% step) ✓ 2026-05-05 |
+| Trims: Step | (600, 240) | tap | picker: Disable/Extra fine/Fine/Medium/Coarse ✓ 2026-05-05 |
+| Trims: Mode | (600, 280) | tap | picker: Easy mode/Independent per FM/Custom/OFF ✓ 2026-05-05 |
+| Trims: Audio | (600, 360) | tap | toggle ON↔OFF ✓ 2026-05-05 |
+| Trims: Move trim to subtrim | (400, 400) | tap | opens confirm dialog ✓ 2026-05-05 |
+| Trims confirm dialog: No | (559, 289) | tap | dismisses ✓ 2026-05-05 |
+| Trims confirm dialog: Yes | (471, 289) | tap | moves trim to subtrim ✓ 2026-05-05 |
+| Trims: scroll to next axis | touchSwipeBitmap(400, 380, 80) | CDP touch | each swipe reveals next axis section ✓ 2026-05-05 |
+| Timers: Timer1 row (highlight) | (400, 116) | tap | first tap shows read-only side panel (Mode/Start/Alarm/Start condition) ✓ 2026-05-05 |
+| Timers: context menu | (400, 116) | tap | second tap opens ctx menu (Reset/Edit/Add/Move/Copy/Clone/Delete) ✓ 2026-05-05 |
+| Timers ctx menu: Edit | (320, 190) | **touch** | opens Timer edit screen ✓ 2026-05-05 |
+| Timer edit: Name | (600, 160) | tap | keyboard opens (tapBitmap, no touch needed) ✓ 2026-05-05 |
+| Timer edit: Mode | (600, 240) | tap | picker: Up / Down ✓ 2026-05-05 |
+| Timer edit: Alarm | (600, 280) | tap | time picker ✓ 2026-05-05 |
+| Timer edit: Start condition | (600, 360) | tap | Category picker (System event/Always on/Switch) ✓ 2026-05-05 |
+| Timer edit: Stop condition | (600, 400) | tap | toggle Default↔Custom ✓ 2026-05-05 |
+| Timer edit: % timing source (after 1 scroll) | (600, 160) | tap | Category picker: Special/Analogs ✓ 2026-05-05 |
+| Timer edit: Reset (after 1 scroll) | (600, 200) | tap | Category picker: System event/Always on ✓ 2026-05-05 |
+| Timer edit: Persistent (after 1 scroll) | (600, 280) | tap | toggle OFF↔ON ✓ 2026-05-05 |
+| Outputs ch editor: PWM center | (600, 300) | tap | 100px scroll (byStart=300,byEnd=200); numeric control bar (1us step) ✓ 2026-05-05 |
+| Outputs ch editor: Curve | (600, 400) | tap | 100px scroll (byStart=300,byEnd=200); curve type picker ✓ 2026-05-05 |
+| Outputs ch editor: Balance curve Add | (730, 350) | tap | 150px scroll (byStart=350,byEnd=200); opens "Balance channels" curve editor ✓ 2026-05-05 |
+| Outputs ch editor: Slow up | (600, 320) | tap | 250px scroll (byStart=400,byEnd=150); numeric control bar (0.1s step) ✓ 2026-05-05 |
+| Outputs ch editor: Slow down | (600, 400) | tap | 250px scroll; numeric control bar ✓ 2026-05-05 |
+| Outputs ch editor: Balance channels btn | (133, 450) | tap | 250px scroll; "Choose channels" multi-select dialog ✓ 2026-05-05 |
+| Outputs ch editor: Swap channels btn | (400, 450) | tap | 250px scroll; "Swap channels" dialog ✓ 2026-05-05 |
+| Outputs ch editor: Reset settings btn | (666, 450) | tap | 250px scroll; "Confirm: reset to defaults" dialog ✓ 2026-05-05 |
 
 ### Known quirks
 
 - **FM0 expanded touch area**: taps at FM1 list row y≈148 are intercepted by FM0 — use the 4-tap workaround (see skills file FM1 editor open sequence).
+- **Confirm dialog y-offset**: screenshot height is 640×385 (not 640×384). Dialog buttons appear ~50px lower in bitmap space than visual estimation suggests. Always verify dialog button coords with pixel analysis if taps miss.
+- **Outputs channel editor full-scroll dead zone**: after a full scroll (250px), the Curve and Balance curve rows appear at the very top of the list but are **unresponsive to all tap/touch events**. Cause appears to be the fixed subtitle header blocking interaction in the top list area. Use the partial scroll (100px) to reach those fields instead.
 
 ---
 

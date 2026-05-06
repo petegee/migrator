@@ -47,12 +47,15 @@ First channel (CH1) editor data. Confirmed from 3 clean single-field diffs
 ### CH1 Max travel limit
 
 - **Spec**: `09-outputs-limits` — Max 100% → 80%
-- **Offset**: 0x006A (106)
-- **Encoding**: 1-byte, encoding TBD (100% stored as `232`/`0xE8`; 80% stored as `32`/`0x20`)
-- **Diff**: `0x006A: 232 → 32`
-- **Notes**: Values don't map linearly to percentage in an obvious way. May be a fixed-point
-  encoding or a table index. Investigate with more values to identify the formula.
-- **Confidence**: ✓ field identified, encoding unclear
+- **Offsets**: 0x006A–0x006B (106–107)
+- **Encoding**: LE int16 in 0.1% units — `percentage × 10`
+  - 100% = 1000 = `0xE8 0x03`
+  - 80%  = 800  = `0x20 0x03`
+- **Diff**: only `0x006A` changed (high byte 0x03 was identical for both values, so invisible)
+- **Notes**: The high byte stays 0x03 for any value in range 256–1000 (25.6%–100%). Only 1 diff
+  byte observed but the field is 2 bytes. Formula confirmed by int16 identity:
+  1000 = 0x03E8, 800 = 0x0320.
+- **Confidence**: ✓ confirmed — formula is `value = percentage * 10` as LE int16
 
 ### CH1 Center / Subtrim
 
@@ -152,6 +155,24 @@ model (no FM1 added). After FM1 is inserted, mix data shifts right by 6+ bytes.
 - **Notes**: Also `0x01F1 (497): 0 → 0x80` — start of first var's data (tag byte?)
 - **Confidence**: ✓ count field confirmed
 
+### Var name
+
+- **Spec**: `16-vars-name` — Var name empty → "TEST" (file grew +4 bytes)
+- **Offset**: 0x01EF (495) = name length byte; 0x01F0+ = name chars
+- **Encoding**: length-prefixed ASCII — `<len:1> <ASCII chars>` (no null terminator)
+  - Empty name: `0x00` (length 0, no chars follow)
+  - "TEST": `0x04 0x54 0x45 0x53 0x54`
+- **Var struct layout** (in 665-byte 1-var baseline, offset from file start):
+  - 0x01EC: Var count (1 byte)
+  - 0x01ED–0x01EE: 2 unknown bytes (both 0x00 in default var)
+  - 0x01EF: name length (1 byte)
+  - 0x01F0+: name chars (variable, raw ASCII)
+  - 0x01F1 (after 0-len name): 0x80 tag byte — start of first var data field
+- **Save requirement**: after typing name via keyboard (ENTER), tap another field (e.g.
+  Values[0]) to commit focus, then goBack ×2 (Var editor → Vars list → Model Setup)
+  before downloading — one goBack alone does not flush the name.
+- **Confidence**: ✓ confirmed — length byte at 0x01EF, "TEST" bytes at 0x01F0–0x01F3
+
 ### Var value (rate)
 
 - **Spec**: `04-vars-value` — var value[0] 0% → +5 steps (file grew +3 bytes)
@@ -219,8 +240,8 @@ Approximate start offsets (vary slightly if file has variable-length content bef
 |-------|--------|---------|
 | FM1 name "CRUISE" (full 6-char) | ✓ DONE | offset 0x0184 (len) + 0x0185 (chars) |
 | FM1 switch assignment | Not started | — |
-| Output Max encoding formula | Identified but unclear | Run more values (90%, 75%, 50%) |
+| Output Max encoding formula | ✓ DONE | LE int16 at 0x006A–0x006B, value = percentage × 10 |
 | Output subtrim int16 encoding | Identified but unclear | Need clean diff (no file size change) |
 | Mix source category+member encoding | Identified but unclear | Run more source selections |
-| Var name | 0 diffs — name change didn't work? | Re-run spec 03 |
+| Var name | ✓ DONE | length-prefixed ASCII at 0x01EF (len) + 0x01F0 (chars) |
 | Model name encoding | Identified (spec 01, 393 diffs) | Noisy diff; isolate insertion point |

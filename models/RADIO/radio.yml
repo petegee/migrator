@@ -1,0 +1,184 @@
+checksum:  50476
+semver: 2.8.5
+board: x9d+2019
+calib:
+  Rud:
+    mid: 893
+    spanNeg: 745
+    spanPos: 758
+  Ele:
+    mid: 951
+    spanNeg: 713
+    spanPos: 749
+  Thr:
+    mid: 1034
+    spanNeg: 791
+    spanPos: 743
+  Ail:
+    mid: 1160
+    spanNeg: 832
+    spanPos: 791
+  POT1:
+    mid: 1019
+    spanNeg: 1003
+    spanPos: 1010
+  POT2:
+    mid: 1042
+    spanNeg: 1026
+    spanPos: 989
+  POT3:
+    mid: 0
+    spanNeg: 0
+    spanPos: 0
+  SLIDER1:
+    mid: 1031
+    spanNeg: 941
+    spanPos: 927
+  SLIDER2:
+    mid: 1032
+    spanNeg: 935
+    spanPos: 997
+currModel: 12
+currModelFilename: model13.yml
+contrast: 25
+vBatWarn: 66
+txVoltageCalibration: 0
+vBatMin: 68
+vBatMax: 84
+backlightMode: backlight_mode_keys
+trainer:
+  calib:
+    0:
+      val: -122
+    1:
+      val: 21
+    2:
+      val: -31
+    3:
+      val: 18
+  mix:
+    0:
+      srcChn: 3
+      mode: REPL
+      studWeight: 100
+    1:
+      srcChn: 1
+      mode: REPL
+      studWeight: 100
+    2:
+      srcChn: 2
+      mode: REPL
+      studWeight: 100
+    3:
+      srcChn: 0
+      mode: REPL
+      studWeight: 100
+view: 0
+fai: 0
+disableMemoryWarning: 0
+beepMode: mode_nokeys
+disableAlarmWarning: 0
+disableRssiPoweroffAlarm: 0
+USBMode: 2
+stickDeadZone: 0
+jackMode: 0
+hapticMode: mode_nokeys
+stickMode: 0
+timezone: 12
+adjustRTC: 0
+inactivityTimer: 10
+internalModuleBaudrate: 5
+internalModule: TYPE_ISRM_PXX2
+splashMode: 2
+lightAutoOff: 2
+templateSetup: 21
+hapticLength: 2
+speakerPitch: 0
+hapticStrength: 2
+beepLength: 2
+gpsFormat: 0
+speakerVolume: 25
+backlightBright: 0
+blOffBright: 0
+switchesDelay: 0
+globalTimer: 589707
+bluetoothName: ""
+bluetoothBaudrate: 0
+bluetoothMode: TRAINER
+countryCode: 0
+noJitterFilter: 0
+disableRtcWarning: 0
+keysBacklight: 0
+rotEncMode: 0
+imperial: 0
+ttsLanguage: en
+beepVolume: 2
+wavVolume: 4
+varioVolume: 2
+varioPitch: 0
+varioRange: 0
+varioRepeat: 0
+backgroundVolume: 3
+antennaMode: MODE_PER_MODEL
+backlightColor: 0
+pwrOnSpeed: 0
+pwrOffSpeed: 0
+customFn:
+  0:
+    swtch: ON
+    func: VOLUME
+    def: POT1,1
+  1:
+    swtch: ON
+    func: LOGS
+    def: 10
+  3:
+    swtch: SH2
+    func: TRAINER
+    def: sticks,1
+switchConfig:
+  SA:
+    type: 3pos
+    name: ""
+  SB:
+    type: 3pos
+    name: ""
+  SC:
+    type: 3pos
+    name: ""
+  SD:
+    type: 3pos
+    name: ""
+  SE:
+    type: 3pos
+    name: ""
+  SF:
+    type: toggle
+    name: ""
+  SG:
+    type: 3pos
+    name: ""
+  SH:
+    type: toggle
+    name: ""
+  SI:
+    type: toggle
+    name: ""
+potsConfig:
+  POT1:
+    type: with_detent
+    name: ""
+  POT2:
+    type: with_detent
+    name: ""
+slidersConfig:
+  SLIDER1:
+    type: with_detent
+    name: ""
+  SLIDER2:
+    type: with_detent
+    name: ""
+ownerRegistrationID: b4zz_zeX
+gyroMax: 0
+gyroOffset: 0
+uartSampleMode: 0

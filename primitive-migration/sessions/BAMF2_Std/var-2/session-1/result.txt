@@ -1,0 +1,75 @@
+LEARN: Values default NOT set (0.0% for all 3 vars). ⋮ popup dismissed the control bar before + taps could increment the value. See notes below.
+
+--- What was accomplished ---
+
+All 3 vars were created with correct structure:
+  Var1: Comment = "RUDDER", Values = 0.0%  (should be 80%)
+  Var2: Comment = "ELEVAT", Values = 0.0%  (should be 55%)
+  Var3: Comment = "THOTTL", Values = 0.0%  (should be 100%)
+
+accumulated.bin written (711 bytes) — 3 vars, wrong Values, comments all-caps.
+
+--- New findings ---
+
+1. VALUES CONTROL BAR — CONFIRMED WORKING
+   tapBitmap(600, 395) in unscrolled editor opens the numeric control bar ✓
+   Control bar shows at bottom of canvas: < | 0.1% | > | - | + | ⋮
+   Control bar bitmap coords (confirmed from screenshot):
+     < at (63, 468) — step size decrease
+     step label at (~200, 468) — shows current step (initial: 0.1%)
+     > at (338, 468) — step size increase (UNTESTED — ⋮ was tapped first)
+     - at (475, 468) — decrement value
+     + at (613, 468) — increment value
+     ⋮ at (750, 468) — opens "Value" popup (see below)
+
+2. ⋮ POPUP — "VALUE" CONTEXT MENU
+   touchBitmap(750, 468) DISMISSES the control bar and opens a popup:
+     - Title: "Value"
+     - Default  (reset icon)
+     - Min      (left-arrow icon)
+     - Max      (right-arrow icon)  ← sets value to Range max = 100.0%
+     - Invert
+     - Enable slider
+   This popup is a CONTEXT MENU — use touchBitmap to click items.
+   "Max" approximate bitmap coords: (394, 225) — needs verification.
+   KEY INSIGHT: Use ⋮ → Max for Thottl (weight=100%) in one tap!
+   For Rudder (80%) and Elevat (55%): do NOT tap ⋮; use > + + instead.
+
+3. KEYBOARD ALL-CAPS THROUGHOUT
+   Keyboard stays in UPPERCASE mode for ALL characters, not just the first.
+   Do NOT expect auto-drop to lowercase after first character.
+   To type mixed-case like "Rudder":
+     a) Type 'R' (keyboard auto-starts uppercase) → 'R'
+     b) touchBitmap(40, 395) to press Shift → toggles keyboard to lowercase mode
+     c) Type 'u', 'd', 'd', 'e', 'r' → 'udder' (lowercase)
+     Result: "Rudder"
+   (session-3 typed "rudder" all-lowercase by pressing Shift BEFORE first char)
+
+4. > STEP SIZE — STILL UNKNOWN
+   The > button at (338, 468) was never tested (⋮ was accidentally tapped first).
+   session-2 must test > without tapping ⋮:
+     a) Open control bar: tapBitmap(600, 395)
+     b) Tap > once: tapBitmap(338, 468)
+     c) Screenshot — read the step label at (~200, 468) to determine new step
+     d) Use that step size to calculate number of + taps needed
+
+--- Plan for session-2 ---
+
+A) Start fresh: navigateCreateModelWizard
+B) Navigate to Vars
+C) For Var1 (Rudder, weight=80):
+   - Open control bar: tapBitmap(600, 395)
+   - Tap > once: tapBitmap(338, 468)
+   - Screenshot to read step size from label at (~200, 468)
+   - Tap + N times (80 if step=1%, 8 if step=10%)
+   - Close bar: tapBitmap(400, 50)
+   - Set Comment "Rudder": tapBitmap(600,267) → R → Shift(40,395) → udder → ENTER
+D) For Var2 (Elevat, weight=55): same > + + approach, 55 taps (1%) or 5+adjust (10%)
+E) For Var3 (Thottl, weight=100):
+   - Open control bar: tapBitmap(600, 395)
+   - Touch ⋮: touchBitmap(750, 468)
+   - Touch Max: touchBitmap(394, 225)   ← verify coords from screenshot
+   - Screenshot to confirm value = 100%
+   - Close bar: tapBitmap(400, 50)
+   - Set Comment "Thottl": tapBitmap(600,267) → T → Shift → hottl → ENTER
+F) Download and save accumulated.bin
