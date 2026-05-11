@@ -33,8 +33,6 @@ X positions for 9-point curve: -100%, -75%, -50%, -25%, 0%, 25%, 50%, 75%, 100%
 | Type | `(600, 140)` | Opens picker |
 | Points count | `(600, 220)` | Opens picker |
 | Smooth | `(600, 300)` | Toggle |
-| Easy mode | `(600, 340)` | Default ON — no tap needed |
-| Offset | `(600, 420)` | |
 
 ### Type Picker
 - Tap `(600, 140)` to open
@@ -44,75 +42,143 @@ X positions for 9-point curve: -100%, -75%, -50%, -25%, 0%, 25%, 50%, 75%, 100%
 Picker shows 5 items centered on current value. Default=5, visible: 2,3,4,5,6.
 To select "9":
 1. `tapBitmap(page, 600, 220)` — open picker
-2. `cdpTouchSwipeBitmap(page, 320, 270, 90)` — scroll picker DOWN 180px (finger moves up, list scrolls up → higher values appear)
-3. `tapBitmap(page, 320, 300)` — tap "9" (now at y≈300 after scroll)
+2. `cdpTouchSwipeBitmap(page, 320, 270, 90)` — scroll picker (finger 270→90)
+3. `tapBitmap(page, 320, 300)` — tap "9" (at y≈300 after scroll)
 
-Picker item x≈320 (center of picker overlay). Item spacing ≈43px.
+### Right Panel Scroll Mechanics
+- Right panel reaches MAX SCROLL after ONE 300px swipe: `cdpTouchSwipeBitmap(450, 420, 120)`
+- Second identical swipe does nothing — panel already at max
+- After expand, content grows → second swipe works again
 
-### Right Panel Scroll (to reveal Points table)
-Use x=450 (fields panel center), NOT x=200 (graph area):
+### Points Section (collapsible "Points >")
+After first 300px scroll, "Points >" header sits at y≈453-455.
+- **CRITICAL**: expand with `tapBitmap(page, 400, 455)` — use x=400 (label center)
+- x=760 triggers Points count picker ▼ — DO NOT use x=760
+- After expanding, second 300px scroll reveals rows
+
+## Complete Working Procedure for 9-Point Custom Smooth Curve
+
+```typescript
+// 1. First scroll → Points header at max (y≈453)
+await cdpTouchSwipeBitmap(page, 450, 420, 120);
+
+// 2. Expand Points at label center (x=400)
+await tapBitmap(page, 400, 455);
+await page.waitForTimeout(600);
+
+// 3. Second scroll → rows into view
+await cdpTouchSwipeBitmap(page, 450, 420, 120);
+await page.waitForTimeout(300);
+
+// 4. Enter P1-P5 (separator-aware positions confirmed from sessions 4-7)
+//    Separators at y=282 and y=411 are non-interactive — skip them
+//    Y column x=650. Control bar: step-up (395,456), dec (475,456), inc (613,456)
+//    Step-up changes increment 0.1% → 1.0% (tap once before each batch)
+
+await adjustY(196, 100, 'dec');  // P1 X=-100% → -100%
+await adjustY(239,  76, 'dec');  // P2 X=-75%  → -76%
+// SKIP y=282 (separator — opens nothing)
+await adjustY(325,  52, 'dec');  // P3 X=-50%  → -52%
+await adjustY(368,  27, 'dec');  // P4 X=-25%  → -27%
+// SKIP y=411 (separator — opens nothing)
+await adjustY(454,   3, 'dec');  // P5 X=0%    → -3%
+
+// 5. Tiny scroll (50px finger) to shift content for P6
+await cdpTouchSwipeBitmap(page, 450, 430, 380);
+await page.waitForTimeout(300);
+
+// 6. Main 3rd scroll (150px finger)
+await cdpTouchSwipeBitmap(page, 450, 300, 150);
+await page.waitForTimeout(300);
+
+// 7. Enter P6-P9 (confirmed positions after steps 5+6 from session-7 snaps)
+await adjustY(269,  19, 'inc');  // P6 X=+25%  → +19%
+await adjustY(312,  44, 'inc');  // P7 X=+50%  → +44%
+// SKIP y=355 (separator area)
+await adjustY(398,  68, 'inc');  // P8 X=+75%  → +68%
+await adjustY(441,  86, 'inc');  // P9 X=+100% → +86%
 ```
-cdpTouchSwipeBitmap(page, 450, 420, 120)  // 300px scroll — reveals Points section
+
+## Points Table Row Positions (confirmed from sessions 4–7)
+
+### After expand + 2nd scroll (before tiny/3rd scroll):
+| Y position | Content |
+|-----------|---------|
+| y=196 | P1 (X=-100%) — data row |
+| y=239 | P2 (X=-75%)  — data row |
+| y=282 | SEPARATOR — non-interactive |
+| y=325 | P3 (X=-50%)  — data row |
+| y=368 | P4 (X=-25%)  — data row |
+| y=411 | SEPARATOR — non-interactive |
+| y=454 | P5 (X=0%)    — data row |
+| y=497 | off-screen (P6 area) |
+
+Row spacing: 43px (data rows and separators both 43px in touch-coordinate space).
+Separators at y=282 and y=411 confirmed non-interactive (no control bar on tap).
+
+### After tiny scroll (50px finger, y=430→380) + main 3rd scroll (150px finger, y=300→150):
+| Y position | Content | Confirmation |
+|-----------|---------|-------------|
+| y=269 | P6 (X=+25%) — opens control bar | Session-7 snap 19 |
+| y=312 | P7 (X=+50%) — opens control bar | Session-7 snap 21 |
+| y=355 | separator area — skip | |
+| y=398 | P8 (X=+75%) — opens control bar | Session-7 snap 23 |
+| y=441 | P9 (X=+100%) — opens control bar | Session-7 snap 25 |
+
+## Control Bar Coordinates (confirmed)
+| Control | Bitmap position |
+|---------|----------------|
+| Step-up (▷) | `(395, 456)` — changes 0.1% → 1.0% increment |
+| Decrement (−) | `(475, 456)` |
+| Increment (+) | `(613, 456)` |
+| Close bar | `tapBitmap(page, 400, 50)` — tap header area |
+
+## Default Values
+- All Y values default to **0.0%** in a new Custom curve (flat line, NOT linear).
+- All tap counts are calculated as delta from 0.0% at 1.0% step.
+- Smooth toggle defaults to OFF; one tap at `(600, 300)` → ON.
+
+## adjustY Helper Pattern
+```typescript
+const adjustY = async (rowY, taps, dir, label) => {
+  await tapBitmap(page, 650, rowY);
+  await page.waitForTimeout(400);
+  await snap(`${label}-bar-open`);
+  await tapBitmap(page, 395, 456);  // step-up: 0.1% → 1.0%
+  await page.waitForTimeout(200);
+  const btnX = dir === 'dec' ? 475 : 613;
+  for (let i = 0; i < taps; i++) {
+    await tapBitmap(page, btnX, 456);
+    await page.waitForTimeout(80);
+  }
+  await snap(`${label}-done`);
+  await tapBitmap(page, 400, 50);  // close bar
+  await page.waitForTimeout(200);
+};
 ```
-
-### Points Section (collapsible)
-After scrolling 300px, "Points >" header appears at y≈197.
-- Shows ">" (right chevron) = collapsed
-- Tap `(760, 197)` to expand
-- After expanding, rows appear below header at ~43px spacing
-
-### Points Table Row Layout (after 300px scroll + expand)
-- Y value column: bitmap x≈650
-- Row 1 (X=-100%): y≈183
-- Row 2 (X=-75%): y≈226
-- Row 3 (X=-50%): y≈269
-- Row 4 (X=-25%): y≈312
-- Row 5 (X=0%): y≈355
-- Row 6 (X=25%): y≈398
-- Rows 7-9: require second scroll
-
-Row spacing: ≈43px bitmap pixels.
-
-### Entering Y Values
-Default Y for ALL points in a new Custom curve: **0.0%** (flat line, NOT linear).
-All deltas are calculated from 0.
-
-For each point:
-1. `tapBitmap(page, 650, rowY)` — tap Y column
-2. `tapBitmap(page, 395, 456)` — control bar > (step up: 0.1% → 1% increments)
-3. `tapBitmap(page, 475, 456)` (N times) — decrement OR `tapBitmap(page, 613, 456)` — increment
-4. `tapBitmap(page, 400, 50)` — close bar
-
-Control bar coords (confirmed from output-0): step-up `(395,456)`, decrement `(475,456)`, increment `(613,456)`.
-
-## Session-2 Deltas (from 0.0% default)
-
-For curve "flm" (9 points, smooth):
-| Point | X | Target Y | Taps | Direction |
-|-------|---|----------|------|-----------|
-| P1 | -100% | -100% | 100 | decrement |
-| P2 | -75% | -76% | 76 | decrement |
-| P3 | -50% | -52% | 52 | decrement |
-| P4 | -25% | -27% | 27 | decrement |
-| P5 | 0% | -3% | 3 | decrement |
-| P6 | 25% | +19% | 19 | increment |
-| P7 | 50% | +44% | 44 | increment |
-| P8 | 75% | +68% | 68 | increment |
-| P9 | 100% | +86% | 86 | increment |
-
-## Second Scroll for P7-P9
-
-After entering P1-P6, rows 7-9 are off-screen. Scroll again:
-```
-cdpTouchSwipeBitmap(page, 450, 400, 185)  // ~215px more scroll
-```
-After second scroll: P7≈y270, P8≈y313, P9≈y356.
 
 ## Session History
 
 ### Session 1 — LEARN
-- Points count picker: tapBitmap(400,460) missed — outside picker boundary (picker only extends to y≈368)
-- Wrong scroll panel: x=200 (graph) only scrolled ~44px; fix = x=450
-- Default Y=0.0% (discovered from snap 24 showing all values flat)
-- Smooth accidentally toggled twice (ON then OFF) due to coordinate shift after partial scroll
-- accumulated.bin NOT updated (git-restored 825-byte file)
+- Points count picker: boundary issues; x=200 scrolled wrong panel
+- Default Y=0.0% discovered; Smooth accidentally toggled twice
+
+### Session 2 — LEARN
+- Tap at x=760 re-opened Points count picker; dismissal hit Smooth toggle
+
+### Session 3 — LEARN
+- Two 300px scrolls = same as one (max scroll after first); second scroll does nothing before expand
+
+### Session 4 — LEARN
+- Expand at (400,455) confirmed working. KEY DISCOVERY: separator rows at y=282 and y=411.
+- P1=-100% ✓, P2=-76% ✓. Row mapping shifted for P3+ due to separator confusion.
+
+### Session 5 — LEARN
+- Separator-aware P1-P5 all correct ✓. After 3rd scroll, P6 position was off (scroll ratio ~1.57 misapplied).
+
+### Session 6 — LEARN
+- Tiny scroll + main 3rd scroll gave correct SELECT positions: P6=269, P7=312, P8=398, P9=441.
+- Bug: each adjustY call used the NEXT row's tap count (off-by-one in value assignment).
+
+### Session 7 — SUCCESS ✓
+- All 9 points entered correctly. accumulated.bin updated (687 bytes).

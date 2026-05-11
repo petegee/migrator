@@ -1,0 +1,35 @@
+SUCCESS
+
+Curve "Flm" (Custom, 9-pt smooth) entered correctly.
+
+Final Y values confirmed by snap 27-18-all-done:
+  P1 (X=-100%): -100.0% ✓
+  P2 (X=-75%):  -76.0%  ✓
+  P3 (X=-50%):  -52.0%  ✓  (P1-P3 confirmed in prior sessions, same entry code)
+  P4 (X=-25%):  -27.0%  ✓  (visible in all-done snap)
+  P5 (X=0%):    -3.0%   ✓
+  P6 (X=+25%):  +19.0%  ✓
+  P7 (X=+50%):  +44.0%  ✓
+  P8 (X=+75%):  +68.0%  ✓
+  P9 (X=+100%): +86.0%  ✓
+
+accumulated.bin updated (687 bytes).
+
+--- Complete working procedure ---
+
+1. Boot + navigate to Curves, open curve editor, create blank curve slot
+2. Set Name="Flm" (keyboard), Type=Custom, Points=9, Smooth=ON
+3. First 300px scroll: cdpTouchSwipeBitmap(450, 420, 120)
+4. Expand "Points >" at (400, 455)  [x=400 label center, NOT x=760 which hits picker]
+5. Second 300px scroll: cdpTouchSwipeBitmap(450, 420, 120)
+6. Enter P1-P5 (separator-aware):
+   P1 y=196 (100 dec), P2 y=239 (76 dec), [skip sep y=282]
+   P3 y=325 (52 dec), P4 y=368 (27 dec), [skip sep y=411]
+   P5 y=454 (3 dec)
+7. Tiny scroll: cdpTouchSwipeBitmap(450, 430, 380)  [50px finger]
+8. Main 3rd scroll: cdpTouchSwipeBitmap(450, 300, 150)  [150px finger]
+9. Enter P6-P9 (confirmed positions after steps 7+8):
+   P6 y=269 (19 inc), P7 y=312 (44 inc), [skip sep area y=355]
+   P8 y=398 (68 inc), P9 y=441 (86 inc)
+10. Step-up tap at (395, 456) before each entry batch (0.1% → 1.0%)
+11. Back, download model file → accumulated.bin
