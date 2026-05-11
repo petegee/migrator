@@ -1,0 +1,33 @@
+LEARN: P1-P5 correct. P6-P8 got wrong tap counts (each row was one count-set too high). P9 missed entirely.
+
+--- What succeeded ---
+
+P1=-100.0% ✓  P2=-76.0% ✓  P3=-52.0% ✓  P4=-27.0% ✓  P5=-3.0% ✓
+
+Tiny scroll (50px finger y=430→380) + main 3rd scroll (150px y=300→150) worked.
+Positions confirmed by snaps after main 3rd scroll:
+  y=269 → opens P6 (X=25%) control bar  [snap 22]
+  y=312 → opens P7 (X=50%) control bar  [snap 24]
+  y=398 → opens P8 (X=75%) control bar  [snap 26]
+  P9 (X=100%) visible in snap 21 (15-scroll-3) at bottom of list.
+
+--- What failed ---
+
+Session-6 spec used adjustY(269, 44) labeled p7, adjustY(312, 68) labeled p8, adjustY(398, 86) labeled p9.
+Each call used the WRONG COUNT for the row it actually hit:
+  y=269 hit P6 → got 44 taps (P7's count) → P6=44.0% (should be 19%)
+  y=312 hit P7 → got 68 taps (P8's count) → P7=68.0% (should be 44%)
+  y=398 hit P8 → got 86 taps (P9's count) → P8=86.0% (should be 68%)
+  P9 never tapped → P9=0.0% (should be 86%)
+
+--- Plan for session-7 ---
+
+Same tiny scroll + same main 3rd scroll. Then use correct tap counts:
+  y=269, 19 inc → P6 = +19% ✓
+  y=312, 44 inc → P7 = +44% ✓
+  [skip y=355 — separator between P7 and P8]
+  y=398, 68 inc → P8 = +68% ✓
+  y=441, 86 inc → P9 = +86% (estimated: 43px below P8 tap)
+
+P9 position is unconfirmed (snap 21 shows it visible but no tap was made). If y=441 misses P9,
+try y=484 (next 43px) or y=355 (directly — but session-6 spec skipped that as separator).

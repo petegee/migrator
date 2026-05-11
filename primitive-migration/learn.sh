@@ -351,9 +351,14 @@ echo "[learn] Launching Claude in: $SESSION_DIR"
 echo ""
 
 cd "$SESSION_DIR"
+
 claude \
   --dangerously-skip-permissions \
   --add-dir "$ROOT"
+
+#../../../../../deepclaude.sh \
+#  --dangerously-skip-permissions \
+#  --add-dir "$ROOT"
 
 echo ""
 echo "[learn] Session complete."

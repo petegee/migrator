@@ -1,0 +1,21 @@
+SUCCESS
+
+Mix-0 entered: Elev (Source=Elevat Var, ADD, 100%, Always on).
+accumulated.bin updated: 709 → 746 bytes.
+
+Architecture confirmed: Stick → Var → Mix → Channel(s)
+Primary mixes must use the corresponding Var as Source (not raw analog).
+
+Key findings:
+- Free mix type used (library r1c1). No destCh/Channel field — shows "None".
+- Source = Var requires scrolling the full Category list. Compact popup only shows
+  Special/---/Analogs. Full list: --- / Analogs / Switches / Trims / Channels / Vars / ...
+- CDP touch swipe required (mouse drag is inconsistent in overlay dialogs):
+  cdpTouchSwipeBitmap(320, 290, 130) scrolls DOWN ~3 items → Vars at bitmap y≈261.
+- Vars 2-col picker: row 3 tap at (510, 309) opens "Member" sub-list.
+- Sub-list positions (bitmap, scale 480/385=1.247): Rudder≈y239, Elevat≈y288.
+- Screenshot scale: canvas 800×480 bitmap, screenshots 640×385 display.
+- Name entry: tap(490,80) opens keyboard with cursor past end of right-aligned "Free mix".
+- Rebuild approach used (navigateCreateModelWizard + re-add vars) to avoid upload slot bug.
+- Glider template preset mixes (Ailerons/Elevators/Rudders) have NO Source field —
+  they show Curve/Weight&Rates/Differential. Only Free mixes have an explicit Source.

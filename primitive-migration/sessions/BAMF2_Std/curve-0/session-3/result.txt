@@ -1,0 +1,16 @@
+LEARN: Two 300px scrolls still left Points header at y≈453 (panel maxed after first scroll). Tap at (760,153) re-opened Points count picker again. No Y values entered.
+
+--- What failed ---
+
+1. Second 300px scroll did nothing — right panel already at max scroll after first 300px.
+   "Points >" stays at y≈453 regardless of second scroll.
+
+2. tapBitmap(760, 153) was supposed to hit Points collapsible after 2 scrolls,
+   but scroll state was identical to after 1 scroll.
+   y=153 is still the Points count ▼ dropdown area → opened picker again.
+
+--- Fix for session-4 ---
+
+ONE scroll only (300px). Then expand at (400, 455) using x=400 (label center of "Points >"
+at y≈453-460), NOT x=760 which hits Points count dropdown.
+After expanding, do SECOND 300px scroll to reveal rows.

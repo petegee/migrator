@@ -1,0 +1,43 @@
+LEARN: Action editor, orange-bar overlay, and new action editor all explored. Weight=25% NOT achieved.
+
+Session 8 ran 9 spec iterations exploring the weight adjustment flow in detail:
+
+## Confirmed Discoveries
+
+### 1. Action Editor (tapping "Weight 100%" text)
+- Opens via `touchBitmap(page, 480, 440)` — full-screen dark overlay (dark_ratio=0.92)
+- Content rows at bitmap y≈94 (icon), y≈130-162 (weight value "100%"), y≈155 (separator), y≈225-240 (additional field)
+- Tapping LEFT side of weight row → no change
+- Tapping RIGHT edge (bitmap x≈480-520, y≈162) → opens orange-bar overlay
+- Long-hold on weight row → no change
+- Double-tap → partial orange bar (compact editing state, 4.8% diff)
+- Back arrow returns to mix editor
+
+### 2. Orange-Bar Overlay (weight value editor)
+- Opens by tapping right edge of weight row in Action editor
+- Large orange-highlighted region (display x≈200-438, y≈113-277) showing current value
+- Text/labels below the orange region
+- Tapping outside dismisses it (returns to Action editor)
+- Weight adjustment mechanism within this overlay NOT FOUND
+
+### 3. "+ Add a new action" Flow (user hint applied)
+- Button at bottom of Free mix editor (bitmap y≈452-479)
+- CDP wheel ×7 (deltaY=300 each) + CDP Enter activates it
+- Opens a two-column New Action editor (45% diff from mix editor):
+  - Left panel (x=0-400): configuration fields
+  - Right scrollbar at x=425 (thin orange vertical line from y=108-320)
+  - OK button at bottom-center (bitmap y≈360, x≈278)
+  - Title "Action" at top
+- Tapping wrong positions in this editor dismisses it (96%+ diff)
+- Field positions within editor NOT YET MAPPED
+
+### 4. Channel 8 Source
+- Navigational flow to Channels → sub-list confirmed
+- CH8 selected via two CDP sub-list scrolls + tap at bitmap (400, 340)
+- Exact CH8 position still an estimate
+
+## What's Needed Next Session
+1. Map the New Action editor fields precisely (screenshot + pixel analysis)
+2. Find the weight value field within the editor
+3. Determine how to set rate to 25% (numeric keypad vs control bar vs +/-)
+4. Test OK button activation (CDP touch at bottom may not work — try wheel focus + Enter)

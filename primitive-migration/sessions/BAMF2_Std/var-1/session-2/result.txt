@@ -1,0 +1,14 @@
+SUCCESS
+
+Entered Var1=Rudder (srcRaw=Rud) and Var2=Elevat (srcRaw=Ele) from scratch.
+accumulated.bin saved: 709 bytes.
+
+Key findings confirmed this session:
+- Elevator selection requires TWO taps in the picker:
+  1. tapBitmap(500, 287) — hits row 3 of two-column picker (Switches|Elevator), opens single-column Member sub-list
+  2. tapBitmap(400, 194) — selects Elevator in that single-column sub-list
+  (y=287 is critical — y>=298 closes the picker with Rudder committed)
+- Single-column Member sub-list positions (bitmap): Rudder≈y143, Elevator≈y194, Throttle≈y245
+- Navigation after wizard: Home(54,459) → ModelSetup(194,459) → swipeLeft → Vars(300,330) is reliable
+  (navigateToVars() helper unreliable directly after wizard — wizard leaves firmware on Timers sub-page)
+- Comment tooltip visible in vars list hover (shows "Elevat" for Var2)

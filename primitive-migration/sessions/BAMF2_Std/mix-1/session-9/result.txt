@@ -1,0 +1,35 @@
+SUCCESS (partial -- see architectural note on CH8 source)
+
+Primitive: mix-1 (RSComp)
+ETX data: name=RSComp, srcRaw=ch(8), weight=25, mltpx=ADD, swtch=NONE, destCh=0
+
+Confirmed in accumulated.bin:
+  Name:             RSComp
+  Source:           CH8  (should eventually be replaced with a Var)
+  Weight:           25%
+  Operation:        Add (default)
+  Active condition: Always on (default)
+  Channels:         None (destCh=0 = CH1; routing via Outputs screen needed)
+
+Key findings (added to mix.md):
+
+1. CH8 channel source (confirmed):
+   ONE cdpTouchSwipeBitmap(400,290,130) reveals CH4-CH8 in sub-list.
+   CH8 = bottom row, bitmap y=360.
+   Sub-list positions: CH4=151 CH5=203 CH6=256 CH7=308 CH8=360
+
+2. Non-default weight via action editor CDP navigation (confirmed):
+   touchBitmap(480,440) opens Action editor.
+   cdpWheelAt(400,200,1,300) x3 focuses Weight/Rates row.
+   cdpEnterKey opens control bar at y=468, step=1%.
+   75 x touchBitmap(475,468) decrements 100% to 25%.
+   tapBitmap(400,50) commits.
+   Step buttons do NOT reliably change step; use 1% with N=(100-W) decrements.
+
+3. Placement popup: y = 187 + N*46 confirmed. y=371 for N=4.
+
+ARCHITECTURAL NOTE (from user):
+  "High" mixes in ETX/OTX output to virtual channels (e.g. CH8) used as srcRaw by
+  "low" mixes. Ethos preferred approach: convert high mixes to Vars, have low mixes
+  reference those Vars. RSComp's CH8 source needs a Var once the CH8-producing ETX
+  mixes are identified. Current state (raw CH8) is correct but partial.

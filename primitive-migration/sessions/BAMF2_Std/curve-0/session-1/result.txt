@@ -1,0 +1,86 @@
+LEARN: Points count stayed at 5 (picker scroll needed), Y values not entered, scroll approach wrong.
+
+--- What was accomplished ---
+
+- Curve created: name "Flm", type Custom, Smooth ON (then accidentally OFF), Easy mode ON
+- Points count: 5 (default) — could NOT reach "9" in picker
+- All Y values: 0.0% (default flat line) — no adjustments made
+- accumulated.bin NOT updated (LEARN result; git-restored previous 825-byte file)
+
+--- Key discoveries ---
+
+1. DEFAULT Y VALUES ARE 0.0% (NOT LINEAR)
+   When a new Custom curve is created, ALL points default to Y=0.0%.
+   The curve is a FLAT LINE, not an identity/linear curve.
+   Deltas for session-2 must be from 0.0%, not from linear:
+     P1 (X=-100%): 0→-100  = -100 taps at 1%
+     P2 (X=-75%):  0→-76   = -76 taps
+     P3 (X=-50%):  0→-52   = -52 taps
+     P4 (X=-25%):  0→-27   = -27 taps
+     P5 (X=0%):    0→-3    = -3 taps
+     P6 (X=25%):   0→+19   = +19 taps
+     P7 (X=50%):   0→+44   = +44 taps
+     P8 (X=75%):   0→+68   = +68 taps
+     P9 (X=100%):  0→+86   = +86 taps
+
+2. POINTS COUNT PICKER: must scroll to reach "9"
+   Picker shows 5 items: 2, 3, 4, 5(selected), 6.
+   Item 7-21 are off-screen below. Item spacing ≈43 bitmap px.
+   "9" is at approximately bitmap y≈479 (off bottom of canvas before scroll).
+   Fix: after tapBitmap(600,220) opens picker, use cdpTouchSwipeBitmap WITHIN picker
+   to scroll it: cdpTouchSwipeBitmap(320, 270, 90) → 180px scroll → "9" moves to y≈300.
+   Then: tapBitmap(320, 300) to select "9".
+   Picker item x≈320 (picker overlay x range).
+
+3. SCROLL MUST BE IN RIGHT PANEL (x≈450), NOT GRAPH AREA (x=200)
+   cdpTouchSwipeBitmap at x=200 (graph area) only scrolls the right panel ~44px
+   (barely moves — the graph and field panels may share some scroll state).
+   Fix: use x=450 (center of fields panel) for scroll.
+   300px scroll: cdpTouchSwipeBitmap(450, 420, 120)
+
+4. POINTS SECTION IS COLLAPSIBLE
+   After scrolling to reveal the Points section, it shows "Points >" (collapsed, right chevron).
+   Must tap ">" to expand before rows are visible.
+   After ~243px scroll, Points header is at bitmap y≈197.
+   Expand tap: tapBitmap(760, y_of_points_header)
+   After expanding, rows appear below header at ~43px spacing.
+
+5. Y VALUE COLUMN POSITION
+   From snap 24: each row shows "[index] | [X fixed] | [Y editable]"
+   Y value column center: bitmap x≈650, within the right panel.
+   Row spacing (9-point curve): ~43px.
+   After 300px scroll, row 1 (X=-100%) at y≈183, row 2 at y≈226, etc.
+
+6. CONFIRMED NAVIGATION COORDINATES (cursor-accurate from screenshots)
+   - Curves tile (r2c1): tapBitmap(100, 330) ✓
+   - Add curve (+): tapBitmap(400, 266) ✓
+   - Name field keyboard: tapBitmap(600, 80) ✓ (opens directly, no pencil icon)
+   - Type picker → Custom: tapBitmap(320, 320) ✓
+   - Points count field: tapBitmap(600, 220) ✓ opens picker
+   - Smooth toggle: tapBitmap(600, 300) ✓ (one tap, default OFF → ON)
+   - Easy mode: default ON — no toggle needed
+   - Control bar > step-up: tapBitmap(395, 456)
+   - Control bar - decrement: tapBitmap(475, 456)
+   - Control bar + increment: tapBitmap(613, 456)
+
+7. CURVE LIST CONFIRMATION (snap 32)
+   After saving and going back: list shows "Curve1 | Custom | Flm" ✓
+   The goBack() exits the editor to the Curves list.
+
+--- Plan for session-2 ---
+
+A) Boot + wizard (fresh model)
+B) Navigate to Curves
+C) tapBitmap(400, 266) → editor opens
+D) Set Name: tapBitmap(600, 80) → 10× Bksp → F(280,340) Shift(40,395) l(680,340) m(600,395) ENTER
+E) Set Type=Custom: tapBitmap(600, 140) → tapBitmap(320, 320)
+F) Set Points=9:
+   tapBitmap(600, 220) → opens picker (2-6 visible, 5 selected)
+   cdpTouchSwipeBitmap(320, 270, 90) → scroll picker 180px
+   tapBitmap(320, 300) → tap "9 points"
+G) Set Smooth ON: tapBitmap(600, 300)
+H) Scroll to points: cdpTouchSwipeBitmap(450, 420, 120) → 300px scroll
+I) Expand Points: snapshot → if ">" visible, tapBitmap(760, 197) to expand
+J) Enter Y values for each row (x=650, row y spacing 43px from header):
+   For each point: tapBitmap(650, rowY) → step-up → decrement or increment N times → close
+K) Download + save accumulated.bin

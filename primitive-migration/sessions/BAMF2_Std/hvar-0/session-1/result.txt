@@ -1,0 +1,25 @@
+SUCCESS
+
+Architecture: ETX ch(8) high mixes (Therma + FineAd) → Ethos Var "ThmC"
+RSComp mix references ThmC Var (not CH8 directly)
+
+ThmC Var:
+- Name: ThmC, Comment: ThmC
+- Source: Right Slider (SLIDER2) — requires 2 CDP touch scrolls of the single-column Member sub-list; tap at y≈347
+- Condition: SG2 — set via "+ Add a new value" → condition picker → switch selection (tap at y≈200 after scroll)
+- Action 1: Divide /25 (Always on)
+- Action 2: Add +100 (Always on)
+
+RSComp mix:
+- Source: ThmC Var (3rd var, tapped at y≈339 in Var sub-list)
+- Weight: 25%
+
+Build order: Vars first (Rudder → Elevat → ThmC), then Mixes (Elev → RSComp)
+so ThmC exists when RSComp references it.
+
+Binary: 829 bytes, PASS, byte-identical round-trip
+
+Uncertain (need vision verification):
+- Exact Right Slider y-coord (347 estimated from 51px row spacing)
+- Whether SG2 was correctly selected in switch hierarchy
+- Step size correctness for Divide value (may be 25 not 25.0)

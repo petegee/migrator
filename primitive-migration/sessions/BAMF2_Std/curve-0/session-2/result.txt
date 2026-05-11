@@ -1,0 +1,18 @@
+LEARN: Expand tap at (760,197) re-opened Points count picker; dismissal tap landed on Smooth toggle, turning Smooth OFF. No Y values entered.
+
+--- What failed ---
+
+1. tapBitmap(760, 197) intended to expand "Points >" collapsible section.
+   After 300px right-panel scroll, "Points >" header is at y≈453 (max scroll).
+   y=197 hits the Points count ▼ dropdown row (at y≈152 after scroll) → re-opened picker.
+
+2. Subsequent tap at (650, 183) to dismiss picker also landed on Smooth toggle (y≈193).
+   Smooth was toggled back to OFF.
+
+3. Right panel is maxed out after ONE 300px scroll — second scroll does nothing.
+
+--- Fix for session-3 ---
+
+Must expand at (760, 453) — actual y of "Points >" at max scroll.
+Or use x=400 (label center) to avoid ▼ dropdown at x=760.
+After expanding, do SECOND 300px scroll to bring rows into view.

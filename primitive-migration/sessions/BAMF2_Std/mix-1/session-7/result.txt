@@ -1,0 +1,25 @@
+LEARN: Channel 8 source unverified, weight 25% not set
+
+Source = ch(8) flow navigated (compact popup → full Category list → CDP swipe → Channels category
+→ Channel sub-list → CH8 tap estimated at (400, 340) after sub-list scroll). Source region changed 28%,
+suggesting a source was selected, but exact channel NOT verified via vision.
+
+Weight adjustment FAILED:
+- Touching the "Weight 100%" area (bitmap x≈470-495, y≈438-445) navigates to a full-screen
+  Action editor — NOT a numeric control bar.
+- The Free mix editor's Actions row is at bitmap y≈430-450 (display y≈345-360).
+- The "Weight 100%" text occupies bitmap x≈375-495.
+- The weight must be edited inside the Action editor (full-screen), which has NOT been explored.
+- Previous explorations at y=360-410 were in the wrong area (Curve/Operation rows, not Actions).
+
+CH8 source flow (to be verified):
+  1. tapBitmap(350, 200) — Source → compact popup
+  2. tapBitmap(320, 254) — "---" → full Category list
+  3. cdpTouchSwipeBitmap(320, 290, 130) — scroll to reveal Channels
+  4. tapBitmap(320, 212) — "Channels" → 2-col picker
+  5. tapBitmap(510, 309) — Member col row 3 → sub-list
+  6. cdpTouchSwipeBitmap(400, 290, 130) — scroll sub-list for CH8
+  7. tapBitmap(400, 340) — estimated CH8 position
+  8. tapBitmap(400, 50) — commit
+
+accumulated.bin saved (785 bytes, +39 from mix-0). Firmware test PASSES (0 byte changes).

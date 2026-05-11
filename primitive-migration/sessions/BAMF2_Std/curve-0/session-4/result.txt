@@ -1,0 +1,63 @@
+LEARN: Expand worked (Points ▼ confirmed). Rows visible after second scroll. But Points table has SEPARATOR ROWS every 2 rows — taps at separator y-positions open nothing. Y values entered for P1, P2 (correct) and P3, P4 (shifted one row), P5, P6 (shifted further). P7-P9 not entered.
+
+--- What succeeded ---
+
+- Expand at (400, 455): confirmed working — snap shows "Points ▼" (expanded)
+- Second 300px scroll: rows appeared (P1 at y≈196, P2 at y≈239)
+- Control bar: step-up at x=395 works (0.1% → 1.0% confirmed by snap showing "1.0%")
+- P1=-100.0% ✓ (tapBitmap(650,196), step-up, 100 dec at 1%)
+- P2=-76.0% ✓ (tapBitmap(650,239), step-up, 76 dec at 1%)
+
+--- Key discovery: SEPARATOR ROWS ---
+
+The Points table has non-interactive separator rows between every 2 data rows.
+After expand + second 300px scroll, actual row positions in bitmap:
+
+  P1 (X=-100%):  y=196   ← row center
+  P2 (X=-75%):   y=239
+  [SEPARATOR]:   y=282   ← tapping here opens nothing (confirmed by no-bar snap)
+  P3 (X=-50%):   y=325   ← confirmed by snap 12 (P3's Y field selected at y=325)
+  P4 (X=-25%):   y=368
+  [SEPARATOR]:   y=411   ← confirmed by no-bar snap 16
+  P5 (X=0%):     y=454
+  P6 (X=25%):    y=497   (off-screen)
+  [SEPARATOR]:   y=540   (off-screen)
+  P7 (X=50%):    y=583   (off-screen)
+  P8 (X=75%):    y=626   (off-screen)
+  [SEPARATOR]:   y=669   (off-screen)
+  P9 (X=100%):   y=712   (off-screen)
+
+Row spacing: 43px (data rows AND separators are each 43px).
+Pattern: 2 data rows, 1 separator, repeat.
+
+--- What was actually entered (wrong mapping) ---
+
+Taps at y=282 (sep) and y=411 (sep) missed. Next taps hit one row too early:
+  y=325 (P4 call) → hit P3 → P3=-27% (should be -52%)
+  y=368 (P5 call) → hit P4 → P4=-3% (should be -27%)
+  y=411 (P6 call) → sep → missed
+  After 3rd scroll (150px): y=304→P5=+44%, y=347→P6=+68%, y=390 (sep)→missed
+  P7-P9: all at 0% (never reached)
+
+--- Plan for session-5 ---
+
+Use correct separator-aware positions:
+  P1: y=196, 100 dec
+  P2: y=239, 76 dec
+  Skip y=282 (separator)
+  P3: y=325, 52 dec
+  P4: y=368, 27 dec
+  Skip y=411 (separator)
+  P5: y=454, 3 dec  (barely at bottom edge, tappable)
+
+Third scroll 150px (cdpTouchSwipeBitmap(450, 300, 150)):
+  P5→y=304, P6→y=347, [sep]→y=390, P7→y=433, P8→y=476
+  P6: y=347, 19 inc
+  Skip y=390 (separator)
+  P7: y=433, 44 inc
+
+Fourth scroll 150px (cdpTouchSwipeBitmap(450, 300, 150)):
+  P7→y=283, P8→y=326, [sep]→y=369, P9→y=412
+  P8: y=326, 68 inc
+  Skip y=369 (separator)
+  P9: y=412, 86 inc

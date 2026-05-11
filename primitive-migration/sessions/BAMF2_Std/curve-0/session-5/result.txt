@@ -1,0 +1,83 @@
+LEARN: P1-P5 all correct. P6-P9 wrong due to bad post-scroll-3 position mapping.
+
+--- What succeeded ---
+
+- P1=-100.0% ✓  (y=196, 100 dec)
+- P2=-76.0%  ✓  (y=239, 76 dec)
+- P3=-52.0%  ✓  (y=325, 52 dec)
+- P4=-27.0%  ✓  (y=368, 27 dec)
+- P5=-3.0%   ✓  (y=454, 3 dec)
+
+--- What failed ---
+
+Session-5 spec assumed: after 3rd scroll (150px finger, y=300→150), P5→304, P6→347, sep→390, P7→433.
+Actual result: y=347 = P7 (NOT P6). y=433 = separator boundary / P8 hit area.
+
+Snap evidence:
+  - snap 18 (13-p6-bar-open): P7 (X=50%) was selected at y=347
+  - snap 20 (14-p7-bar-open): P8 (X=75%) was selected at y=433
+
+Final values: P6=0.0%, P7=19.0%(wrong/was P7 target=44%), P8=44.0%(wrong/was P7 val=44), P9=0.0%
+
+--- Correct positions after 3rd scroll ---
+
+3rd scroll: cdpTouchSwipeBitmap(450, 300, 150) → actual content moves ~236px (ratio ~1.57:1).
+
+After 3rd scroll, actual bitmap y positions:
+  P5:  y=218  (off screen top or near top — don't retap)
+  P6:  y=261  (off-screen top)
+
+Wait — P5 was at y=454 before scroll-3. After ~236px upward: 454-236=218. So:
+  P6:  497-236=261  (off-screen top)
+  [sep]: 540-236=304
+  P7:  583-236=347  ← confirmed by snap (P7 selected at y=347)
+  P8:  626-236=390
+  [sep]: 669-236=433  ← confirmed (sep/P8 boundary at y=433)
+  P9:  712-236=476
+
+But snap 13-p6-bar-open showed P7 selected at y=347, meaning P6 and P5 scrolled off the top.
+P6 at y=261 is above screen... This means we need a PARTIAL 3rd scroll to keep P6 visible.
+
+--- Revised plan for session-6 ---
+
+Option A: Smaller 3rd scroll so P6 stays on-screen.
+  3rd scroll: 200px finger (y=400→200) instead of 300px (y=300→150)
+  This should move content ~200*1.57=314px → P5=454-314=140 (off top), P6=497-314=183, P7=226, P8=269, sep=312, P9=355
+  All of P6-P9 visible without 4th scroll.
+
+Option B: Accept that after 3rd scroll (150px finger / ~236px actual) P6 is off-screen.
+  Use 4th scroll to bring P6 back, or enter P6 before 3rd scroll while it's at y=497 (barely off bottom).
+
+Recommended: Use a SMALLER 3rd scroll.
+  cdpTouchSwipeBitmap(450, 400, 200) → ~176px actual (factor ~1.14... actually unclear)
+
+Actually the safest approach: the 3rd scroll used byStart=300, byEnd=150 → finger moves 150px.
+The 1.57:1 ratio is derived from P5 moving from 454 to 218 (236px) for 150px finger. This may not be a fixed ratio.
+
+SAFEST for session-6: Do 3rd scroll with byStart=300, byEnd=200 (100px finger movement).
+At 1.57 ratio: ~157px content movement.
+P5: 454-157=297, P6: 497-157=340, P7: 540-157=383, sep: 583-157=426, P8: 626-157=469, sep: 669-157=512(off), P9: 712-157=555(off)
+
+Hmm P9 would be off-screen again.
+
+Actually: just use the CONFIRMED positions from this session and scroll just enough to see all P6-P9.
+After 3rd scroll (byStart=300, byEnd=150): P7=347, P8=390, sep=433, P9=476.
+P6 is at y=261 (off-screen top, just above visible area).
+
+So for session-6:
+1. Do 3rd scroll (byStart=300, byEnd=150) as before
+2. Enter P7 (y=347, 44 inc), P8 (y=390, 68 inc) [skip sep y=433], P9 (y=476, 86 inc)
+3. Do a 4th SMALL scroll to bring P6 into view
+   OR: enter P6 BEFORE the 3rd scroll while it's at y=497 (touch that before scrolling)
+
+Best plan: enter P6 at y=497 BEFORE 3rd scroll (P6 is at bottom of visible area after P5 tap).
+After P5 (y=454), P6 is at y=497 (just off bottom or at edge).
+y=497 > 480 → off-screen. Need to scroll slightly first.
+
+Alternative: after P5 entry, do a TINY scroll ~50px finger (y=420→370) to move P6 into view:
+  ~50px * 1.57 = ~78px actual → P5 moves to 454-78=376, P6 to 497-78=419, sep to 540-78=462, P7 to 583-78=505(off)
+Then enter P6 at y=419.
+Then do 3rd main scroll (byStart=300, byEnd=150) → P7=347, P8=390, sep=433, P9=476.
+Then enter P7, P8, P9.
+
+This is the cleanest approach.
